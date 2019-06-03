@@ -3,6 +3,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
+	query_string = request.query_string 
 	return send_from_directory('../../web/static/html', 'home.html')
 
 @app.route("/auth")
