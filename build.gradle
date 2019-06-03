@@ -37,6 +37,7 @@ dependencies {
 	//implementation 'org.springframework.boot:spring-boot-starter-hateoas'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.session:spring-session-core'
+	compile 'org.apache.directory.studio:org.apache.commons.io:2.4'
 	//compileOnly 'org.projectlombok:lombok'
 	//runtimeOnly 'com.h2database:h2'
 	//annotationProcessor 'org.projectlombok:lombok'
