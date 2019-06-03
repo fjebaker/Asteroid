@@ -44,6 +44,6 @@ function supplyIdHTML() {
 
 function checkCookieValidity() {
     if (getCookie("id") == "") {
-        redirectLocal("auth.html");
+        redirectLocal("auth");
     }
 }
