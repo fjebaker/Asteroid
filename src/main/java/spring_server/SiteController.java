@@ -44,6 +44,12 @@ public class SiteController {
     public String auth(Model model) {
         return "html/auth.html";
     }
+
+    @RequestMapping("/test")
+    public String test(Model model) {
+        return "html/test.html";
+    }
+
     @RequestMapping("/home")
     public String home(Model model) {
         return "html/home.html";
