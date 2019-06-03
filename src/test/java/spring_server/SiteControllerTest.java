@@ -14,6 +14,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import org.springframework.core.io.ClassPathResource;
+import java.nio.file.Files;
+import java.io.File;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -23,10 +27,8 @@ public class SiteControllerTest {
     private MockMvc mvc;
 
     @Test
-    public void getHello() throws Exception {
-        /*mvc.perform(MockMvcRequestBuilders.get("/welcome").accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                // .andExpect(content().string(equalTo("Asteroid!")))
-                ;*/
+    public void testStatic() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get("/test"))
+        	.andExpect(status().isOk());
     }
 }
