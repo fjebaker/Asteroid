@@ -9,7 +9,7 @@ public class SBConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
        registry.addResourceHandler("/**")
-       	.addResourceLocations("file:src/main/web/static/html/")
+       	.addResourceLocations("file:src/main/web/static/")
        	.setCachePeriod(0);
     }
 }
