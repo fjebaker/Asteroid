@@ -1,100 +1,59 @@
-function generateTabButton(div, buttonText, callback) {
-    var button = document.createElement("button");
-    button.innerHTML = buttonText;
-    div.appendChild(button);
-    button.addEventListener("click",callback);
-}
+var bodyDiv = document.getElementById("bodyDiv");
+bodyDiv.innerHTML = "<table style='width:100%' id='tabSettingTable'><tr><th>Tab</th><th>Active</th></tr></table>"
+var tabArr = getCookie("tabs").split(',');
+const maxTabSettingIndex = 6;
+//0: Voting 1: Rating 2: Queue 3: Downloaded 4: Favourites 5: Playlists
 
-//Inserts a script specified in the query string, if valid
-function includeQueryStringScript() {
-    var urlParams = new URLSearchParams(location.search);
-    if(urlParams.has("tab")) { //check if tab query exists
-        var tabName = urlParams.get("tab");
-        var scriptName = ""
-        switch(tabName) {
-            case "Voting":
-                scriptName = "voting.js";
-                break;
-            case "Rating":
-            case "Tabs":
-            case "Account":
-            case "Queue":
-            case "Downloaded":
-            case "Favourites":
-            case "Playlists":
-                scriptName = "testbody.js";
-                break;
-            default:
-                var message = "No known tab with the name: "+tabName;
-                document.getElementById("bodyDiv").innerHTML = message;
-                return;
-        }
-        document.getElementById("scriptFiller").src = "../script/" + scriptName;
-    }
-}
-
-//Redirects to the same page with the 'tab' search query set to 'string'
-function tabQuery(string) {
-    var pathName = document.location.pathname;
-    var urlParams = new URLSearchParams(location.search);
-    urlParams.set("tab",string);
-    window.location.href = pathName + "?" + urlParams.toString();
-}
-
-function voting() {tabQuery("Voting");}
-function rating() {tabQuery("Rating");}
-function tabs() {tabQuery("Tabs");}
-function account() {tabQuery("Account");}
-
-//Gives relevant callback for a key
-function defaultTabCallback(name) {
-    switch(name) {
-        case "Voting":
-            return voting;
+function getName(index) {
+    switch (index) {
+        case 0:
+            return "Voting";
             break;
-        case "Rating":
-            return rating;
+        case 1:
+            return "Rating";
             break;
-        case "Tabs":
-            return tabs;
+        case 2:
+            return "Queue";
             break;
-        case "Account":
-            return account;
+        case 3:
+            return "Downloaded";
+            break;
+        case 4:
+            return "Favourites";
+            break;
+        case 5:
+            return "Playlists";
             break;
         default:
-            return "";
+            return "ERROR!";
+            break;
     }
 }
 
-//Checks that valid cookies for tabs exist
-function defaultTabCookies() {
-    if (getCookie("tabs") == ""){
-        setCookie("tabs","Voting:1,Rating:0,Queue:1,Downloaded:1,Favourites:1,Playlists:0",360000);
-    } else {
-        setCookie("tabs","Voting:1,Rating:1,Queue:1,Downloaded:1,Favourites:1,Playlists:0",360000);
+function getState(index) {
+    if (index < maxTabSettingIndex) {
+        if (tabArr[index].split(':')[1] == "1") {return "checked";}
+        else {return "";}
     }
 }
 
-//puts relevant tabs in the element section.
-function supplyButtons(element,tabCallback) {
-    defaultTabCookies();
-    var tabStr = getCookie("tabs")+",Tabs:1,Account:1";
-    var tabArray = tabStr.split(','); //Which tabs the user wishes to be shown
-    for(var i=0; i<tabArray.length; i++) {
-        var namNum = tabArray[i].split(':');
-        if (namNum[1] == "1") {
-            var callback = tabCallback(namNum[0]);
-            if (typeof callback !== "string") { //Checking that a valid callback exists
-                generateTabButton(element, namNum[0], callback);
-            }
-        }
+function changeCallback(index,box) {
+    if (index < maxTabSettingIndex) {
+        var adder = box.checked ? 1 : 0;
+        tabArr[index] = tabArr[index].split(':')[0]+":"+adder;
+        setCookie("tabs",tabArr.join(','),getCookieDuration());
+        window.location.href = window.location.href;
     }
 }
 
-//Puts buttons in the tabs section
-function supplyTabButtons() {
-    var tabsDiv = document.getElementById("tabsDiv");
-    supplyButtons(tabsDiv,defaultTabCallback);
+var tabSettingTable = document.getElementById("tabSettingTable");
+
+for (var i=0; i<maxTabSettingIndex; i++) {
+    var newRow = tabSettingTable.insertRow(-1);
+    var nameCell = newRow.insertCell(0);
+    var buttonCell = newRow.insertCell(1);
+    nameCell.innerHTML = getName(i);
+    buttonCell.innerHTML = "<input type=\'checkbox\' onclick=\'changeCallback(" + i + ",this);\'" + getState(i) + "></input>";
 }
 
 current_callback();

@@ -1,7 +1,7 @@
 //Getting a cookie of specified name 'name'
 function getCookie(name) {
     var decodedCookie = decodeURIComponent(document.cookie); //get all cookie info
-     var cookieArray = decodedCookie.split(';'); //an array containing each cookie as an element
+    var cookieArray = decodedCookie.split(';'); //an array containing each cookie as an element
     for(var i=0; i<cookieArray.length; i++) {
         var namePlus = name + "="; //for convenience
         var currentCookie = cookieArray[i];
@@ -24,6 +24,20 @@ function setCookie(name, data, time) {
     document.cookie = name + "=" + data + ";" + expiry + ";path=/"; //setting cookie
 }
 
+function refreshCookies(time) {
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var cookieArray = decodedCookie.split(';');
+    for (var i=0; i<cookieArray.length; i++) {
+        var name = cookieArray[i].split('=')[0];
+        var data = cookieArray[i].split('=')[1];
+        //remove whitespace at front
+        while(name.charAt(0) == ' ') {
+            name = name.substring(1);
+        }
+        setCookie(name,data,time);
+    }
+}
+
 //Redirects to another HTML page 'name' in the html folder.
 function redirectLocal(name) {
     var pathArray = document.location.pathname.split('/');
@@ -36,5 +50,47 @@ function checkCookieValidity() {
         redirectLocal("auth");
     }
 }
+
+function convertNameToDuration(name) {
+    switch (name){
+        case "minute":
+            return 60000;
+            break;
+        case "hour":
+            return 3600000;
+            break;
+        case "day":
+            return 86400000;
+            break;
+        case "week":
+            return 604800000;
+            break;
+        case "month":
+            return 2656800000;
+            break;
+        case "year":
+            return 31557600000;
+            break;
+        default:
+            return 0;
+    }
+}
+
+function setCookieDuration() {
+    if (getCookie("cookieDuration") == "") {
+        setCookie("cookieDuration","minute",60000);
+    }
+    else {
+        var duration = getCookie("cookieDuration");
+        setCookie("cookieDuration",duration,convertNameToDuration(duration));
+    }
+}
+
+function getCookieDuration() {
+    setCookieDuration();
+    return convertNameToDuration(getCookie("cookieDuration"));
+}
+
+setCookieDuration();
 
 current_callback();
