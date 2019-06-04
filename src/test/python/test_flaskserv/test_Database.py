@@ -109,7 +109,7 @@ class TestUserDB():
 		self.udb.add_user({"id":1, "name":"OtherTestUser", "hash_pw":0, "meta_dat":""})
 
 	def test_user_fetch_all(self):
-		desire = [(0, 'TestUser', 0, ''), (1, 'OtherTestUser', 0, '')]
+		desire = [(0, 'TestUser', ''), (1, 'OtherTestUser', '')]
 		out = self.udb.get_all_users()
 		for i, j in zip(out, desire):
 			for x, y in zip(i, j):
