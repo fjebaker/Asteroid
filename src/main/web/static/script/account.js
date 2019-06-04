@@ -6,7 +6,7 @@ function selectCookieDuration(select) {
     window.location.href = window.location.href;
 }
 
-bodyDiv.innerHTML = "<select onchange='selectCookieDuration(this)' id='cookieDurationSelector'></select>"
+bodyDiv.innerHTML = "Expiration time for basic client-side stored cookies: <select onchange='selectCookieDuration(this)' id='cookieDurationSelector'></select>"
 
 function putOptions() {
     var cookieDurationSelector = document.getElementById("cookieDurationSelector");
