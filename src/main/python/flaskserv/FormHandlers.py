@@ -8,6 +8,11 @@ class UserHandler():
 
 	:param request: flask request object
 	:type request: flask request
+	:returns: flask Request class with json string and status
+
+	status 404 - error, with error message in json
+
+	status 201 - success, with saved username in json
 	"""
 
 	def __init__(self, request):

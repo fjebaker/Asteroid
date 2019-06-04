@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>FormHandlers Classes &#8212; PyAsteroid  documentation</title>
+    <title>Vote Class &#8212; PyAsteroid  documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -14,8 +14,7 @@
     <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="model Module" href="model.html" />
-    <link rel="prev" title="QueryHandlers Classes" href="QueryHandlers.html" />
+    <link rel="prev" title="Playlist Class" href="Playlist.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -32,33 +31,21 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="module-FormHandlers">
-<span id="formhandlers-classes"></span><h1>FormHandlers Classes<a class="headerlink" href="#module-FormHandlers" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-model.Vote">
+<span id="vote-class"></span><h1>Vote Class<a class="headerlink" href="#module-model.Vote" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
-<dt id="FormHandlers.UserHandler">
-<em class="property">class </em><code class="sig-prename descclassname">FormHandlers.</code><code class="sig-name descname">UserHandler</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="headerlink" href="#FormHandlers.UserHandler" title="Permalink to this definition">¶</a></dt>
+<dt id="model.Vote.Vote">
+<em class="property">class </em><code class="sig-prename descclassname">model.Vote.</code><code class="sig-name descname">Vote</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="headerlink" href="#model.Vote.Vote" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Handles different requests related to user database.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>request</strong> (<em>flask request</em>) – flask request object</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>flask Request class with json string and status</p>
-</dd>
-</dl>
-<p>status 404 - error, with error message in json</p>
-<p>status 201 - success, with saved username in json</p>
 <dl class="method">
-<dt id="FormHandlers.UserHandler.add_user">
-<code class="sig-name descname">add_user</code><span class="sig-paren">(</span><em class="sig-param">name</em><span class="sig-paren">)</span><a class="headerlink" href="#FormHandlers.UserHandler.add_user" title="Permalink to this definition">¶</a></dt>
-<dd><p>add user method, which adds the new user to the database. Encapsulates <a class="reference internal" href="Database.html#Database.UserDB" title="Database.UserDB"><code class="xref py py-class docutils literal notranslate"><span class="pre">Database.UserDB</span></code></a> to add new user with max(id) + 1 as id.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – name of new user to add to database</p>
-</dd>
-</dl>
-</dd></dl>
+<dt id="model.Vote.Vote.get_votes">
+<code class="sig-name descname">get_votes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#model.Vote.Vote.get_votes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="model.Vote.Vote.handle_vote">
+<code class="sig-name descname">handle_vote</code><span class="sig-paren">(</span><em class="sig-param">u_id</em>, <em class="sig-param">s_id</em>, <em class="sig-param">vote</em><span class="sig-paren">)</span><a class="headerlink" href="#model.Vote.Vote.handle_vote" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -87,8 +74,8 @@
 <li class="toctree-l1 current"><a class="reference internal" href="flaskserv_module.html">FlaskServ Module</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="Database.html">Database Classes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="QueryHandlers.html">QueryHandlers Classes</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">FormHandlers Classes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="model.html">model Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="FormHandlers.html">FormHandlers Classes</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="model.html">model sub-module</a></li>
 </ul>
 </li>
 </ul>
@@ -98,8 +85,9 @@
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
   <li><a href="flaskserv_module.html">FlaskServ Module</a><ul>
-      <li>Previous: <a href="QueryHandlers.html" title="previous chapter">QueryHandlers Classes</a></li>
-      <li>Next: <a href="model.html" title="next chapter">model Module</a></li>
+  <li><a href="model.html">model sub-module</a><ul>
+      <li>Previous: <a href="Playlist.html" title="previous chapter">Playlist Class</a></li>
+  </ul></li>
   </ul></li>
   </ul></li>
 </ul>
@@ -134,7 +122,7 @@
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
-      <a href="_sources/FormHandlers.rst.txt"
+      <a href="_sources/Vote.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 

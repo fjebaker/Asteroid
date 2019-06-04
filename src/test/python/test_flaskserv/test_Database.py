@@ -80,6 +80,48 @@ class TestDBInstance():
 		with Database.DBInstance(":memory:") as db:
 			db.create_table("test_table", c1="text", c2="text", UNIQUE="c1")
 
+	def test_update(self):
+		desire = [('test1', 'test3', 11.0), ('test1', 'test3', 11.0), ('test2', 'test2', 12.0)]
+		with Database.DBInstance(":memory:") as db:
+			db.create_table("test_table", c1="text", c2="text", c3="real")
+			db.insert_entire_row("test_table", ("test1", "test2", 9))
+			db.insert_entire_row("test_table", ("test1", "test2", 11))
+			db.insert_entire_row("test_table", ("test2", "test2", 12))
+			db.update_generic("test_table", {"c2":"test3", "c3":11}, {"c1":"test1"})
+			out = db.select_columns("test_table", ["c1", "c2", "c3"])
+		for i, j in zip(out, desire):
+			for x, y in zip(i, j):
+				assert str(x) == str(y)
+
+	def test_fetch_rows(self):
+		# this is so terrible written lmao
+		desire1 = [('test1', 'test2', 9.0)]
+		desire2 = [('test1', 'test2', 9.0), ('test1', 'test2', 11.0)]
+		with Database.DBInstance(":memory:") as db:
+			db.create_table("test_table", c1="text", c2="text", c3="real")
+			db.insert_entire_row("test_table", ("test1", "test2", 9))
+			db.insert_entire_row("test_table", ("test1", "test2", 11))
+			db.insert_entire_row("test_table", ("test2", "test2", 12))
+			out1 = db.select_rows("test_table", {"c3":9})
+			out2 = db.select_rows("test_table", {"c1":"test1"})
+		for i, j in zip(out1, desire1):
+			for x, y in zip(i, j):
+				assert str(x) == str(y)
+		for i, j in zip(out2, desire2):
+			for x, y in zip(i, j):
+				assert str(x) == str(y)
+
+	def test_delete(self):
+		desire = [('test1', 'test2', 9.0)]
+		with Database.DBInstance(":memory:") as db:
+			db.create_table("test_table", c1="text", c2="text", c3="real")
+			db.insert_entire_row("test_table", ("test1", "test2", 9))
+			db.insert_entire_row("test_table", ("test1", "test2", 11))
+			db.delete_rows("test_table", ({"c3":11}))
+			out = db.select_columns("test_table", "*")
+		for i, j in zip(out, desire):
+			for x, y in zip(i, j):
+				assert str(x) == str(y)
 
 @pytest.mark.usefixtures('MDB_inst')
 class TestMusicDB():

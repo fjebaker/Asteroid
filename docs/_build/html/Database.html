@@ -100,6 +100,20 @@ If ‘UNIQUE:col_name’ present in **kwargs, adds a CONSTRAINT to the table cal
 </dd></dl>
 
 <dl class="method">
+<dt id="Database.DBInstance.delete_rows">
+<code class="sig-name descname">delete_rows</code><span class="sig-paren">(</span><em class="sig-param">table_name</em>, <em class="sig-param">condition</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.DBInstance.delete_rows" title="Permalink to this definition">¶</a></dt>
+<dd><p>delete rows from a table in database if condition is met</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>table_name</strong> (<em>str</em>) – name of table</p></li>
+<li><p><strong>condition</strong> (<em>dict</em>) – the condition to be met to qualify for removal</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="Database.DBInstance.get_column_info">
 <code class="sig-name descname">get_column_info</code><span class="sig-paren">(</span><em class="sig-param">table_name</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.DBInstance.get_column_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>method for getting the column info of a table</p>
@@ -145,6 +159,36 @@ If ‘UNIQUE:col_name’ present in **kwargs, adds a CONSTRAINT to the table cal
 <dd class="field-even"><p>list of tuples with items from column [(x1, y1, …), (x2, y2, …), …]</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.DBInstance.select_rows">
+<code class="sig-name descname">select_rows</code><span class="sig-paren">(</span><em class="sig-param">table_name</em>, <em class="sig-param">condition</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.DBInstance.select_rows" title="Permalink to this definition">¶</a></dt>
+<dd><p>select rows from table which meat condition</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>table_name</strong> (<em>str</em>) – name of table</p></li>
+<li><p><strong>condition</strong> (<em>dict</em>) – the condition to be met to qualify for selection</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.DBInstance.update_generic">
+<code class="sig-name descname">update_generic</code><span class="sig-paren">(</span><em class="sig-param">table_name</em>, <em class="sig-param">changes</em>, <em class="sig-param">condition</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.DBInstance.update_generic" title="Permalink to this definition">¶</a></dt>
+<dd><p>update entries according to condition in the database</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>table_name</strong> (<em>str</em>) – name of the table to update</p></li>
+<li><p><strong>changes</strong> (<em>dict</em>) – changes to enact e.g. <cite>{col1:value1, …}</cite></p></li>
+<li><p><strong>condition</strong> (<em>dict</em>) – the condition to be met to qualify for changes e.g. <cite>{col3:value3}</cite></p></li>
+</ul>
+</dd>
+</dl>
+<p>TODO check the changes fit the table</p>
 </dd></dl>
 
 </dd></dl>
@@ -255,6 +299,8 @@ Encapsulates <a class="reference internal" href="#Database.DBInstance" title="Da
 <li class="toctree-l1 current"><a class="reference internal" href="flaskserv_module.html">FlaskServ Module</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Database Classes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="QueryHandlers.html">QueryHandlers Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="FormHandlers.html">FormHandlers Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html">model Module</a></li>
 </ul>
 </li>
 </ul>

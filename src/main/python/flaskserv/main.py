@@ -1,6 +1,7 @@
 from flask import Flask, redirect, request, url_for, Response, send_from_directory
 import src.main.python.flaskserv.QueryHandlers as queryhandle
 import src.main.python.flaskserv.FormHandlers as formhandle
+import src.main.python.flaskserv.model as models
 import importlib
 app = Flask(__name__)
 
@@ -22,6 +23,16 @@ def register_user():
 	importlib.reload(formhandle)	# DEBUG
 	return formhandle.UserHandler(request)()
 
+@app.route("/vote", methods=["GET", "POST"])
+def vote():
+	importlib.reload(models)
+	# u_id:user_id, s_id:song_id, vote:1,0
+	return models.Vote(request)()
+
+@app.route("/rate", methods=["POST"])
+def rate():
+	return "TODO"
+
 @app.route("/db/music")
 def music_db():
 	importlib.reload(queryhandle)	# DEBUG
@@ -35,3 +46,7 @@ def user_db():
 	query_string = request.query_string 
 	print(query_string)
 	return queryhandle.UserQuery(query_string)()
+
+# TODO
+def admin():
+	pass
