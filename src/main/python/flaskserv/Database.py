@@ -182,6 +182,9 @@ class MusicDB(metaclass=DBAccessory):
 		pass
 
 	def get_all_songs(self):
+		"""
+		Returns all songs in songs table of database given in constructor
+		"""
 		return self.db_inst.select_columns("songs",
 			["name", "artist", "duration", "meta_dat"])
 
