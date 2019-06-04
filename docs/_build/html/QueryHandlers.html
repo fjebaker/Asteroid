@@ -1,0 +1,235 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>QueryHandlers Classes &#8212; PyAsteroid  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Database Classes" href="Database.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-QueryHandlers">
+<span id="queryhandlers-classes"></span><h1>QueryHandlers Classes<a class="headerlink" href="#module-QueryHandlers" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="QueryHandlers.BaseQuery">
+<em class="property">class </em><code class="sig-prename descclassname">QueryHandlers.</code><code class="sig-name descname">BaseQuery</code><span class="sig-paren">(</span><em class="sig-param">query</em><span class="sig-paren">)</span><a class="headerlink" href="#QueryHandlers.BaseQuery" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Abstract class off of which to construct query classes for the different databases</p>
+<p>Has <code class="xref py py-meth docutils literal notranslate"><span class="pre">__call__()</span></code> defined which uses <code class="xref py py-meth docutils literal notranslate"><span class="pre">__getattribute__()</span></code> calls on sanitised query string to produce appropriate response.
+The response method should be defined in the inheriting class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>query</strong> (<em>byte string</em>) – the query request</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>json object containing query result</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="QueryHandlers.BaseQuery.clean_query">
+<code class="sig-name descname">clean_query</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#QueryHandlers.BaseQuery.clean_query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sanitises and converts the query passed in constructor to a python string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="QueryHandlers.BaseQuery.defaultCase">
+<em class="property">abstract </em><code class="sig-name descname">defaultCase</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#QueryHandlers.BaseQuery.defaultCase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Must be defined in inheriting class.</p>
+<p>Should return the default case / error case - i.e. if the query does not match to a known query.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="QueryHandlers.MusicQuery">
+<em class="property">class </em><code class="sig-prename descclassname">QueryHandlers.</code><code class="sig-name descname">MusicQuery</code><span class="sig-paren">(</span><em class="sig-param">query</em><span class="sig-paren">)</span><a class="headerlink" href="#QueryHandlers.MusicQuery" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#QueryHandlers.BaseQuery" title="QueryHandlers.BaseQuery"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryHandlers.BaseQuery</span></code></a></p>
+<p>Handler for interfacing between music database and the web server.
+Inherits from <a class="reference internal" href="#QueryHandlers.BaseQuery" title="QueryHandlers.BaseQuery"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseQuery</span></code></a>.
+Encapsulates <a class="reference internal" href="Database.html#Database.MusicDB" title="Database.MusicDB"><code class="xref py py-class docutils literal notranslate"><span class="pre">Database.MusicDB</span></code></a> to make database queries.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>query</strong> (<em>byte string</em>) – the query request</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>json object containing query result</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="QueryHandlers.MusicQuery.defaultCase">
+<code class="sig-name descname">defaultCase</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#QueryHandlers.MusicQuery.defaultCase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default case is an empty dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>empty dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="QueryHandlers.MusicQuery.getAllSongs">
+<code class="sig-name descname">getAllSongs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#QueryHandlers.MusicQuery.getAllSongs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetch from database the whole songs table. Looks in environment variable <cite>MUSIC_DB_PATH</cite> for the database path.
+Converts the list of tuples from database call into a dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>dictionary containing the parsed songs table</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QueryHandlers.MusicQuery.keys">
+<code class="sig-name descname">keys</code><em class="property"> = ['name', 'artist', 'duration', 'file_path', 'meta_dat']</em><a class="headerlink" href="#QueryHandlers.MusicQuery.keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>json keys for parsing database</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="QueryHandlers.UserQuery">
+<em class="property">class </em><code class="sig-prename descclassname">QueryHandlers.</code><code class="sig-name descname">UserQuery</code><span class="sig-paren">(</span><em class="sig-param">query</em><span class="sig-paren">)</span><a class="headerlink" href="#QueryHandlers.UserQuery" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#QueryHandlers.BaseQuery" title="QueryHandlers.BaseQuery"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryHandlers.BaseQuery</span></code></a></p>
+<p>Handler for interfacing between user database and the web server.
+Inherits from <a class="reference internal" href="#QueryHandlers.BaseQuery" title="QueryHandlers.BaseQuery"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseQuery</span></code></a>.
+Encapsulates <a class="reference internal" href="Database.html#Database.UserDB" title="Database.UserDB"><code class="xref py py-class docutils literal notranslate"><span class="pre">Database.UserDB</span></code></a> to make database queries.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>query</strong> (<em>byte string</em>) – the query request</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>json object containing query result</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="QueryHandlers.UserQuery.defaultCase">
+<code class="sig-name descname">defaultCase</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#QueryHandlers.UserQuery.defaultCase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default case is an empty dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>empty dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="QueryHandlers.UserQuery.getAllUsers">
+<code class="sig-name descname">getAllUsers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#QueryHandlers.UserQuery.getAllUsers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetch from database the whole users table. Looks in environment variable <cite>USER_DB_PATH</cite> for the database path.
+Converts the list of tuples from database call into a dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>dictionary containing the parsed users table</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="QueryHandlers.UserQuery.keys">
+<code class="sig-name descname">keys</code><em class="property"> = ['id', 'name', 'hash_pw', 'meta_dat']</em><a class="headerlink" href="#QueryHandlers.UserQuery.keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>json keys for parsing database</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">PyAsteroid</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="audio_module.html">Audio Module</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="flaskserv_module.html">FlaskServ Module</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Database.html">Database Classes</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">QueryHandlers Classes</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="flaskserv_module.html">FlaskServ Module</a><ul>
+      <li>Previous: <a href="Database.html" title="previous chapter">Database Classes</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Moontemple.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/QueryHandlers.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

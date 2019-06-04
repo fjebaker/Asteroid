@@ -5,3 +5,4 @@ FlaskServ Module
    :maxdepth: 4
 
    Database
+   QueryHandlers

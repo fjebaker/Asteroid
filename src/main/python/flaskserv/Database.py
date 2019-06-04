@@ -172,6 +172,7 @@ class MusicDB(metaclass=DBAccessory):
 				song_dict["name"],
 				song_dict["artist"],
 				song_dict["duration"],
+				song_dict["file_path"],
 				song_dict["meta_dat"]
 			])
 
@@ -186,7 +187,7 @@ class MusicDB(metaclass=DBAccessory):
 		Returns all songs in songs table of database given in constructor
 		"""
 		return self.db_inst.select_columns("songs",
-			["name", "artist", "duration", "meta_dat"])
+			["name", "artist", "duration", "file_path", "meta_dat"])
 
 
 class UserDB(metaclass=DBAccessory):
@@ -203,12 +204,18 @@ class UserDB(metaclass=DBAccessory):
 	:param db_handle: sqlite database handle
 	:type db_handle: str
 	"""
-	def __init__(self, path):
-		self.db_handle = "HELLO WORLD"
+	def __init__(self, db_handle):
+		self.db_handle = db_handle
 
 	def add_user(self, user_dict):
 		# {id, name, hash_pw, meta_dat}
-		pass
+		self.db_inst.insert_entire_row("users", 
+			[
+				user_dict["id"],
+				user_dict["name"],
+				user_dict["hash_pw"],
+				user_dict["meta_dat"],
+			])
 
 	def get_user_by_id(self, id):
 		pass
@@ -216,12 +223,32 @@ class UserDB(metaclass=DBAccessory):
 	def get_user_by_name(self, name):
 		pass
 
-	def get_all_users(self, name):
-		pass
+	def get_column(self, column_name):
+		"""
+		Return the selected column from users table
+
+		:param column_name: name of column to retrieve
+		:type column_name: str
+		:returns: list of tuples representing column
+		"""
+		return self.db_inst.select_columns("users", column_name)
+
+	def get_all_users(self):
+		"""
+		Returns all users in users table of database given in constructor
+		"""
+		return self.db_inst.select_columns("users",
+			["id", "name", "hash_pw", "meta_dat"])
 
 if __name__ == '__main__':
+	pass
 	#with DBInstance("test.db") as db:
-	#	db.create_table("songs", name="text", artist="text", duration="real", meta_dat="text", UNIQUE='name, artist')
+#		db.create_table("users", id="long", name="text", hash_pw="long", meta_dat="text", UNIQUE="id")
+#	udb = UserDB("test.db")
+#	udb.add_user({"id":0, "name":"DrGonzo", "hash_pw":0, "meta_dat":""})
+#	udb.add_user({"id":1, "name":"Raul", "hash_pw":0, "meta_dat":""})
+#	udb.add_user({"id":2, "name":"Hunter S. Tompson", "hash_pw":0, "meta_dat":""})
+#	udb.add_user({"id":3, "name":"TheBigDan", "hash_pw":0, "meta_dat":""})
 #	with DBInstance("test.db") as db:
 		#db.create_table("songs", name="text", artist="text", duration="real", meta_dat="text")
 	#with DBInstance("test.db") as db:
@@ -230,10 +257,10 @@ if __name__ == '__main__':
 		#db.create_table("test_table", c1="text", c2="text", c3="real")
 #	with DBInstance("test.db") as db:
 #		print(db.get_column_info("test_tabl"))
-	mdb = MusicDB("test.db")
-#	mdb.add_song({"name":"You Too Must Die", "artist":"GOLD", "duration":333, "meta_dat":""})
+	#mdb = MusicDB("test.db")
+	# mdb.add_song({"name":"You Too Must Die", "artist":"GOLD", "duration":333, "file_path":"", "meta_dat":""})
 #	print(mdb.get_all_songs())
-#	mdb.add_song({"name":"You Too Must Die", "artist":"GOLD", "duration":333, "meta_dat":""})
-#	mdb.add_song({"name":"Plastic Boogie", "artist":"King Gizzard and the Lizard Wizard", "duration":181, "meta_dat":""})
-#	mdb.add_song({"name":"Fishing For Fishies", "artist":"King Gizzard and the Lizard Wizard", "duration":298, "meta_dat":""})
-	print(mdb.get_all_songs())
+	# mdb.add_song({"name":"You Too Must Die", "artist":"GOLD", "duration":333, "file_path":"", "meta_dat":""})
+	# mdb.add_song({"name":"Plastic Boogie", "artist":"King Gizzard and the Lizard Wizard", "duration":181, "file_path":"", "meta_dat":""})
+	# mdb.add_song({"name":"Fishing For Fishies", "artist":"King Gizzard and the Lizard Wizard", "duration":298, "file_path":"", "meta_dat":""})
+	#print(mdb.get_all_songs())
