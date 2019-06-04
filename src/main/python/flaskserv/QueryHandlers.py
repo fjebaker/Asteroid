@@ -91,7 +91,7 @@ class UserQuery(BaseQuery):
 	:returns: json object containing query result
 	"""
 
-	keys = ["id", "name", "hash_pw", "meta_dat"] #: json keys for parsing database
+	keys = ["id", "name", "meta_dat"] #: json keys for parsing database
 
 	def __init__(self, query):
 		BaseQuery.__init__(self, query)

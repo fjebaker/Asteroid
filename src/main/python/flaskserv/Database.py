@@ -238,7 +238,7 @@ class UserDB(metaclass=DBAccessory):
 		Returns all users in users table of database given in constructor
 		"""
 		return self.db_inst.select_columns("users",
-			["id", "name", "hash_pw", "meta_dat"])
+			["id", "name", "meta_dat"])
 
 if __name__ == '__main__':
 	pass

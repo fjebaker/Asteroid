@@ -6,3 +6,4 @@ FlaskServ Module
 
    Database
    QueryHandlers
+   FormHandlers
