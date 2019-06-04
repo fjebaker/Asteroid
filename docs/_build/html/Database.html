@@ -1,0 +1,207 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Database Classes &#8212; PyAsteroid  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="FlaskServ Module" href="flaskserv_module.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-Database">
+<span id="database-classes"></span><h1>Database Classes<a class="headerlink" href="#module-Database" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="Database.DBInstance">
+<em class="property">class </em><code class="sig-prename descclassname">Database.</code><code class="sig-name descname">DBInstance</code><span class="sig-paren">(</span><em class="sig-param">handle</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.DBInstance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Provides a specified wrapper for sqlite3 queries</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>handle</strong> (<em>str</em>) – location of sqlite database (can be :memory:)</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="Database.DBInstance._is_row_correct">
+<code class="sig-name descname">_is_row_correct</code><span class="sig-paren">(</span><em class="sig-param">column_names</em>, <em class="sig-param">row</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.DBInstance._is_row_correct" title="Permalink to this definition">¶</a></dt>
+<dd><p>internal method to validate whether a row string matches the table row
+at the moment only checks length of the two arguments is the same, in future will be more thorough</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>column_names</strong> (<em>list of str</em>) – names of the columns to check against</p></li>
+<li><p><strong>row</strong> (<em>list of str</em>) – names of columns provided by user</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.DBInstance._save">
+<code class="sig-name descname">_save</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Database.DBInstance._save" title="Permalink to this definition">¶</a></dt>
+<dd><p>internal method for commiting changes to the database</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.DBInstance.create_table">
+<code class="sig-name descname">create_table</code><span class="sig-paren">(</span><em class="sig-param">table_name</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.DBInstance.create_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new table in the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>table_name</strong> (<em>str</em>) – name of table</p></li>
+<li><p><strong>**kwargs</strong> (<em>dict</em>) – keys are columns, values are datatypes</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.DBInstance.get_column_info">
+<code class="sig-name descname">get_column_info</code><span class="sig-paren">(</span><em class="sig-param">table_name</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.DBInstance.get_column_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>method for getting the column info of a table</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>table_name</strong> (<em>str</em>) – name of the table to get the column names of</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list of column names</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.DBInstance.insert_entire_row">
+<code class="sig-name descname">insert_entire_row</code><span class="sig-paren">(</span><em class="sig-param">table_name</em>, <em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.DBInstance.insert_entire_row" title="Permalink to this definition">¶</a></dt>
+<dd><p>insert a row of values into a given table</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>table_name</strong> (<em>str</em>) – name of table</p></li>
+<li><p><strong>data</strong> (<em>list</em>) – items are data values</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p>Exception(“Bad row format.”)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Database.DBInstance.select_columns">
+<code class="sig-name descname">select_columns</code><span class="sig-paren">(</span><em class="sig-param">table_name</em>, <em class="sig-param">column_list</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.DBInstance.select_columns" title="Permalink to this definition">¶</a></dt>
+<dd><p>select whole column from table</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>table_name</strong> (<em>str</em>) – name of table</p></li>
+<li><p><strong>column</strong> (<em>str</em>) – name of column to select from</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list of tuples with items from column [(x1, y1, …), (x2, y2, …), …]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">PyAsteroid</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="audio_module.html">Audio Module</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="flaskserv_module.html">FlaskServ Module</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Database Classes</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="flaskserv_module.html">FlaskServ Module</a><ul>
+      <li>Previous: <a href="flaskserv_module.html" title="previous chapter">FlaskServ Module</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Moontemple.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/Database.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
