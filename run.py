@@ -5,6 +5,7 @@ import os, sys
 
 os.environ["MUSIC_DB_PATH"] = "test.db"
 os.environ["USER_DB_PATH"] = "test.db"
+os.environ["PLAYLIST_PATH"] = "test.db"
 
 
 if __name__ == "__main__":

@@ -14,6 +14,7 @@ import os
 import sys
 sys.path.append(os.path.join(os.path.abspath(".."), "src/main/python/player"))
 sys.path.append(os.path.join(os.path.abspath(".."), "src/main/python/flaskserv"))
+sys.path.append(os.path.join(os.path.abspath(".."), "."))
 
 
 # -- Project information -----------------------------------------------------
@@ -36,8 +37,8 @@ templates_path = ['_templates']
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
-autodoc_mock_imports = ['alsaaudio', 'src']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'test']
+autodoc_mock_imports = ['alsaaudio']
 
 
 # -- Options for HTML output -------------------------------------------------

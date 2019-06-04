@@ -15,7 +15,6 @@ class DBInstance:
 				self.handle = sqlite3.connect(handle)
 		except Exception as e:
 			raise Exception("Could not connect to handle '{}' : {}".format(handle, str(e)))
-			exit(1)
 		else:
 			self.cursor = self.handle.cursor()
 
@@ -68,6 +67,21 @@ class DBInstance:
 		data_repr = "('" + "', '".join(data) + "')"
 		self.handle.execute('''INSERT INTO {} VALUES {};'''.format(table_name, data_repr))
 
+	def select_rows(self, table_name, condition):
+		"""
+		select rows from table which meat condition
+
+		:param table_name: name of table
+		:type table_name: str
+		:param condition: the condition to be met to qualify for selection
+		:type condition: dict
+		"""
+		condition = list(condition.items())[0]
+		condition_string = str(condition[0]) + " = '" + str(condition[1]) + "'"
+
+		return self.handle.execute('''SELECT * FROM {} WHERE {}'''.format(table_name, condition_string)).fetchall()
+	
+
 	def select_columns(self, table_name, column_list):
 		"""
 		select whole column from table
@@ -81,9 +95,49 @@ class DBInstance:
 		if type(column_list) != list:
 			column_list = [column_list]
 		cols = ", ".join(column_list)
-		print('''SELECT {} from {}'''.format(cols, table_name))
-		return self.handle.execute('''SELECT {} from {}'''.format(cols, table_name)).fetchall()
+		# print('''SELECT {} from {}'''.format(cols, table_name))
+		return self.handle.execute('''SELECT {} FROM {}'''.format(cols, table_name)).fetchall()
 
+	def update_generic(self, table_name, changes, condition):
+		"""
+		update entries according to condition in the database
+
+		:param table_name: name of the table to update
+		:type table_name: str
+		:param changes: changes to enact e.g. `{col1:value1, ...}`
+		:type changes: dict
+		:param condition: the condition to be met to qualify for changes e.g. `{col3:value3}`
+		:type condition: dict
+
+		TODO check the changes fit the table
+		"""
+
+		changes_string = ""
+		condition_string = ""
+
+		for i, j in changes.items():
+			changes_string += str(i) + " = '" + str(j) + "', "
+		changes_string = changes_string[:-2]
+
+		condition = list(condition.items())[0]
+		condition_string = str(condition[0]) + " = '" + str(condition[1]) + "'"
+
+		print('''UPDATE {} SET {} WHERE {}'''.format(table_name, changes_string, condition_string))
+		self.handle.execute('''UPDATE {} SET {} WHERE {}'''.format(table_name, changes_string, condition_string))
+
+	def delete_rows(self, table_name, condition):
+		"""
+		delete rows from a table in database if condition is met
+
+		:param table_name: name of table
+		:type table_name: str
+		:param condition: the condition to be met to qualify for removal
+		:type condition: dict		
+		"""
+		condition = list(condition.items())[0]
+		condition_string = str(condition[0]) + " = '" + str(condition[1]) + "'"
+
+		self.handle.execute('''DELETE FROM {} WHERE {}'''.format(table_name, condition_string))
 
 	def get_column_info(self, table_name):
 		"""
@@ -242,25 +296,3 @@ class UserDB(metaclass=DBAccessory):
 
 if __name__ == '__main__':
 	pass
-	#with DBInstance("test.db") as db:
-#		db.create_table("users", id="long", name="text", hash_pw="long", meta_dat="text", UNIQUE="id")
-#	udb = UserDB("test.db")
-#	udb.add_user({"id":0, "name":"DrGonzo", "hash_pw":0, "meta_dat":""})
-#	udb.add_user({"id":1, "name":"Raul", "hash_pw":0, "meta_dat":""})
-#	udb.add_user({"id":2, "name":"Hunter S. Tompson", "hash_pw":0, "meta_dat":""})
-#	udb.add_user({"id":3, "name":"TheBigDan", "hash_pw":0, "meta_dat":""})
-#	with DBInstance("test.db") as db:
-		#db.create_table("songs", name="text", artist="text", duration="real", meta_dat="text")
-	#with DBInstance("test.db") as db:
-#		print(db.get_column_info("songs"))
-#	with DBInstance("test.db") as db:
-		#db.create_table("test_table", c1="text", c2="text", c3="real")
-#	with DBInstance("test.db") as db:
-#		print(db.get_column_info("test_tabl"))
-	#mdb = MusicDB("test.db")
-	# mdb.add_song({"name":"You Too Must Die", "artist":"GOLD", "duration":333, "file_path":"", "meta_dat":""})
-#	print(mdb.get_all_songs())
-	# mdb.add_song({"name":"You Too Must Die", "artist":"GOLD", "duration":333, "file_path":"", "meta_dat":""})
-	# mdb.add_song({"name":"Plastic Boogie", "artist":"King Gizzard and the Lizard Wizard", "duration":181, "file_path":"", "meta_dat":""})
-	# mdb.add_song({"name":"Fishing For Fishies", "artist":"King Gizzard and the Lizard Wizard", "duration":298, "file_path":"", "meta_dat":""})
-	#print(mdb.get_all_songs())
