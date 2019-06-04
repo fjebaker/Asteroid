@@ -14,11 +14,22 @@ def MDB_inst(request, tmpdir_factory):
 	fn = str(tmpdir_factory.mktemp("data").join("test.db"))
 
 	with Database.DBInstance(fn) as db:
-		db.create_table("songs", name="text", artist="text", duration="real", meta_dat="text", UNIQUE='name, artist')
+		db.create_table("songs", name="text", artist="text", duration="real", meta_dat="text", file_path="text", UNIQUE="name, artist, file_path")
 	mdb = Database.MusicDB(fn)
 	request.cls.mdb = mdb
 	yield
 	del mdb
+
+@pytest.fixture(scope="class")
+def UDB_inst(request, tmpdir_factory):
+	fn = str(tmpdir_factory.mktemp("data").join("test.db"))
+
+	with Database.DBInstance(fn) as db:
+		db.create_table("users", id="long", name="text", hash_pw="long", meta_dat="text", UNIQUE="id")
+	udb = Database.UserDB(fn)
+	request.cls.udb = udb
+	yield
+	del udb
 
 
 class TestDBInstance():
@@ -74,20 +85,42 @@ class TestDBInstance():
 class TestMusicDB():
 
 	def test_song_adding(self):
-		self.mdb.add_song({"name":"You Too Must Die", "artist":"GOLD", "duration":333, "meta_dat":""})
+		self.mdb.add_song({"name":"You Too Must Die", "artist":"GOLD", "duration":333, "file_path":"", "meta_dat":""})
 		with pytest.raises(Exception) as e:	# test to make sure unique condition holds
-			self.mdb.add_song({"name":"You Too Must Die", "artist":"GOLD", "duration":333, "meta_dat":""})
-			self.mdb.add_song({"name":"You Too Must Die", "artist":"GOLD", "duration":124, "meta_dat":""})
-		self.mdb.add_song({"name":"Plastic Boogie", "artist":"King Gizzard and the Lizard Wizard", "duration":181, "meta_dat":""})
-		self.mdb.add_song({"name":"Fishing For Fishies", "artist":"King Gizzard and the Lizard Wizard", "duration":298, "meta_dat":""})
+			self.mdb.add_song({"name":"You Too Must Die", "artist":"GOLD", "duration":333, "file_path":"", "meta_dat":""})
+			self.mdb.add_song({"name":"You Too Must Die", "artist":"GOLD", "duration":124, "file_path":"", "meta_dat":""})
+		self.mdb.add_song({"name":"Plastic Boogie", "artist":"King Gizzard and the Lizard Wizard", "duration":181, "file_path":"", "meta_dat":""})
+		self.mdb.add_song({"name":"Fishing For Fishies", "artist":"King Gizzard and the Lizard Wizard", "duration":298, "file_path":"", "meta_dat":""})
 
 	def test_song_fetch_all(self):
-		desire = [('You Too Must Die', 'GOLD', 333.0, ''), ('Plastic Boogie', 'King Gizzard and the Lizard Wizard', 181.0, ''), ('Fishing For Fishies', 'King Gizzard and the Lizard Wizard', 298.0, '')]
+		desire = [('You Too Must Die', 'GOLD', 333.0, '', ''), ('Plastic Boogie', 'King Gizzard and the Lizard Wizard', 181.0, '', ''), ('Fishing For Fishies', 'King Gizzard and the Lizard Wizard', 298.0, '', '')]
 		out = self.mdb.get_all_songs()
 		for i, j in zip(out, desire):
 			for x, y in zip(i, j):
 				assert str(x) == str(y)
 
+@pytest.mark.usefixtures('UDB_inst')
+class TestUserDB():
+
+	def test_user_adding(self):
+		self.udb.add_user({"id":0, "name":"TestUser", "hash_pw":0, "meta_dat":""})
+		with pytest.raises(Exception) as e:
+			self.udb.add_user({"id":0, "name":"OtherTestUser", "hash_pw":0, "meta_dat":""})
+		self.udb.add_user({"id":1, "name":"OtherTestUser", "hash_pw":0, "meta_dat":""})
+
+	def test_user_fetch_all(self):
+		desire = [(0, 'TestUser', 0, ''), (1, 'OtherTestUser', 0, '')]
+		out = self.udb.get_all_users()
+		for i, j in zip(out, desire):
+			for x, y in zip(i, j):
+				assert str(x) == str(y)
+
+	def test_get_column(self):
+		desire = [(0,), (1,)]
+		out = self.udb.get_column("id")
+		assert desire == out
+		for x, y in zip(out, desire):
+			assert str(x) == str(y)
 
 
 
