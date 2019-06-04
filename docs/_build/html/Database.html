@@ -34,6 +34,25 @@
   <div class="section" id="module-Database">
 <span id="database-classes"></span><h1>Database Classes<a class="headerlink" href="#module-Database" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
+<dt id="Database.DBAccessory">
+<em class="property">class </em><code class="sig-prename descclassname">Database.</code><code class="sig-name descname">DBAccessory</code><a class="headerlink" href="#Database.DBAccessory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code></p>
+<p>Metaclass for the Database classes <a class="reference internal" href="#Database.MusicDB" title="Database.MusicDB"><code class="xref py py-class docutils literal notranslate"><span class="pre">MusicDB</span></code></a> and <a class="reference internal" href="#Database.UserDB" title="Database.UserDB"><code class="xref py py-class docutils literal notranslate"><span class="pre">UserDB</span></code></a>.
+Will wrap all non-special functions with a decorator, providing a scoped instance of <a class="reference internal" href="#Database.DBInstance" title="Database.DBInstance"><code class="xref py py-class docutils literal notranslate"><span class="pre">DBInstance</span></code></a>.</p>
+<dl class="method">
+<dt id="Database.DBAccessory.deco">
+<em class="property">classmethod </em><code class="sig-name descname">deco</code><span class="sig-paren">(</span><em class="sig-param">func</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.DBAccessory.deco" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator which calls function with scoped <a class="reference internal" href="#Database.DBInstance" title="Database.DBInstance"><code class="xref py py-class docutils literal notranslate"><span class="pre">DBInstance</span></code></a> in the class dict</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>func</strong> (<em>function reference</em>) – function to decorate</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="Database.DBInstance">
 <em class="property">class </em><code class="sig-prename descclassname">Database.</code><code class="sig-name descname">DBInstance</code><span class="sig-paren">(</span><em class="sig-param">handle</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.DBInstance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -67,7 +86,8 @@ at the moment only checks length of the two arguments is the same, in future wil
 <dl class="method">
 <dt id="Database.DBInstance.create_table">
 <code class="sig-name descname">create_table</code><span class="sig-paren">(</span><em class="sig-param">table_name</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.DBInstance.create_table" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a new table in the database.</p>
+<dd><p>Create a new table in the database.
+If ‘UNIQUE:col_name’ present in **kwargs, adds a CONSTRAINT to the table called unique_col, making col_name unique.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -117,7 +137,7 @@ at the moment only checks length of the two arguments is the same, in future wil
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>table_name</strong> (<em>str</em>) – name of table</p></li>
-<li><p><strong>column</strong> (<em>str</em>) – name of column to select from</p></li>
+<li><p><strong>column</strong> (<em>str/list</em><em>[</em><em>str</em><em>]</em>) – name of column to select from</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -125,6 +145,82 @@ at the moment only checks length of the two arguments is the same, in future wil
 </dd>
 </dl>
 </dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="Database.MusicDB">
+<em class="property">class </em><code class="sig-prename descclassname">Database.</code><code class="sig-name descname">MusicDB</code><span class="sig-paren">(</span><em class="sig-param">db_handle</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.MusicDB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Provides methods for interacting with the music database.
+Encapsulates <a class="reference internal" href="#Database.DBInstance" title="Database.DBInstance"><code class="xref py py-class docutils literal notranslate"><span class="pre">DBInstance</span></code></a></p>
+<p>Assumes database already has a table with format</p>
+<blockquote>
+<div><p>songs</p>
+<p>name, artist, duration, meta_dat</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>db_handle</strong> (<em>str</em>) – sqlite database handle</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="Database.MusicDB.add_song">
+<code class="sig-name descname">add_song</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.MusicDB.add_song" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="Database.MusicDB.get_all_songs">
+<code class="sig-name descname">get_all_songs</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.MusicDB.get_all_songs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="Database.MusicDB.get_song_by_artist">
+<code class="sig-name descname">get_song_by_artist</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.MusicDB.get_song_by_artist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="Database.MusicDB.get_song_by_name">
+<code class="sig-name descname">get_song_by_name</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.MusicDB.get_song_by_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="Database.UserDB">
+<em class="property">class </em><code class="sig-prename descclassname">Database.</code><code class="sig-name descname">UserDB</code><span class="sig-paren">(</span><em class="sig-param">path</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.UserDB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Provides methods for interacting with the static user database.
+Encapsulates <a class="reference internal" href="#Database.DBInstance" title="Database.DBInstance"><code class="xref py py-class docutils literal notranslate"><span class="pre">DBInstance</span></code></a></p>
+<p>Assumes database already has a table with format</p>
+<blockquote>
+<div><p>users</p>
+<p>id, name, hash_pw, meta_dat</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>db_handle</strong> (<em>str</em>) – sqlite database handle</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="Database.UserDB.add_user">
+<code class="sig-name descname">add_user</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.UserDB.add_user" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="Database.UserDB.get_all_users">
+<code class="sig-name descname">get_all_users</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.UserDB.get_all_users" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="Database.UserDB.get_user_by_id">
+<code class="sig-name descname">get_user_by_id</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.UserDB.get_user_by_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="Database.UserDB.get_user_by_name">
+<code class="sig-name descname">get_user_by_name</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#Database.UserDB.get_user_by_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
