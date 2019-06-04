@@ -92,5 +92,6 @@ function getCookieDuration() {
 }
 
 setCookieDuration();
+refreshCookies(getCookieDuration());
 
 current_callback();
