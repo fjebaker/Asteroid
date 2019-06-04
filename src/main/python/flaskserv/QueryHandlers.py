@@ -20,7 +20,16 @@ class BaseQuery(metaclass=abc.ABCMeta):
 		"""
 		Sanitises and converts the query passed in constructor to a python string.
 		"""
-		self.s_query = str(self.query)[3:-1]
+		s_query = str(self.query)[2:-1].split("=")
+		if len(s_query) == 1:
+			self.s_query = "defaultCase"
+			self.s_arg = None
+		elif s_query[0] != '':
+			self.s_query = s_query[0]
+			self.s_arg = s_query[1]
+		else:
+			self.s_query = s_query[1]
+			self.s_arg = None
 
 	def __call__(self):
 		self.clean_query()
@@ -63,14 +72,40 @@ class MusicQuery(BaseQuery):
 		:returns: dictionary containing the parsed songs table
 		"""
 		db_result = MusicDB(os.environ["MUSIC_DB_PATH"]).get_all_songs()
+		if len(db_result) == 0:
+			return self.defaultCase()
 		all_songs = []
 		for song_tup in db_result:
 			song = {}
 			for key, value in zip(self.keys, song_tup):
+				if key == "file_path":
+					continue
 				song[key] = value
 			all_songs.append(song)
 
 		return all_songs
+
+	def id(self):
+		"""
+		TODO
+		"""
+
+		# todo could probably merge these two
+
+		try:
+			song_id = int(self.s_arg)
+		except Exception as e:
+			return self.defaultCase()
+		
+		db_result = MusicDB(os.environ["MUSIC_DB_PATH"]).get_by_rowid(song_id)
+		if len(db_result) == 0:
+			return self.defaultCase()
+		song = {}
+		for key, value in zip(self.keys, db_result[0]):
+			if key == "file_path":
+				continue
+			song[key] = value
+		return song
 
 	def defaultCase(self):
 		"""
@@ -104,6 +139,8 @@ class UserQuery(BaseQuery):
 		:returns: dictionary containing the parsed users table
 		"""
 		db_result = UserDB(os.environ["USER_DB_PATH"]).get_all_users()
+		if len(db_result) == 0:
+			return self.defaultCase()
 		all_users = []
 		for user_tup in db_result:
 			user = {}
@@ -112,6 +149,27 @@ class UserQuery(BaseQuery):
 			all_users.append(user)
 
 		return all_users
+
+	def id(self):
+		"""
+		TODO
+		"""
+
+		# todo could probably merge these two
+
+		try:
+			song_id = int(self.s_arg)
+		except Exception as e:
+			return self.defaultCase()
+		
+		db_result = UserDB(os.environ["USER_DB_PATH"]).get_user_by_id(song_id)
+		if len(db_result) == 0:
+			return self.defaultCase()
+		user = {}
+		for key, value in zip(self.keys, db_result[0]):
+			user[key] = value
+		return user
+
 
 
 	def defaultCase(self):

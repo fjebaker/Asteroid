@@ -38,7 +38,18 @@
 <dt id="model.Playlist.Playlist">
 <em class="property">class </em><code class="sig-prename descclassname">model.Playlist.</code><code class="sig-name descname">Playlist</code><span class="sig-paren">(</span><em class="sig-param">db_handle</em><span class="sig-paren">)</span><a class="headerlink" href="#model.Playlist.Playlist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>TODO</p>
+<p>Class for accessing the playlist database.
+Has metaclass <a class="reference internal" href="Database.html#Database.DBAccessory" title="Database.DBAccessory"><code class="xref py py-class docutils literal notranslate"><span class="pre">Database.DBAccessory</span></code></a>.
+Requires a table in format</p>
+<blockquote>
+<div><p>playlist</p>
+<p>s_id (long), u_id (long), vote (long)</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>db_handle</strong> (<em>str</em>) – database handle in which playlist table exists</p>
+</dd>
+</dl>
 <dl class="method">
 <dt id="model.Playlist.Playlist.add">
 <code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#model.Playlist.Playlist.add" title="Permalink to this definition">¶</a></dt>

@@ -1,5 +1,12 @@
 import sqlite3
 
+def sanitise(func):
+	
+	
+	def wrap(*args, **kwargs):
+		for i in len(args):
+			args[i]
+
 class DBInstance:
 	"""
 	Provides a specified wrapper for sqlite3 queries
@@ -233,6 +240,12 @@ class MusicDB(metaclass=DBAccessory):
 	def get_song_by_name(self, name):
 		pass
 
+	def get_by_rowid(self, rowid):
+		"""
+		TODO
+		"""
+		return self.db_inst.select_rows("songs", {"rowid":rowid})
+
 	def get_song_by_artist(self, artist):
 		pass
 
@@ -271,8 +284,11 @@ class UserDB(metaclass=DBAccessory):
 				user_dict["meta_dat"],
 			])
 
-	def get_user_by_id(self, id):
-		pass
+	def get_user_by_id(self, id_n):
+		"""
+		TODO
+		"""
+		return self.db_inst.select_rows("users", {"id":id_n})
 
 	def get_user_by_name(self, name):
 		pass

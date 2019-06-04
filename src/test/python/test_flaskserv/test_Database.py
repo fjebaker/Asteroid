@@ -141,6 +141,15 @@ class TestMusicDB():
 			for x, y in zip(i, j):
 				assert str(x) == str(y)
 
+	def test_get_by_rowid(self):
+		out = self.mdb.get_by_rowid(0)
+		desire = ('You Too Must Die', 'GOLD', 333.0, '', '')
+		for i, j in zip(out, desire):
+			for x, y in zip(i, j):
+				assert str(x) == str(y)
+
+		out = self.mdb.get_by_rowid(801419)	# TODO fix this kind of thing
+
 @pytest.mark.usefixtures('UDB_inst')
 class TestUserDB():
 
