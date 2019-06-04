@@ -8,13 +8,13 @@
 <body>
 <div id="tabsDiv"></div>
 <div id="bodyDiv"></div>
-<script src="../script/auth.js"></script>
-<script src="../script/tabs.js"></script>
 <script id="scriptFiller"></script>
+<script src="../script/dynamic_load.js"></script>
 <script language="JavaScript">
-checkCookieValidity();
-supplyTabButtons();
-includeQueryStringScript();
+var current_callback = function(){}
+var dependencies = ["../script/cookies.js","../script/tabs.js","../script/home.js"]
+var scriptFiller = document.getElementById("scriptFiller");
+insert_all_before(scriptFiller,dependencies);
 </script>
 </body>
 </html>

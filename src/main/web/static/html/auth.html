@@ -9,9 +9,11 @@
 </header>
 <body>
 <div id="bodyDiv1"> </div>
-<script src="../script/auth.js"></script>
+<script id="dynamicLoad" src="../script/dynamic_load.js"></script>
 <script language="JavaScript">
-supplyIdHTML();
+var current_callback = function(){};
+var dependencies = ["../script/cookies.js","../script/auth.js"];
+insert_all_before(document.getElementById("dynamicLoad"),dependencies);
 </script>
 </body>
 </html>

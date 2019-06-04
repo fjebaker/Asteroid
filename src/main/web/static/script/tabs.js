@@ -96,3 +96,5 @@ function supplyTabButtons() {
     var tabsDiv = document.getElementById("tabsDiv");
     supplyButtons(tabsDiv,defaultTabCallback);
 }
+
+current_callback();
