@@ -26,7 +26,7 @@ class Playlist(metaclass=DBAccessory):
 		"""
 		c_vote = self.db_inst.select_rows("playlist", {"s_id":s_id})[0][2]
 		self.db_inst.update_generic("playlist", 
-				{"vote":c_vote+vote},
+				{"vote":int(c_vote)+int(vote)},
 				{"s_id":s_id}
 			)
 

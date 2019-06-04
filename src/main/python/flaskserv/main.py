@@ -25,9 +25,9 @@ def register_user():
 
 @app.route("/vote", methods=["GET", "POST"])
 def vote():
-	importlib.reload(models)
+	importlib.reload(models.Vote)
 	# u_id:user_id, s_id:song_id, vote:1,0
-	return models.Vote(request)()
+	return models.Vote.Vote(request)()
 
 @app.route("/rate", methods=["POST"])
 def rate():
