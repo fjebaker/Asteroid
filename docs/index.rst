@@ -11,6 +11,7 @@ Welcome to PyAsteroid's documentation!
    :caption: Contents:
 	
    audio_module
+   flaskserv_module
 
 Indices and tables
 ==================

@@ -13,6 +13,7 @@
 import os
 import sys
 sys.path.append(os.path.join(os.path.abspath(".."), "src/main/python/player"))
+sys.path.append(os.path.join(os.path.abspath(".."), "src/main/python/flaskserv"))
 
 
 # -- Project information -----------------------------------------------------
