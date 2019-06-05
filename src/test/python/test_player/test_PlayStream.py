@@ -22,6 +22,7 @@ q = queue.Queue()
 ps = PlayStream.PlayStream(co, q)
 
 class TestPlayStream():
+
 	def test_restrict_call(self):
 		@PlayStream.restrict_call
 		def test():
@@ -30,5 +31,6 @@ class TestPlayStream():
 		test()
 		with pytest.raises(Exception) as e:
 			test()
+
 
 	

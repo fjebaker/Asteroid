@@ -35,7 +35,7 @@ class PlayStream(threading.Thread):
 		self.deamon = True
 		self.CHUNK = 512	# magic value
 
-	@restrict_call
+	# @restrict_call
 	def loadsong(self, song):
 		'''
 		Opens a file handle on the .wav file
@@ -45,7 +45,7 @@ class PlayStream(threading.Thread):
 		'''
 		self.wf = wave.open(song) # todo; error handling
 
-	@restrict_call
+	# @restrict_call
 	def run(self):
 		'''
 		Inherited and overwritten from threading.Thread.run; called when .start() method is invoked.
@@ -54,10 +54,11 @@ class PlayStream(threading.Thread):
 		self._play()
 		self.wf.close()
 
-		with self.CO.lcok:
+		print("DONE")
+		with self.CO.lock:
 			self.CO.done = True
 
-	@restrict_call
+	# @restrict_call
 	def _play(self):
 		'''
 		hidden method, called by :meth:`Playstream.run`

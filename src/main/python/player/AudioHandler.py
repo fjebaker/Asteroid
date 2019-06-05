@@ -17,23 +17,35 @@ class AudioHandler(threading.Thread):
 		self.current_player = None
 		self.condObj = ConditionObject()
 
+		self.first = True 		# hacky, since first call must be over socket msg
+
 	def run(self):
 		"""
 		TODO
 
 		needs to check if a song is playing, if not request next file and then play
+
+		enhance: make it async
 		"""
 		while True:
-			msg = self.queue.get()
-			print("DEBUG", msg)
-			self.__getattribute__(msg[0])(msg)
+			try:
+				msg = self.queue.get(timeout=0.1)
+			except:
+				play = False
+				with self.condObj.lock:
+					if self.condObj.done or self.first:
+						play = True
+				if play:
+					self.play()
+
+			else:
+				print("DEBUG", msg)
+				self.__getattribute__(msg[0])(*msg)
 
 	def fetch_playlist_item(self):
 		"""
 		TODO
 		"""
-
-		# todo: token checks
 
 		pl = Playlist(os.environ["PLAYLIST_PATH"])
 		playlist = pl.get_playlist()
@@ -54,27 +66,32 @@ class AudioHandler(threading.Thread):
 			# TODO
 			return None
 
-		song = MusicDB(os.environ["MUSIC_PATH"]).get_by_rowid(n_item[0]+1)
-		return song["path"]
+		song = MusicDB(os.environ["MUSIC_PATH"]).get_by_rowid(n_item[0]+1)[0]
+		return song[3]
 
 	def play(self, *args):
 		"""
 		TODO
 		"""
-		path = args[1]
+		if len(args) == 2:
+			path = args[1]
+		else:
+			path = self.get_path_from_database()
+			if path == None:
+				return
+			# check file exists
+		if not os.path.isfile(path):
+			print("DEBUG -- file does not exist", path)
+			return
+
 		if self.current_player != None:
 			self.stop()
 
-		# check file exists
-		if not os.path.isfile(fname)
-			print("DEBUG -- file does not exist", fname)
-			return
-
-		path = self.get_path_from_database()
 		player = PlayStream(self.condObj, self.out_queue)
 		player.loadsong(path)
 		player.start()
 		self.current_player = player
+		self.first = False
 
 	def pause(self, *args):
 		"""
@@ -86,7 +103,7 @@ class AudioHandler(threading.Thread):
 		"""
 		TODO
 		"""
-		with self.condObj.lock():
+		with self.condObj.lock:
 			self.condObj.play = False
 		self.condObj = ConditionObject()
 		self.current_player = None
