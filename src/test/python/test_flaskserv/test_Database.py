@@ -4,7 +4,7 @@ sys.path.append("src/main/python/flaskserv")
 
 import Database
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def temp_db(tmpdir_factory):
     fn = tmpdir_factory.mktemp("data").join("test.db")
     yield str(fn)

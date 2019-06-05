@@ -1,5 +1,5 @@
 from src.main.python.flaskserv.Database import MusicDB, UserDB
-from flask import jsonify
+from flask import Response
 import abc, json, os
 
 class BaseQuery(metaclass=abc.ABCMeta):
@@ -34,10 +34,10 @@ class BaseQuery(metaclass=abc.ABCMeta):
 	def __call__(self):
 		self.clean_query()
 		if self.s_query in dir(self):
-			res = self.__getattribute__(self.s_query)
+			res = self.__getattribute__(self.s_query)()
 		else:
-			res = self.defaultCase
-		return jsonify(res())
+			res = self.defaultCase()
+		return res
 
 	@abc.abstractmethod
 	def defaultCase(self):
@@ -74,16 +74,19 @@ class MusicQuery(BaseQuery):
 		db_result = MusicDB(os.environ["MUSIC_DB_PATH"]).get_all_songs()
 		if len(db_result) == 0:
 			return self.defaultCase()
+
+		keys = [i for i in self.keys if i != "file_path"]
 		all_songs = []
 		for song_tup in db_result:
 			song = {}
-			for key, value in zip(self.keys, song_tup):
-				if key == "file_path":
-					continue
+			for key, value in zip(keys, song_tup):
 				song[key] = value
 			all_songs.append(song)
 
-		return all_songs
+		return Response(
+				json.dumps(all_songs),
+				status=200
+			)
 
 	def id(self):
 		"""
@@ -97,7 +100,7 @@ class MusicQuery(BaseQuery):
 		except Exception as e:
 			return self.defaultCase()
 		
-		db_result = MusicDB(os.environ["MUSIC_DB_PATH"]).get_by_rowid(song_id)
+		db_result = MusicDB(os.environ["MUSIC_DB_PATH"]).get_by_rowid(song_id+1)
 		if len(db_result) == 0:
 			return self.defaultCase()
 		song = {}
@@ -105,7 +108,10 @@ class MusicQuery(BaseQuery):
 			if key == "file_path":
 				continue
 			song[key] = value
-		return song
+		return Response(
+				json.dumps(song),
+				status=200
+			)
 
 	def defaultCase(self):
 		"""
@@ -113,7 +119,10 @@ class MusicQuery(BaseQuery):
 
 		:returns: empty dictionary
 		"""
-		return {}
+		return Response(
+				json.dumps({}),
+				status=400
+			)
 
 class UserQuery(BaseQuery):
 	"""
@@ -126,7 +135,7 @@ class UserQuery(BaseQuery):
 	:returns: json object containing query result
 	"""
 
-	keys = ["id", "name", "meta_dat"] #: json keys for parsing database
+	keys = ["id", "name", "hash_pw", "meta_dat"] #: json keys for parsing database
 
 	def __init__(self, query):
 		BaseQuery.__init__(self, query)
@@ -141,14 +150,19 @@ class UserQuery(BaseQuery):
 		db_result = UserDB(os.environ["USER_DB_PATH"]).get_all_users()
 		if len(db_result) == 0:
 			return self.defaultCase()
+
+		keys = [i for i in self.keys if i != "hash_pw"]		# bad key filtering :: TODO
 		all_users = []
 		for user_tup in db_result:
 			user = {}
-			for key, value in zip(self.keys, user_tup):
+			for key, value in zip(keys, user_tup):
 				user[key] = value
 			all_users.append(user)
 
-		return all_users
+		return Response(
+				json.dumps(all_users),
+				status=200
+			)
 
 	def id(self):
 		"""
@@ -167,10 +181,13 @@ class UserQuery(BaseQuery):
 			return self.defaultCase()
 		user = {}
 		for key, value in zip(self.keys, db_result[0]):
+			if key == "hash_pw":
+				continue
 			user[key] = value
-		return user
-
-
+		return Response(
+				json.dumps(user),
+				status=200
+			)
 
 	def defaultCase(self):
 		"""
@@ -178,4 +195,7 @@ class UserQuery(BaseQuery):
 
 		:returns: empty dictionary
 		"""
-		return {}
+		return Response(
+				json.dumps({}),
+				status=400
+			)

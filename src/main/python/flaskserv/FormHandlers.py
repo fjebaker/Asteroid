@@ -29,7 +29,7 @@ class UserHandler():
 		udb = UserDB(os.environ["USER_DB_PATH"])
 		ids = [i[0] for i in udb.get_column("id")]
 
-		new_id = 0	# TODO: future, make the database auto increment
+		new_id = 1	# TODO: future, make the database auto increment
 		if ids != []:
 			new_id = max(ids) + 1
 
@@ -42,8 +42,8 @@ class UserHandler():
 			json_s = {"id":new_id}
 			http_s = 201
 		else:
-			json_s = "{}"		# todo, error message of what went wrong
-			http_s = 404
+			json_s = {}				# todo, error message of what went wrong
+			http_s = 400
 		return Response(json.dumps(json_s), status=http_s)
 
 

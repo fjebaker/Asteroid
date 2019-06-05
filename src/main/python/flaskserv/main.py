@@ -20,7 +20,6 @@ def scripts(name):
 
 @app.route("/register", methods=["POST"])
 def register_user():
-	importlib.reload(formhandle)	# DEBUG
 	return formhandle.UserHandler(request)()
 
 @app.route("/vote", methods=["GET", "POST"])
@@ -35,14 +34,12 @@ def rate():
 
 @app.route("/db/music")
 def music_db():
-	importlib.reload(queryhandle)	# DEBUG
 	query_string = request.query_string 
 	print(query_string)
 	return queryhandle.MusicQuery(query_string)() 
 
 @app.route("/db/users")
 def user_db():
-	importlib.reload(queryhandle)	# DEBUG
 	query_string = request.query_string 
 	print(query_string)
 	return queryhandle.UserQuery(query_string)()
