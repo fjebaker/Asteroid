@@ -72,8 +72,6 @@ class MusicQuery(BaseQuery):
 		:returns: dictionary containing the parsed songs table
 		"""
 		db_result = MusicDB(os.environ["MUSIC_DB_PATH"]).get_all_songs()
-		if len(db_result) == 0:
-			return self.defaultCase()
 
 		keys = [i for i in self.keys if i != "file_path"]
 		all_songs = []
@@ -148,8 +146,6 @@ class UserQuery(BaseQuery):
 		:returns: dictionary containing the parsed users table
 		"""
 		db_result = UserDB(os.environ["USER_DB_PATH"]).get_all_users()
-		if len(db_result) == 0:
-			return self.defaultCase()
 
 		keys = [i for i in self.keys if i != "hash_pw"]		# bad key filtering :: TODO
 		all_users = []

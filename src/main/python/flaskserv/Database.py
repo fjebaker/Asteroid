@@ -218,7 +218,7 @@ class MusicDB(metaclass=DBAccessory):
 		
 		songs
 
-		name, artist, duration, meta_dat
+		name, artist, duration, path, meta_dat
 
 	:param db_handle: sqlite database handle
 	:type db_handle: str

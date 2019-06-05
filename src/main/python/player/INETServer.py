@@ -1,4 +1,4 @@
-from socket import socket, AF_INET, SOCK_STREAM
+import socket
 import importlib, os
 import src.main.python.player.ClientThread as ct_module
 from src.main.python.player.AudioHandler import AudioHandler
@@ -20,7 +20,8 @@ class Listener():
 		"""
 		AudioHandler(self.queue).start()
 
-		serversocket = socket(AF_INET, SOCK_STREAM)
+		serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		serversocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 		serversocket.bind((self.host, self.port))
 		self.srvsocket = serversocket
 		self.clients = {}
