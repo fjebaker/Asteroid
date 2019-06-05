@@ -34,11 +34,12 @@ class UserHandler():
 			new_id = max(ids) + 1
 
 		udb.add_user({"id":new_id, "name":name, "hash_pw":0, "meta_dat":""})
+		return new_id
 
 	def __call__(self):
 		if "name" in self.form and self.request.__dict__["environ"]["REQUEST_METHOD"] == 'POST':
-			self.add_user(self.form["name"])
-			json_s = "{}"
+			new_id = self.add_user(self.form["name"])
+			json_s = "{'id':%d}" % new_id
 			http_s = 201
 		else:
 			json_s = "{}"		# todo, error message of what went wrong
