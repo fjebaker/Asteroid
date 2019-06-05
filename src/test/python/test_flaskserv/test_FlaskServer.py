@@ -126,15 +126,6 @@ class TestPlaylist():
 		assert response.status_code == 200
 		assert json.loads(response.data) == [[1, 3, 2]]
 
-	def test_pop_playlist(self, test_client):
-		response = test_client.post("/vote", data={"pop":"", "token":""})
-		assert response.status_code == 200
-		assert json.loads(response.data) == [1, 3, 2]
-
-		response = test_client.get("/vote")
-		assert response.status_code == 200
-		assert json.loads(response.data) == []
-
 
 
 
