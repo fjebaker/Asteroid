@@ -40,5 +40,5 @@ $ deactivate
 # Ensure the virtual environment is activated
 $ source venv/bin/activate
 # Run with python
-$ python3 run.py
+$ python run.py
 ```
