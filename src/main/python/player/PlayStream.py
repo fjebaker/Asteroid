@@ -43,7 +43,7 @@ class PlayStream(threading.Thread):
 		:param song: path to song to be played
 		:type song: string
 		'''
-		self.wf = wave.open(song)
+		self.wf = wave.open(song) # todo; error handling
 
 	@restrict_call
 	def run(self):
