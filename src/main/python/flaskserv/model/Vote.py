@@ -37,28 +37,6 @@ class Vote:
 					status=201
 				)
 
-	def pop_playlist(self, pop, token):
-		"""
-		TODO
-		"""
-
-		# todo: token checks
-
-		pl = Playlist(os.environ["PLAYLIST_PATH"])
-		playlist = pl.get_playlist()
-		if playlist == []:
-			return Response(
-					'{}',
-					status=403
-				)
-
-		most_voted_song = sorted(playlist, key=lambda x: int(x[2]))[-1]		
-		pl.remove(most_voted_song[0])
-		return Response(
-				json.dumps(most_voted_song),
-				status=200
-			)
-
 	def __call__(self):
 		if self.request.__dict__["environ"]["REQUEST_METHOD"] == 'GET':
 			return Response(
@@ -69,7 +47,7 @@ class Vote:
 		if "s_id" in self.form and "u_id" in self.form and "vote" in self.form and self.request.__dict__["environ"]["REQUEST_METHOD"] == 'POST':
 			return self.handle_vote(self.form['s_id'], self.form["u_id"], self.form["vote"])
 
-		if "pop" in self.form and "token" in self.form and self.request.__dict__["environ"]["REQUEST_METHOD"] == 'POST':
-			return self.pop_playlist(self.form["pop"], self.form["token"])
+#		if "pop" in self.form and "token" in self.form and self.request.__dict__["environ"]["REQUEST_METHOD"] == 'POST':
+#			return self.pop_playlist(self.form["pop"], self.form["token"])
 
 		return Response(json.dumps({"message":"no voting operation interpreted from request"}), status=400) 
