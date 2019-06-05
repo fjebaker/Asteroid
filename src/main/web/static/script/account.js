@@ -1,13 +1,16 @@
-var bodyDiv = document.getElementById("bodyDiv");
+var bodyDiv = document.getElementById("bodyDiv"); //Can this be taken elsewhere such that js is not html dependent?
 
+//Function called when the selector for cookie duration is changed
 function selectCookieDuration(select) {
     setCookie("cookieDuration",select.value,convertNameToDuration(select.value));
-    refreshCookies(convertNameToDuration(select.value));
+    refreshCookies(convertNameToDuration(select.value)); //Ensuring all cookies are updated with the current cookie duration
     window.location.href = window.location.href;
 }
 
+//Can this be taken elsewhere...?
 bodyDiv.innerHTML = "Expiration time for basic client-side stored cookies: <select onchange='selectCookieDuration(this)' id='cookieDurationSelector'></select>"
 
+//Function for furnishing the select element with relevant options
 function putOptions() {
     var cookieDurationSelector = document.getElementById("cookieDurationSelector");
     var keys = ['minute','hour','day','week','month','year'];

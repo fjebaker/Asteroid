@@ -1,9 +1,10 @@
-var bodyDiv1 = document.getElementById("bodyDiv1");
+var bodyDiv1 = document.getElementById("bodyDiv1"); //AAAA
 
-function _deal_with_received_json(data,submittedName,event){
+function _dealWithReceivedJson(data,submittedName,event){
+    //Needs changing for proper reporting
     var messageSection = document.createElement("p");
     if (typeof data == "string") {
-        messageSection.innerHTML = "<br>Unable to load user data for uniqueness check"
+        messageSection.innerHTML = "Unable to load user data for uniqueness check: status "+data;
     } else {
         var match = false;
         for (var i=0; i<data.length; i++) {
@@ -13,41 +14,43 @@ function _deal_with_received_json(data,submittedName,event){
             }
         }
         if (match) {
-            messageSection.innerHTML = "<br>Username is already taken"
+            messageSection.innerHTML = "Username is already taken";
         } else {
-            var request = new XMLHttpRequest();
-            request.open('POST','/register',true);
-            request.onload = function() {
+            document.getElementById("usernameInput").value = submittedName;
+            function success(request) {
                 if (request.status == 404) {
-                    messageSection.innerHTML = "<br>404: POST response not found"
+                    messageSection.innerHTML = "404: POST response not found";
                 }
                 if (request.status == 201) {
-                    setCookie("id",submittedName,getCookieDuration());
-                    document.location.href = document.location.href;
+                    setCookie("id", JSON.parse(request.response).id,getCookieDuration());
+                    updateQuery({v:Math.random()});
                 }
-            };
-            request.onerror = function() {
-                messageSection.innerHTML = "<br>Error sending POST request";
-            };
-            document.getElementById("usernameInput").value = submittedName;
-            request.send(new FormData(event.target));
+            }
+            function failure(request) {
+                messageSection.innerHTML = "Error sending POST request";
+            }
+            postRequest(new FormData(event.target),"/register",success,failure);
+            messageSection.innerHTML = "Username request sent";
         }
     }
     bodyDiv1.appendChild(messageSection);
 }
 
-function _submit_click(event) {
+//Event to be called upon form submission
+function _submitClick(event) {
     event.preventDefault();
     var submittedName = document.getElementById("usernameInput").value;
     submittedName = submittedName.replace(/\s/g,'');
     if (submittedName === '') {
         var messageSection = document.createElement("p");
-        messageSection.innerHTML = "<br>Blank usernames are not valid"
+        messageSection.innerHTML = "Blank usernames are not valid"
         bodyDiv1.appendChild(messageSection);
     } else {
-        getJson("/db/users?=getAllUsers",function(data){_deal_with_received_json(data,submittedName,event);});
+        getJson("/db/users?=getAllUsers",function(data){_dealWithReceivedJson(data,submittedName,event);},function(data){messageSection.innerHTML = "Unable to load user data for uniqueness check";bodyDiv1.appendChild(messageSection);});
     }
 }
+
+ensureKeyQuery("v",Math.random())
 
 if (getCookie("id") == "") {
     bodyDiv1.innerHTML = "<p>Enter Username:</p>";
@@ -61,11 +64,12 @@ if (getCookie("id") == "") {
     form.appendChild(usernameInput);
     const sendButton = document.createElement('input');
     sendButton.type='submit';
+    sendButton.value='submit';
     form.appendChild(sendButton);
-    form.addEventListener("submit",_submit_click);
+    form.addEventListener("submit",_submitClick);
     bodyDiv1.appendChild(form);
 } else {
-    redirectLocal("");
+    document.location.href = "/?v="+Math.random();
 }
 
 current_callback();

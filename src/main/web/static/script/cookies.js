@@ -24,6 +24,7 @@ function setCookie(name, data, time) {
     document.cookie = name + "=" + data + ";" + expiry + ";path=/"; //setting cookie
 }
 
+//TODO DOCSTRING
 function refreshCookies(time) {
     var decodedCookie = decodeURIComponent(document.cookie);
     var cookieArray = decodedCookie.split(';');
@@ -38,19 +39,13 @@ function refreshCookies(time) {
     }
 }
 
-//Redirects to another HTML page 'name' in the html folder.
-function redirectLocal(name) {
-    var pathArray = document.location.pathname.split('/');
-    pathArray.pop();
-    window.location.href = pathArray.join('/') + "/" + name;
-}
-
 function checkCookieValidity() {
     if (getCookie("id") == "") {
-        redirectLocal("auth");
+        document.location.href = "/auth";
     }
 }
 
+//For cookieDuration cookie, durations are stored as an indicative string. This converts that string to a number of milliseconds.
 function convertNameToDuration(name) {
     switch (name){
         case "minute":
@@ -76,6 +71,7 @@ function convertNameToDuration(name) {
     }
 }
 
+//
 function setCookieDuration() {
     if (getCookie("cookieDuration") == "") {
         setCookie("cookieDuration","minute",60000);
@@ -86,6 +82,7 @@ function setCookieDuration() {
     }
 }
 
+//
 function getCookieDuration() {
     setCookieDuration();
     return convertNameToDuration(getCookie("cookieDuration"));

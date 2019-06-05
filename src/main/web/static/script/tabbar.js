@@ -1,6 +1,7 @@
+//Creates a button at the end of element 'div' whose text is 'buttonText' and whose clicking calls the function 'callback'
 function generateTabButton(div, buttonText, callback) {
     var button = document.createElement("button");
-    button.innerHTML = buttonText;
+    button.innerHTML = buttonText; //Setting text
     div.appendChild(button);
     button.addEventListener("click",callback);
 }
@@ -10,7 +11,7 @@ function includeQueryStringScript() {
     var urlParams = new URLSearchParams(location.search);
     if(urlParams.has("tab")) { //check if tab query exists
         var tabName = urlParams.get("tab");
-        var scriptName = ""
+        var scriptName = "" //The location of the script to load in
         switch(tabName) {
             case "Voting":
                 scriptName = "voting.js";
@@ -29,22 +30,14 @@ function includeQueryStringScript() {
                 document.getElementById("bodyDiv").innerHTML = message;
                 return;
         }
-        document.getElementById("scriptFiller").src = "../script/" + scriptName + "?v" + Math.random();
+        document.getElementById("scriptFiller").src = "../script/" + scriptName + "?v" + Math.random(); //If a valid tab query is given, loads in the relevant script
     }
 }
 
-//Redirects to the same page with the 'tab' search query set to 'string'
-function tabQuery(string) {
-    var pathName = document.location.pathname;
-    var urlParams = new URLSearchParams(location.search);
-    urlParams.set("tab",string);
-    window.location.href = pathName + "?" + urlParams.toString();
-}
-
-function voting() {tabQuery("Voting");}
-function rating() {tabQuery("Rating");}
-function tabs() {tabQuery("Tabs");}
-function account() {tabQuery("Account");}
+function voting() {updateQuery({"tab":"Voting","v":Math.random()});}
+function rating() {updateQuery({"tab":"Rating","v":Math.random()});}
+function tabs() {updateQuery({"tab":"Tabs","v":Math.random()});}
+function account() {updateQuery({"tab":"Account","v":Math.random()});}
 
 //Gives relevant callback for a key
 function defaultTabCallback(name) {
@@ -81,9 +74,9 @@ function supplyButtons(element,tabCallback) {
     for(var i=0; i<tabArray.length; i++) {
         var namNum = tabArray[i].split(':');
         if (namNum[1] == "1") {
-            var callback = tabCallback(namNum[0]);
+            var callback = tabCallback(namNum[0]); //namNum[0] will be a callback key
             if (typeof callback !== "string") { //Checking that a valid callback exists
-                generateTabButton(element, namNum[0], callback);
+                generateTabButton(element, namNum[0], callback); //Creating a button with this callback
             }
         }
     }
