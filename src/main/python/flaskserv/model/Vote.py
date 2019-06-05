@@ -72,4 +72,4 @@ class Vote:
 		if "pop" in self.form and "token" in self.form and self.request.__dict__["environ"]["REQUEST_METHOD"] == 'POST':
 			return self.pop_playlist(self.form["pop"], self.form["token"])
 
-		return Response({"message":"no voting operation interpreted from request"}, status=404) 
+		return Response(json.dumps({"message":"no voting operation interpreted from request"}), status=400) 
