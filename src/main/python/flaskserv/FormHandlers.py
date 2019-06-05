@@ -39,7 +39,7 @@ class UserHandler():
 	def __call__(self):
 		if "name" in self.form and self.request.__dict__["environ"]["REQUEST_METHOD"] == 'POST':
 			new_id = self.add_user(self.form["name"])
-			json_s = "{id:%d}" % new_id
+			json_s = {"id":new_id}
 			http_s = 201
 		else:
 			json_s = "{}"		# todo, error message of what went wrong
