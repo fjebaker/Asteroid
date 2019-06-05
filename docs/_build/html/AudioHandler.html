@@ -36,9 +36,47 @@
 <span id="audiohandler-class"></span><h1>AudioHandler Class<a class="headerlink" href="#module-AudioHandler" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="AudioHandler.AudioHandler">
-<em class="property">class </em><code class="sig-prename descclassname">AudioHandler.</code><code class="sig-name descname">AudioHandler</code><a class="headerlink" href="#AudioHandler.AudioHandler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<em class="property">class </em><code class="sig-prename descclassname">AudioHandler.</code><code class="sig-name descname">AudioHandler</code><span class="sig-paren">(</span><em class="sig-param">queue</em><span class="sig-paren">)</span><a class="headerlink" href="#AudioHandler.AudioHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">threading.Thread</span></code></p>
 <p>Controls playback</p>
+<dl class="method">
+<dt id="AudioHandler.AudioHandler.fetch_playlist_item">
+<code class="sig-name descname">fetch_playlist_item</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AudioHandler.AudioHandler.fetch_playlist_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>TODO</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="AudioHandler.AudioHandler.get_path_from_database">
+<code class="sig-name descname">get_path_from_database</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AudioHandler.AudioHandler.get_path_from_database" title="Permalink to this definition">¶</a></dt>
+<dd><p>TODO</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="AudioHandler.AudioHandler.pause">
+<code class="sig-name descname">pause</code><span class="sig-paren">(</span><em class="sig-param">*args</em><span class="sig-paren">)</span><a class="headerlink" href="#AudioHandler.AudioHandler.pause" title="Permalink to this definition">¶</a></dt>
+<dd><p>TODO</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="AudioHandler.AudioHandler.play">
+<code class="sig-name descname">play</code><span class="sig-paren">(</span><em class="sig-param">*args</em><span class="sig-paren">)</span><a class="headerlink" href="#AudioHandler.AudioHandler.play" title="Permalink to this definition">¶</a></dt>
+<dd><p>TODO</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="AudioHandler.AudioHandler.run">
+<code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AudioHandler.AudioHandler.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>TODO</p>
+<p>needs to check if a song is playing, if not request next file and then play</p>
+<p>enhance: make it async</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="AudioHandler.AudioHandler.stop">
+<code class="sig-name descname">stop</code><span class="sig-paren">(</span><em class="sig-param">*args</em><span class="sig-paren">)</span><a class="headerlink" href="#AudioHandler.AudioHandler.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>TODO</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>
