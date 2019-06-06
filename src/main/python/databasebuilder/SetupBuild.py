@@ -43,9 +43,12 @@ def build_music(folder_location):
 	dbinst = db.DBInstance(os.environ["MUSIC_DB_PATH"])
 	try:
 		with dbinst as builder:
-			builder.create_table("songs", name="text", artist="text", duration="real", meta_dat="text", file_path="text", UNIQUE="name, artist, file_path")
+			builder.create_table("songs", 
+				("name", "artist", "duration", "meta_dat", "file_path", "UNIQUE"), 
+				("text", "text", "real", "text", "text", "name, artist, file_path")
+			)
 	except Exception as e:
-			print("[!] trying to create table 'playlist' in {}, raised exception: \n\t\t'{}'".format(os.environ["MUSIC_DB_PATH"], str(e)))
+		print("[!] trying to create table 'playlist' in {}, raised exception: \n\t\t'{}'".format(os.environ["MUSIC_DB_PATH"], str(e)))
 
 	if folder_location == None:
 		return
@@ -67,7 +70,10 @@ def build_user():
 	dbinst = db.DBInstance(os.environ["USER_DB_PATH"])
 	try:
 		with dbinst as builder:
-			builder.create_table("users", id="long", name="text", hash_pw="long", meta_dat="text")
+			builder.create_table("users", 
+				("id", "name", "hash_pw", "meta_dat", "UNIQUE"),
+				("long", "text", "long", "text", "id")
+			)
 	except Exception as e:
 		print("[!] trying to create table 'users' in {}, raised exception: \n\t\t'{}'".format(os.environ["USER_DB_PATH"], str(e)))
 
@@ -78,6 +84,9 @@ def build_playlist():
 	dbinst = db.DBInstance(os.environ["PLAYLIST_PATH"])
 	try:
 		with dbinst as builder:
-			builder.create_table("playlist", s_id="long", u_id="long", vote="long")
+			builder.create_table("playlist", 
+				("s_id", "u_id", "vote", "UNIQUE"),
+				("long", "long", "long", "s_id")
+			)
 	except Exception as e:
 			print("[!] trying to create table 'playlist' in {}, raised exception: \n\t\t'{}'".format(os.environ["PLAYLIST_PATH"], str(e)))
