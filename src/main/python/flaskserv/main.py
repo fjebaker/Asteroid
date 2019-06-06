@@ -18,6 +18,10 @@ def auth():
 def scripts(name):
 	return send_from_directory('../../web/static/script', name+'.js')
 
+@app.route("/resources/images/<name>")
+def images(name):
+	return send_from_directory('../../web/static/resources/images', name)
+
 @app.route("/register", methods=["POST"])
 def register_user():
 	return formhandle.UserHandler(request)()
