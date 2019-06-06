@@ -1,5 +1,5 @@
-FlaskServ Module
-================
+``FlaskServ`` Module
+====================
 
 .. toctree::
    :maxdepth: 5
@@ -7,4 +7,4 @@ FlaskServ Module
    Database
    QueryHandlers
    FormHandlers
-   model
+   model/model_sub

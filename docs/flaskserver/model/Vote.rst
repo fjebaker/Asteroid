@@ -1,7 +1,7 @@
-Playlist Class 
+``Vote`` Class 
 ==============
 
-.. automodule:: model.Playlist
+.. automodule:: src.main.python.flaskserv.model.Vote
     :members:
     :undoc-members:
     :show-inheritance:

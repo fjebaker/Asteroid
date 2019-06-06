@@ -1,5 +1,5 @@
-model sub-module
-================
+``model`` sub-module
+====================
 
 .. toctree::
    :maxdepth: 4

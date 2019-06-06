@@ -1,5 +1,5 @@
-Audio Module
-============
+``Audio`` Module
+================
 
 .. toctree::
    :maxdepth: 4

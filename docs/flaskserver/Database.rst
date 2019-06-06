@@ -1,7 +1,7 @@
-FormHandlers Classes 
+``Database`` Classes 
 ====================
 
-.. automodule:: FormHandlers
+.. automodule:: src.main.python.flaskserv.Database
     :members:
     :undoc-members:
     :show-inheritance:

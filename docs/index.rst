@@ -1,17 +1,32 @@
-.. PyAsteroid documentation master file, created by
-   sphinx-quickstart on Mon Jun  3 04:47:42 2019.
+.. Asteroid documentation master file, created by
+   sphinx-quickstart on Thu Jun  6 04:05:28 2019.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to PyAsteroid's documentation!
-======================================
+Welcome to Asteroid's documentation!
+====================================
+
+Section 1.1 Python Code
+
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
-	
-   audio_module
-   flaskserv_module
+   :caption: Python Contents:
+
+   player/audio_module
+   flaskserver/flaskserv_module
+
+--
+
+Section 1.2 JS Code:
+
+.. toctree::
+   :maxdepth: 2
+   :caption: JS Contents:
+
+   js/dynamic_load
+
+
 
 Indices and tables
 ==================
