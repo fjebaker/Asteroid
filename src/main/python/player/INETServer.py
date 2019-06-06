@@ -6,7 +6,10 @@ from queue import Queue
 
 class Listener():
 	"""
-	TODO
+	Low level socket server for spawning a :class:`src.main.python.player.ClientThread` per each incomming connection. 
+	Holds the :class:`queue.Queue` for communicating between the :class:`src.main.python.player.PlayStream`.
+
+	Threaded, able to handle 5 simultaneous incomming connections - performs no checks.
 	"""
 	def __init__(self):
 		# get config
@@ -28,7 +31,7 @@ class Listener():
 
 	def start(self):
 		"""
-		TODO
+		Start the listening server on designated :attr:`self.host` and :attr:`self.port`.
 		"""
 		self._setup()
 		print("Server starting at {}:{}".format(self.host, self.port))

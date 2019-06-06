@@ -3,10 +3,20 @@ from queue import Queue
 
 class ClientThread(threading.Thread):
 	"""
-	TODO
+	Client thread, inheriting from :class:`threading.Thread`, spawned by :class:`src.main.python.player.INETServer.Listener`.
+	Has ``self.daemon = True``.
+	Will listen for incomming messages forever or until an :class:`Exception` is raised.
+
+	:ivar dict commands: defined playback commands: "name":number of arguments (int)
+
+	:param queue: FIFO queue to put parsed incomming messages in (puts :class:`list` objects).
+	:type queue: :class:`queue.Queue`
+	:param socket: the connection's object
+	:type socket: :class:`socket.Socket`
+	:param str addr: the connection's address
 	"""
 
-	commands = {	# 		command : number of arguments, should make into a metaclass
+	commands = {
 		"play":1,
 		"pause":0,
 		"stop":0,
@@ -21,9 +31,11 @@ class ClientThread(threading.Thread):
 		self.addr = addr
 
 	def run(self):
-		"""
-		TODO
-		"""
+		'''
+		Inherited and overwritten :meth:`threading.Thread.run`; called when :attr:`self.start()` method is invoked.
+		Begins listening for incomming message from client peer. Catches any :class:`Exception` thrown during this process,
+		and cleans up by closing connection to :attr:`self.socket`.
+		'''
 		try:
 			while True:
 				message = self.socket.recv(4096)
@@ -31,14 +43,14 @@ class ClientThread(threading.Thread):
 					raise Exception("Client disconnected.")
 				else:
 					message = message.decode().replace("\n", '').replace("\r", '')
-					self.handle(message)
+					self._handle(message)
 		except Exception as e:
 			print("DEBUG ERROR -- " + str(e))
 			self.socket.close()
 
-	def handle(self, message):
+	def _handle(self, message):
 		"""
-		TODO
+		Called when a message is received.
 		"""
 		fragments = message.split("$ ")
 		cmd = fragments[0]

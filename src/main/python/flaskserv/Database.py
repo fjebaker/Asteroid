@@ -236,20 +236,33 @@ class MusicDB(metaclass=DBAccessory):
 			])
 
 	def get_song_by_name(self, name):
+		"""
+		TODO
+		"""
 		pass
 
 	def get_by_rowid(self, rowid):
 		"""
-		TODO
+		Get song by id.
+
+		:param int rowid: database table ``rowid`` to return whole row from.
+		:returns: song with ``rowid``
+		:rtype: length 1 list of tuple
 		"""
 		return self.db_inst.select_rows("songs", {"rowid":rowid})
 
 	def get_song_by_artist(self, artist):
+		"""
+		TODO
+		"""
 		pass
 
 	def get_all_songs(self):
 		"""
-		Returns all songs in songs table of database given in constructor
+		Returns all songs in database given in constructor.
+
+		:returns: all rows of ``songs`` table in database.
+		:rtype: list of tuples
 		"""
 		return self.db_inst.select_columns("songs",
 			["name", "artist", "duration", "file_path", "meta_dat"])
@@ -284,11 +297,18 @@ class UserDB(metaclass=DBAccessory):
 
 	def get_user_by_id(self, id_n):
 		"""
-		TODO
+		Get user by id.
+
+		:param int id_n: ``users`` table column ``id`` to match and return whole row from.
+		:returns: user with ``id==id_n``
+		:rtype: length 1 list of tuple
 		"""
 		return self.db_inst.select_rows("users", {"id":id_n})
 
 	def get_user_by_name(self, name):
+		"""
+		TODO
+		"""
 		pass
 
 	def get_column(self, column_name):
@@ -303,7 +323,10 @@ class UserDB(metaclass=DBAccessory):
 
 	def get_all_users(self):
 		"""
-		Returns all users in users table of database given in constructor
+		Returns all users in database given in constructor.
+
+		:returns: all rows of ``users`` table in database.
+		:rtype: list of tuples
 		"""
 		return self.db_inst.select_columns("users",
 			["id", "name", "meta_dat"])

@@ -4,7 +4,7 @@ import os
 class Playlist(metaclass=DBAccessory):
 	"""
 	Class for accessing the playlist database.
-	Has metaclass :class:`Database.DBAccessory`.
+	Has metaclass :class:`src.main.python.flaskserv.Database.DBAccessory`.
 	Requires a table in format
 
 		playlist
@@ -52,7 +52,7 @@ class Playlist(metaclass=DBAccessory):
 
 	def remove(self, s_id):
 		"""
-		removes the row containing song id `s_id` from the database
+		removes the row containing song id ``s_id`` from the database
 
 		:param s_id: song id to remove from playlist
 		:type s_id: int

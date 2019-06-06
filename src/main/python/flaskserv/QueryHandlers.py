@@ -56,7 +56,7 @@ class MusicQuery(BaseQuery):
 
 	:param query: the query request
 	:type query: byte string
-	:returns: json object containing query result
+	:returns: :class:`flask.Response` containing query result
 	"""
 
 	keys = ["name", "artist", "duration", "file_path", "meta_dat"] #: json keys for parsing database
@@ -66,10 +66,10 @@ class MusicQuery(BaseQuery):
 
 	def getAllSongs(self):
 		"""
-		Fetch from database the whole songs table. Looks in environment variable `MUSIC_DB_PATH` for the database path.
+		Fetch from database the whole songs table. Looks in environment variable ``MUSIC_DB_PATH`` for the database path.
 		Converts the list of tuples from database call into a dictionary.
 
-		:returns: dictionary containing the parsed songs table
+		:returns: :class:`flask.Response` with json of dictionary containing all songs, and ``status==200``.
 		"""
 		db_result = MusicDB(os.environ["MUSIC_DB_PATH"]).get_all_songs()
 
@@ -88,7 +88,9 @@ class MusicQuery(BaseQuery):
 
 	def id(self):
 		"""
-		TODO
+		Query database for a specific row with id from query string parameter ``?id=``.
+
+		:returns: :class:`flask.Response` with json of nested tuple in list containing song with specified id, and ``status==200``.
 		"""
 
 		# todo could probably merge these two
@@ -115,7 +117,7 @@ class MusicQuery(BaseQuery):
 		"""
 		Default case is an empty dictionary.
 
-		:returns: empty dictionary
+		:returns: :class:`flask.Response` with empty json object, and ``status==400``.
 		"""
 		return Response(
 				json.dumps({}),
@@ -130,7 +132,7 @@ class UserQuery(BaseQuery):
 
 	:param query: the query request
 	:type query: byte string
-	:returns: json object containing query result
+	:returns: :class:`flask.Response` containing query result
 	"""
 
 	keys = ["id", "name", "hash_pw", "meta_dat"] #: json keys for parsing database
@@ -140,10 +142,10 @@ class UserQuery(BaseQuery):
 
 	def getAllUsers(self):
 		"""
-		Fetch from database the whole users table. Looks in environment variable `USER_DB_PATH` for the database path.
+		Fetch from database the whole users table. Looks in environment variable ``USER_DB_PATH`` for the database path.
 		Converts the list of tuples from database call into a dictionary.
 
-		:returns: dictionary containing the parsed users table
+		:returns: :class:`flask.Response` with json of dictionary containing all users, and ``status==200``.
 		"""
 		db_result = UserDB(os.environ["USER_DB_PATH"]).get_all_users()
 
@@ -162,7 +164,9 @@ class UserQuery(BaseQuery):
 
 	def id(self):
 		"""
-		TODO
+		Query database for a specific row with id from query string parameter ``?id=``.
+
+		:returns: :class:`flask.Response` with json of nested tuple in list containing user with specified id, and ``status==200``.
 		"""
 
 		# todo could probably merge these two
@@ -189,7 +193,7 @@ class UserQuery(BaseQuery):
 		"""
 		Default case is an empty dictionary.
 
-		:returns: empty dictionary
+		:returns: :class:`flask.Response` with empty json object, and ``status==400``.
 		"""
 		return Response(
 				json.dumps({}),

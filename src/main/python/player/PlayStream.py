@@ -22,11 +22,12 @@ class PlayStream(threading.Thread):
 	'''
 	Player class specialised for alsaaudio.
 	Designed to be lightweight threadable and to be non-recycleable after play.
+	Has ``self.daemon = True``.
 
 	:param condition_object: instance shared with the audio handler.
-	:type condition_object: :class:`TODO.ConditionObject`
+	:type condition_object: :class:`src.main.python.player.ConditionObject`
 	:param queue: to dump short type representation of audio
-	:type queue: FIFO queue
+	:type queue: :class:`queue.Queue` instance
 	'''
 	def __init__(self, condition_object, queue):
 		self.q = queue
@@ -48,7 +49,7 @@ class PlayStream(threading.Thread):
 	# @restrict_call
 	def run(self):
 		'''
-		Inherited and overwritten from threading.Thread.run; called when .start() method is invoked.
+		Inherited and overwritten :meth:`threading.Thread.run`; called when :attr:`self.start()` method is invoked.
 		Begins audio playback, and when interrupted or completed performs cleanup.
 		'''
 		self._play()
@@ -61,7 +62,7 @@ class PlayStream(threading.Thread):
 	# @restrict_call
 	def _play(self):
 		'''
-		hidden method, called by :meth:`Playstream.run`
+		hidden method, called by :attr:`self.run`
 		'''
 		wf = self.wf
 		stream = alsaaudio.PCM(alsaaudio.PCM_PLAYBACK, alsaaudio.PCM_NORMAL, 'default')
