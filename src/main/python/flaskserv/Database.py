@@ -62,8 +62,7 @@ class DBInstance:
 		:type data: list
 		:raises: Exception("Bad row format.")
 		"""
-		column_info = self.get_column_info(table_name)
-		column_names = [str(i[1]) for i in column_info]
+		column_names = self.get_column_info(table_name)
 		if not self._is_row_correct(column_names, data):
 			raise Exception("Bad row format.")
 
@@ -153,7 +152,8 @@ class DBInstance:
 		:return: list of column names
 		"""
 		cursor = self.handle.execute('''PRAGMA table_info({});'''.format(table_name))
-		return tuple(cursor.fetchall())
+		cols = sorted(cursor.fetchall(), key=lambda x: int(x[0]))
+		return tuple([i[1] for i in cols])
 
 	def _save(self):
 		"""
