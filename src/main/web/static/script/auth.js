@@ -21,6 +21,9 @@ function _dealWithReceivedJson(data,submittedName,event){
                 if (request.status == 400) {
                     messageSection.innerHTML = "400: Bad request";
                 }
+                if (request.status == 404) {
+                    messageSection.innerHTML = "404: Not found";
+                }
                 if (request.status == 201) {
                     setCookie("id", JSON.parse(request.response).id,getCookieDuration());
                     updateQuery({v:Math.random()});
