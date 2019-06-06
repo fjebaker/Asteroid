@@ -139,9 +139,9 @@ class DBInstance:
 		:param condition: the condition to be met to qualify for removal
 		:type condition: dict		
 		"""
-		condition = list(condition.items())[0]
+		condition = tuple(list(condition.items()))[0]
 		condition_string = str(condition[0]) + " = '" + str(condition[1]) + "'"
-
+		print("DEBUG -- in delete_rows making query: " + '''DELETE FROM {} WHERE {}'''.format(table_name, condition_string))
 		self.handle.execute('''DELETE FROM {} WHERE {}'''.format(table_name, condition_string))
 
 	def get_column_info(self, table_name):
