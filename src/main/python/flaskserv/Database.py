@@ -1,8 +1,6 @@
 import sqlite3
 
 def sanitise(func):
-	
-	
 	def wrap(*args, **kwargs):
 		for i in len(args):
 			args[i]

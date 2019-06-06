@@ -66,7 +66,7 @@ class AudioHandler(threading.Thread):
 			# TODO
 			return None
 
-		song = MusicDB(os.environ["MUSIC_PATH"]).get_by_rowid(n_item[0]+1)[0]
+		song = MusicDB(os.environ["MUSIC_DB_PATH"]).get_by_rowid(n_item[0]+1)[0]
 		return song[3]
 
 	def play(self, *args):
