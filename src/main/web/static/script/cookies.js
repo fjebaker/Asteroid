@@ -1,4 +1,10 @@
-//Getting a cookie of specified name 'name'
+/*
+ * Used to get the string data stored in a specifically named cookie
+ *
+ * @param {string} name - the name used as a key to identify the cookie requested
+ *
+ * @returns {string} cookieData - the data string stored under the cookie of name 'name'
+ */
 function getCookie(name) {
     var decodedCookie = decodeURIComponent(document.cookie); //get all cookie info
     var cookieArray = decodedCookie.split(';'); //an array containing each cookie as an element
@@ -16,7 +22,13 @@ function getCookie(name) {
     return "" //If no cookie found
 }
 
-//Setting a cookie of name 'name' with string data 'data' to last 'time' number of milliseconds
+/*
+ * Used to set a cookie with particular data
+ *
+ * @param {string} name - the name used as a key to identify the cookie to be set
+ * @param {string|number} data - the data value to associate with the cookie
+ * @param {number} time - the number of milliseconds for which the cookie should be retained before expiring
+ */
 function setCookie(name, data, time) {
     var date = new Date(); //Current date
     date.setTime(date.getTime() + time); //Adding time to date
@@ -24,7 +36,11 @@ function setCookie(name, data, time) {
     document.cookie = name + "=" + data + ";" + expiry + ";path=/"; //setting cookie
 }
 
-//TODO DOCSTRING
+/*
+ * Used to set the expiry time to a single value for all cookies present in the document
+ *
+ * @param {number} time - the number of milliseconds for which all cookies should be retained before expiring
+ */
 function refreshCookies(time) {
     var decodedCookie = decodeURIComponent(document.cookie);
     var cookieArray = decodedCookie.split(';');
@@ -45,9 +61,15 @@ function checkCookieValidity() {
     }
 }
 
-//For cookieDuration cookie, durations are stored as an indicative string. This converts that string to a number of milliseconds.
-function convertNameToDuration(name) {
-    switch (name){
+/*
+ * Used to convert string-formatted values for the "cookieDuration" cookie to number of milliseconds
+ *
+ * @param {string} timeString - the indicative string ('minute','hour','day','week','month' or 'year') to convert
+ *
+ * @returns {number} timeMilliseconds - the number of milliseconds represented by the given string. Defaults to 0 if the string is not one of the above recognised strings
+ */
+function convertNameToDuration(timeString) {
+    switch (timeString){
         case "minute":
             return 60000;
             break;
@@ -71,10 +93,12 @@ function convertNameToDuration(name) {
     }
 }
 
-//
+/*
+ * Used to reset the expiry time on the "cookieDuration" cookie, or set the cookie to the default value ('hour') if it does not exist
+ */
 function setCookieDuration() {
     if (getCookie("cookieDuration") == "") {
-        setCookie("cookieDuration","minute",60000);
+        setCookie("cookieDuration","hour",3600000);
     }
     else {
         var duration = getCookie("cookieDuration");
@@ -82,13 +106,16 @@ function setCookieDuration() {
     }
 }
 
-//
+/*
+ * Convenience function used to get the numerical value represented in the "cookieDuration" cookie
+ *
+ * @returns {number} timeMilliseconds - the number of milliseconds represented by the string stored in the in the "cookieDuration" cookie
+ */
 function getCookieDuration() {
     setCookieDuration();
     return convertNameToDuration(getCookie("cookieDuration"));
 }
 
-setCookieDuration();
 refreshCookies(getCookieDuration());
 
 current_callback();

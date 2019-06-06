@@ -1,3 +1,5 @@
+//TODO: stuff with queries
+
 var bodyDiv = document.getElementById("bodyDiv");
 insert_before(bodyDiv,"../script/post.js");
 bodyDiv.innerHTML = "<div id='listTabsDiv'></div><div id='listDiv'>list data goes here</div>";
