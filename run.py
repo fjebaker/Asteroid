@@ -26,7 +26,7 @@ def run_flask(host="0.0.0.0", port=8080):
 
 def run_player(host="localhost", port="6666"):
 	try:
-		import alsaudio
+		import alsaaudio
 	except:
 		print("[*] No package 'alsaaudio' found, creating a mock...")
 		# mock alsaaudio
