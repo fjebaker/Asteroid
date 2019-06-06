@@ -57,11 +57,12 @@
 	<span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">	Player class specialised for alsaaudio.</span>
 <span class="sd">	Designed to be lightweight threadable and to be non-recycleable after play.</span>
+<span class="sd">	Has ``self.daemon = True``.</span>
 
 <span class="sd">	:param condition_object: instance shared with the audio handler.</span>
-<span class="sd">	:type condition_object: :class:`TODO.ConditionObject`</span>
+<span class="sd">	:type condition_object: :class:`src.main.python.player.ConditionObject`</span>
 <span class="sd">	:param queue: to dump short type representation of audio</span>
-<span class="sd">	:type queue: FIFO queue</span>
+<span class="sd">	:type queue: :class:`queue.Queue` instance</span>
 <span class="sd">	&#39;&#39;&#39;</span>
 	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condition_object</span><span class="p">,</span> <span class="n">queue</span><span class="p">):</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">q</span> <span class="o">=</span> <span class="n">queue</span>
@@ -83,7 +84,7 @@
 	<span class="c1"># @restrict_call</span>
 <div class="viewcode-block" id="PlayStream.run"><a class="viewcode-back" href="../../../../../player/PlayStream.html#src.main.python.player.PlayStream.PlayStream.run">[docs]</a>	<span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">		Inherited and overwritten from threading.Thread.run; called when .start() method is invoked.</span>
+<span class="sd">		Inherited and overwritten :meth:`threading.Thread.run`; called when :attr:`self.start()` method is invoked.</span>
 <span class="sd">		Begins audio playback, and when interrupted or completed performs cleanup.</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_play</span><span class="p">()</span>
@@ -94,9 +95,9 @@
 			<span class="bp">self</span><span class="o">.</span><span class="n">CO</span><span class="o">.</span><span class="n">done</span> <span class="o">=</span> <span class="kc">True</span></div>
 
 	<span class="c1"># @restrict_call</span>
-<div class="viewcode-block" id="PlayStream._play"><a class="viewcode-back" href="../../../../../player/PlayStream.html#src.main.python.player.PlayStream.PlayStream._play">[docs]</a>	<span class="k">def</span> <span class="nf">_play</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">_play</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">		hidden method, called by :meth:`Playstream.run`</span>
+<span class="sd">		hidden method, called by :attr:`self.run`</span>
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="n">wf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wf</span>
 		<span class="n">stream</span> <span class="o">=</span> <span class="n">alsaaudio</span><span class="o">.</span><span class="n">PCM</span><span class="p">(</span><span class="n">alsaaudio</span><span class="o">.</span><span class="n">PCM_PLAYBACK</span><span class="p">,</span> <span class="n">alsaaudio</span><span class="o">.</span><span class="n">PCM_NORMAL</span><span class="p">,</span> <span class="s1">&#39;default&#39;</span><span class="p">)</span>
@@ -123,7 +124,7 @@
 				<span class="bp">self</span><span class="o">.</span><span class="n">q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
 			<span class="n">stream</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 			<span class="n">data</span> <span class="o">=</span> <span class="n">wf</span><span class="o">.</span><span class="n">readframes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CHUNK</span><span class="p">)</span>
-			<span class="n">sample</span> <span class="o">+=</span> <span class="mi">1</span></div></div>
+			<span class="n">sample</span> <span class="o">+=</span> <span class="mi">1</span></div>
 </pre></div>
 
           </div>

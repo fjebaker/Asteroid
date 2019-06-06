@@ -6,13 +6,12 @@ class UserHandler():
 	"""
 	Handles different requests related to user database.
 
-	:param request: flask request object
-	:type request: flask request
-	:returns: flask Request class with json string and status
+	:param request: :class:`flask:Request` instance containing the registration ``POST``.
+	:returns: :class:`flask:Response` with json string and status
 
-	status 404 - error, with error message in json
+	``status 404`` - error, with error message in json
 
-	status 201 - success, with saved username in json
+	``status 201`` - success, with saved username in json
 	"""
 
 	def __init__(self, request):
@@ -21,7 +20,8 @@ class UserHandler():
 
 	def add_user(self, name):
 		"""
-		add user method, which adds the new user to the database. Encapsulates :class:`Database.UserDB` to add new user with max(id) + 1 as id.
+		add user method, which adds the new user to the database. Encapsulates :class:`src.main.python.flaskserv.Database.UserDB` to add new user with max(id) + 1 as id.
+		Starting id is 1.
 
 		:param name: name of new user to add to database
 		:type name: str

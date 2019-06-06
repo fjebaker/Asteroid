@@ -4,7 +4,17 @@ import os, json
 
 class Vote:
 	"""
-	TODO
+	Vote handling class. Handles both ``POST`` and ``GET`` requests.
+
+	:param request: :class:`flask.Request` object containing the request information.
+	:returns: :class:`flask.Response` with result of operation.
+
+	* if ``POST``: returns json with a ``message`` index, and ``status==200`` if vote updated and ``status==201`` if new song item created in ``playlist`` table.
+
+	* if ``GET``: returns the whole ``playlist`` table.
+
+
+
 	"""
 	def __init__(self, request):
 		self.request = request
@@ -12,7 +22,16 @@ class Vote:
 
 	def handle_vote(self, s_id, u_id, vote):
 		"""
-		TODO
+		Handles the vote. Manipulates the ``playlist`` table, which it finds in the database
+		given by the environment variable ``PLAYLIST_PATH``. Checks if ``s_id`` already in ``playlist`` in which case
+		it updates the vote by calling :meth:``src.main.python.flaskserv.model.Playlist.update_vote``.
+		If not already in ``playlist``, adds by calling :meth:``src.main.python.flaskserv.model.Playlist.add``
+
+		:param int s_id: the song ``rowid``
+		:param int u_id: user ``id``
+		:param int vote: the value to adjust vote by if song already in ``playlist``, else to set to.
+
+		:returns: :class:``flask.Response``
 		"""
 
 		pl = Playlist(os.environ["PLAYLIST_PATH"])

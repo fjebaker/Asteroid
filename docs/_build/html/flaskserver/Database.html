@@ -72,31 +72,6 @@ Will wrap all non-special functions with a decorator, providing a scoped instanc
 </tbody>
 </table>
 <dl class="method">
-<dt id="src.main.python.flaskserv.Database.DBInstance._is_row_correct">
-<code class="descname">_is_row_correct</code><span class="sig-paren">(</span><em>column_names</em>, <em>row</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#DBInstance._is_row_correct"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.DBInstance._is_row_correct" title="Permalink to this definition">¶</a></dt>
-<dd><p>internal method to validate whether a row string matches the table row
-at the moment only checks length of the two arguments is the same, in future will be more thorough</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>column_names</strong> (<em>list of str</em>) – names of the columns to check against</li>
-<li><strong>row</strong> (<em>list of str</em>) – names of columns provided by user</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="src.main.python.flaskserv.Database.DBInstance._save">
-<code class="descname">_save</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#DBInstance._save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.DBInstance._save" title="Permalink to this definition">¶</a></dt>
-<dd><p>internal method for commiting changes to the database</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="src.main.python.flaskserv.Database.DBInstance.create_table">
 <code class="descname">create_table</code><span class="sig-paren">(</span><em>table_name</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#DBInstance.create_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.DBInstance.create_table" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a new table in the database.

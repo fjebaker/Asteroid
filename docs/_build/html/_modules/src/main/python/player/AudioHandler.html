@@ -42,7 +42,13 @@
 
 <div class="viewcode-block" id="AudioHandler"><a class="viewcode-back" href="../../../../../player/AudioHandler.html#src.main.python.player.AudioHandler.AudioHandler">[docs]</a><span class="k">class</span> <span class="nc">AudioHandler</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">	Controls playback</span>
+<span class="sd">	Controlls how the music is being played. Will spawn instances of :class:`src.main.python.player.PlayStream` for each song.</span>
+<span class="sd">	Handles the :class:`src.main.python.player.ConditionObject` in response to INET server commands.</span>
+<span class="sd">	Determines playback from the music database also handles by the HTTP server.</span>
+<span class="sd">	Has ``self.daemon = True``.</span>
+
+<span class="sd">	:param queue: queue to get new INET server commands.</span>
+<span class="sd">	:type queue: :class:`queue.Queue`</span>
 <span class="sd">	&quot;&quot;&quot;</span>
 	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">queue</span><span class="p">):</span>
 		<span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -55,13 +61,13 @@
 		<span class="bp">self</span><span class="o">.</span><span class="n">first</span> <span class="o">=</span> <span class="kc">True</span> 		<span class="c1"># hacky, since first call must be over socket msg</span>
 
 <div class="viewcode-block" id="AudioHandler.run"><a class="viewcode-back" href="../../../../../player/AudioHandler.html#src.main.python.player.AudioHandler.AudioHandler.run">[docs]</a>	<span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">		TODO</span>
-
-<span class="sd">		needs to check if a song is playing, if not request next file and then play</span>
-
-<span class="sd">		enhance: make it async</span>
-<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">		Inherited and overwritten :meth:`threading.Thread.run`; called when :attr:`self.start()` method is invoked.</span>
+<span class="sd">		Checks if a new message has been received in :attr:`self.queue`, and if so, acts upon it.</span>
+<span class="sd">		Else, checks if current playback has finished, i.e. ``ConditionObject.done == True``,</span>
+<span class="sd">		in which case tries to fetch a new item from the ``playlist`` table in the database, and if one exists,</span>
+<span class="sd">		will play most voted song.</span>
+<span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
 			<span class="k">try</span><span class="p">:</span>
 				<span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
@@ -79,7 +85,11 @@
 
 <div class="viewcode-block" id="AudioHandler.fetch_playlist_item"><a class="viewcode-back" href="../../../../../player/AudioHandler.html#src.main.python.player.AudioHandler.AudioHandler.fetch_playlist_item">[docs]</a>	<span class="k">def</span> <span class="nf">fetch_playlist_item</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">		TODO</span>
+<span class="sd">		Uses an instance of :class:`src.main.python.flaskserv.model.PLaylist` to fetch the current ``playlist`` table.</span>
+<span class="sd">		Determines most voted song, and removes it from ``playlist``.</span>
+
+<span class="sd">		:returns: most voted song</span>
+<span class="sd">		:rtype: tuple</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 
 		<span class="n">pl</span> <span class="o">=</span> <span class="n">Playlist</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;PLAYLIST_PATH&quot;</span><span class="p">])</span>
@@ -94,19 +104,26 @@
 
 <div class="viewcode-block" id="AudioHandler.get_path_from_database"><a class="viewcode-back" href="../../../../../player/AudioHandler.html#src.main.python.player.AudioHandler.AudioHandler.get_path_from_database">[docs]</a>	<span class="k">def</span> <span class="nf">get_path_from_database</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">		TODO</span>
+<span class="sd">		Queries the ``songs`` table with :class:`src.main.python.flaskserv.Database.MusicDB` to determine</span>
+<span class="sd">		information on the next song to play given the song id from :meth:`self.fetch_playlist_item`.</span>
+
+<span class="sd">		:returns: the path to the most voted song</span>
+<span class="sd">		:rtype: str</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="n">n_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch_playlist_item</span><span class="p">()</span>
 		<span class="k">if</span> <span class="n">n_item</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
 			<span class="c1"># TODO</span>
 			<span class="k">return</span> <span class="kc">None</span>
 
-		<span class="n">song</span> <span class="o">=</span> <span class="n">MusicDB</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;MUSIC_PATH&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">get_by_rowid</span><span class="p">(</span><span class="n">n_item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="n">song</span> <span class="o">=</span> <span class="n">MusicDB</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;MUSIC_DB_PATH&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">get_by_rowid</span><span class="p">(</span><span class="n">n_item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 		<span class="k">return</span> <span class="n">song</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="AudioHandler.play"><a class="viewcode-back" href="../../../../../player/AudioHandler.html#src.main.python.player.AudioHandler.AudioHandler.play">[docs]</a>	<span class="k">def</span> <span class="nf">play</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">		TODO</span>
+<span class="sd">		Begin the playback -- first checks if ``*args`` contains a path, else calls :meth:`self.get_path_from_database`</span>
+<span class="sd">		to fetch a song path. Then checks if the file exists, returns ``None`` if false. Stops the current playback if a player</span>
+<span class="sd">		exists by calling :meth:`self.stop`. Creates a new :class:`src.main.python.player.PlayStream` instance, loads the song</span>
+<span class="sd">		and starts the playback. Finally, sets :attr:`self.curret_player` to new instance.</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
 			<span class="n">path</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -130,13 +147,14 @@
 
 <div class="viewcode-block" id="AudioHandler.pause"><a class="viewcode-back" href="../../../../../player/AudioHandler.html#src.main.python.player.AudioHandler.AudioHandler.pause">[docs]</a>	<span class="k">def</span> <span class="nf">pause</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">		TODO</span>
+<span class="sd">		Pause the playback -- calls :meth:`src.main.python.player.ConditionObject.toggle_pause` on own instance.</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">condObj</span><span class="o">.</span><span class="n">toggle_pause</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="AudioHandler.stop"><a class="viewcode-back" href="../../../../../player/AudioHandler.html#src.main.python.player.AudioHandler.AudioHandler.stop">[docs]</a>	<span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">		TODO</span>
+<span class="sd">		Sets the current instace of :attr:`src.main.python.player.ConditionObject.play` to ``False``, then spawns fresh instance</span>
+<span class="sd">		and sets :attr:`self.current_player` to ``None``.</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">condObj</span><span class="o">.</span><span class="n">lock</span><span class="p">:</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">condObj</span><span class="o">.</span><span class="n">play</span> <span class="o">=</span> <span class="kc">False</span>

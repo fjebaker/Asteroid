@@ -37,7 +37,7 @@
 
 <div class="viewcode-block" id="ConditionObject"><a class="viewcode-back" href="../../../../../player/ConditionObject.html#src.main.python.player.ConditionObject.ConditionObject">[docs]</a><span class="k">class</span> <span class="nc">ConditionObject</span><span class="p">:</span>
 	<span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">	Conditions which govern playback in :class:`PlayStream`</span>
+<span class="sd">	Conditions which govern playback in :class:`src.main.python.player.PlayStream`</span>
 <span class="sd">	&#39;&#39;&#39;</span>
 	<span class="n">lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span> 	<span class="c1">#: threading Lock Object</span>
 	<span class="n">play</span> <span class="o">=</span> <span class="kc">True</span>		<span class="c1">#: if playing</span>
@@ -46,10 +46,11 @@
 
 <div class="viewcode-block" id="ConditionObject.toggle_pause"><a class="viewcode-back" href="../../../../../player/ConditionObject.html#src.main.python.player.ConditionObject.ConditionObject.toggle_pause">[docs]</a>	<span class="k">def</span> <span class="nf">toggle_pause</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">		Toggle pause:</span>
+<span class="sd">		Toggle :attr:`self.pause`</span>
 
-<span class="sd">			if self.pause == True: set to False</span>
-<span class="sd">			if self.pause == False: set to True</span>
+<span class="sd">			if ``self.pause == True``: set to ``False``</span>
+
+<span class="sd">			if ``self.pause == False``: set to ``True``</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">pause</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">pause</span></div></div>
 </pre></div>

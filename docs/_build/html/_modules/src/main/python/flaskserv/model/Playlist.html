@@ -39,7 +39,7 @@
 <div class="viewcode-block" id="Playlist"><a class="viewcode-back" href="../../../../../../flaskserver/model/Playlist.html#src.main.python.flaskserv.model.Playlist.Playlist">[docs]</a><span class="k">class</span> <span class="nc">Playlist</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">DBAccessory</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">	Class for accessing the playlist database.</span>
-<span class="sd">	Has metaclass :class:`Database.DBAccessory`.</span>
+<span class="sd">	Has metaclass :class:`src.main.python.flaskserv.Database.DBAccessory`.</span>
 <span class="sd">	Requires a table in format</span>
 
 <span class="sd">		playlist</span>
@@ -87,7 +87,7 @@
 
 	<span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s_id</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">		removes the row containing song id `s_id` from the database</span>
+<span class="sd">		removes the row containing song id ``s_id`` from the database</span>
 
 <span class="sd">		:param s_id: song id to remove from playlist</span>
 <span class="sd">		:type s_id: int</span>

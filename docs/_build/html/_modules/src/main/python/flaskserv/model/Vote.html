@@ -39,7 +39,17 @@
 
 <div class="viewcode-block" id="Vote"><a class="viewcode-back" href="../../../../../../flaskserver/model/Vote.html#src.main.python.flaskserv.model.Vote.Vote">[docs]</a><span class="k">class</span> <span class="nc">Vote</span><span class="p">:</span>
 	<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">	TODO</span>
+<span class="sd">	Vote handling class. Handles both ``POST`` and ``GET`` requests.</span>
+
+<span class="sd">	:param request: :class:`flask.Request` object containing the request information.</span>
+<span class="sd">	:returns: :class:`flask.Response` with result of operation.</span>
+
+<span class="sd">	* if ``POST``: returns json with a ``message`` index, and ``status==200`` if vote updated and ``status==201`` if new song item created in ``playlist`` table.</span>
+
+<span class="sd">	* if ``GET``: returns the whole ``playlist`` table.</span>
+
+
+
 <span class="sd">	&quot;&quot;&quot;</span>
 	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">request</span> <span class="o">=</span> <span class="n">request</span>
@@ -47,7 +57,16 @@
 
 <div class="viewcode-block" id="Vote.handle_vote"><a class="viewcode-back" href="../../../../../../flaskserver/model/Vote.html#src.main.python.flaskserv.model.Vote.Vote.handle_vote">[docs]</a>	<span class="k">def</span> <span class="nf">handle_vote</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s_id</span><span class="p">,</span> <span class="n">u_id</span><span class="p">,</span> <span class="n">vote</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">		TODO</span>
+<span class="sd">		Handles the vote. Manipulates the ``playlist`` table, which it finds in the database</span>
+<span class="sd">		given by the environment variable ``PLAYLIST_PATH``. Checks if ``s_id`` already in ``playlist`` in which case</span>
+<span class="sd">		it updates the vote by calling :meth:``src.main.python.flaskserv.model.Playlist.update_vote``.</span>
+<span class="sd">		If not already in ``playlist``, adds by calling :meth:``src.main.python.flaskserv.model.Playlist.add``</span>
+
+<span class="sd">		:param int s_id: the song ``rowid``</span>
+<span class="sd">		:param int u_id: user ``id``</span>
+<span class="sd">		:param int vote: the value to adjust vote by if song already in ``playlist``, else to set to.</span>
+
+<span class="sd">		:returns: :class:``flask.Response``</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 
 		<span class="n">pl</span> <span class="o">=</span> <span class="n">Playlist</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;PLAYLIST_PATH&quot;</span><span class="p">])</span>

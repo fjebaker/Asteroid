@@ -2,7 +2,7 @@ import threading
 
 class ConditionObject:
 	'''
-	Conditions which govern playback in :class:`PlayStream`
+	Conditions which govern playback in :class:`src.main.python.player.PlayStream`
 	'''
 	lock = threading.Lock() 	#: threading Lock Object
 	play = True		#: if playing
@@ -11,9 +11,10 @@ class ConditionObject:
 
 	def toggle_pause(self):
 		"""
-		Toggle pause:
+		Toggle :attr:`self.pause`
 
-			if self.pause == True: set to False
-			if self.pause == False: set to True
+			if ``self.pause == True``: set to ``False``
+
+			if ``self.pause == False``: set to ``True``
 		"""
 		self.pause = not self.pause

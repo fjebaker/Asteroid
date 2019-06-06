@@ -81,7 +81,7 @@ Encapsulates <code class="xref py py-class docutils literal notranslate"><span c
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>query</strong> (<em>byte string</em>) – the query request</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">json object containing query result</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">flask.Response</span></code> containing query result</td>
 </tr>
 </tbody>
 </table>
@@ -93,7 +93,7 @@ Encapsulates <code class="xref py py-class docutils literal notranslate"><span c
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">empty dictionary</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">flask.Response</span></code> with empty json object, and <code class="docutils literal notranslate"><span class="pre">status==400</span></code>.</td>
 </tr>
 </tbody>
 </table>
@@ -102,13 +102,13 @@ Encapsulates <code class="xref py py-class docutils literal notranslate"><span c
 <dl class="method">
 <dt id="src.main.python.flaskserv.QueryHandlers.MusicQuery.getAllSongs">
 <code class="descname">getAllSongs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/QueryHandlers.html#MusicQuery.getAllSongs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.QueryHandlers.MusicQuery.getAllSongs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fetch from database the whole songs table. Looks in environment variable <cite>MUSIC_DB_PATH</cite> for the database path.
+<dd><p>Fetch from database the whole songs table. Looks in environment variable <code class="docutils literal notranslate"><span class="pre">MUSIC_DB_PATH</span></code> for the database path.
 Converts the list of tuples from database call into a dictionary.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">dictionary containing the parsed songs table</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">flask.Response</span></code> with json of dictionary containing all songs, and <code class="docutils literal notranslate"><span class="pre">status==200</span></code>.</td>
 </tr>
 </tbody>
 </table>
@@ -117,7 +117,15 @@ Converts the list of tuples from database call into a dictionary.</p>
 <dl class="method">
 <dt id="src.main.python.flaskserv.QueryHandlers.MusicQuery.id">
 <code class="descname">id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/QueryHandlers.html#MusicQuery.id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.QueryHandlers.MusicQuery.id" title="Permalink to this definition">¶</a></dt>
-<dd><p>TODO</p>
+<dd><p>Query database for a specific row with id from query string parameter <code class="docutils literal notranslate"><span class="pre">?id=</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">flask.Response</span></code> with json of nested tuple in list containing song with specified id, and <code class="docutils literal notranslate"><span class="pre">status==200</span></code>.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
@@ -141,7 +149,7 @@ Encapsulates <code class="xref py py-class docutils literal notranslate"><span c
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>query</strong> (<em>byte string</em>) – the query request</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">json object containing query result</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">flask.Response</span></code> containing query result</td>
 </tr>
 </tbody>
 </table>
@@ -153,7 +161,7 @@ Encapsulates <code class="xref py py-class docutils literal notranslate"><span c
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">empty dictionary</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">flask.Response</span></code> with empty json object, and <code class="docutils literal notranslate"><span class="pre">status==400</span></code>.</td>
 </tr>
 </tbody>
 </table>
@@ -162,13 +170,13 @@ Encapsulates <code class="xref py py-class docutils literal notranslate"><span c
 <dl class="method">
 <dt id="src.main.python.flaskserv.QueryHandlers.UserQuery.getAllUsers">
 <code class="descname">getAllUsers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/QueryHandlers.html#UserQuery.getAllUsers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.QueryHandlers.UserQuery.getAllUsers" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fetch from database the whole users table. Looks in environment variable <cite>USER_DB_PATH</cite> for the database path.
+<dd><p>Fetch from database the whole users table. Looks in environment variable <code class="docutils literal notranslate"><span class="pre">USER_DB_PATH</span></code> for the database path.
 Converts the list of tuples from database call into a dictionary.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">dictionary containing the parsed users table</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">flask.Response</span></code> with json of dictionary containing all users, and <code class="docutils literal notranslate"><span class="pre">status==200</span></code>.</td>
 </tr>
 </tbody>
 </table>
@@ -177,7 +185,15 @@ Converts the list of tuples from database call into a dictionary.</p>
 <dl class="method">
 <dt id="src.main.python.flaskserv.QueryHandlers.UserQuery.id">
 <code class="descname">id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/QueryHandlers.html#UserQuery.id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.QueryHandlers.UserQuery.id" title="Permalink to this definition">¶</a></dt>
-<dd><p>TODO</p>
+<dd><p>Query database for a specific row with id from query string parameter <code class="docutils literal notranslate"><span class="pre">?id=</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">flask.Response</span></code> with json of nested tuple in list containing user with specified id, and <code class="docutils literal notranslate"><span class="pre">status==200</span></code>.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">

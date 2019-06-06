@@ -36,8 +36,6 @@
 <span></span><span class="kn">import</span> <span class="nn">sqlite3</span>
 
 <div class="viewcode-block" id="sanitise"><a class="viewcode-back" href="../../../../../flaskserver/Database.html#src.main.python.flaskserv.Database.sanitise">[docs]</a><span class="k">def</span> <span class="nf">sanitise</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-	
-	
 	<span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
 			<span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span></div>
@@ -192,13 +190,13 @@
 		<span class="n">cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;PRAGMA table_info(</span><span class="si">{}</span><span class="s1">);&#39;&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">table_name</span><span class="p">))</span>
 		<span class="k">return</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="DBInstance._save"><a class="viewcode-back" href="../../../../../flaskserver/Database.html#src.main.python.flaskserv.Database.DBInstance._save">[docs]</a>	<span class="k">def</span> <span class="nf">_save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">_save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">		internal method for commiting changes to the database</span>
 <span class="sd">		&quot;&quot;&quot;</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span></div>
+		<span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
 
-<div class="viewcode-block" id="DBInstance._is_row_correct"><a class="viewcode-back" href="../../../../../flaskserver/Database.html#src.main.python.flaskserv.Database.DBInstance._is_row_correct">[docs]</a>	<span class="k">def</span> <span class="nf">_is_row_correct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_names</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">_is_row_correct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_names</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">		internal method to validate whether a row string matches the table row</span>
 <span class="sd">		at the moment only checks length of the two arguments is the same, in future will be more thorough</span>
@@ -212,7 +210,7 @@
 		<span class="c1"># TODO</span>
 		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">column_names</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
 			<span class="n">ok</span> <span class="o">=</span> <span class="kc">False</span>
-		<span class="k">return</span> <span class="n">ok</span></div></div>
+		<span class="k">return</span> <span class="n">ok</span></div>
 
 <div class="viewcode-block" id="DBAccessory"><a class="viewcode-back" href="../../../../../flaskserver/Database.html#src.main.python.flaskserv.Database.DBAccessory">[docs]</a><span class="k">class</span> <span class="nc">DBAccessory</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;</span>
@@ -273,20 +271,33 @@
 			<span class="p">])</span></div>
 
 <div class="viewcode-block" id="MusicDB.get_song_by_name"><a class="viewcode-back" href="../../../../../flaskserver/Database.html#src.main.python.flaskserv.Database.MusicDB.get_song_by_name">[docs]</a>	<span class="k">def</span> <span class="nf">get_song_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		TODO</span>
+<span class="sd">		&quot;&quot;&quot;</span>
 		<span class="k">pass</span></div>
 
 <div class="viewcode-block" id="MusicDB.get_by_rowid"><a class="viewcode-back" href="../../../../../flaskserver/Database.html#src.main.python.flaskserv.Database.MusicDB.get_by_rowid">[docs]</a>	<span class="k">def</span> <span class="nf">get_by_rowid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rowid</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">		TODO</span>
+<span class="sd">		Get song by id.</span>
+
+<span class="sd">		:param int rowid: database table ``rowid`` to return whole row from.</span>
+<span class="sd">		:returns: song with ``rowid``</span>
+<span class="sd">		:rtype: length 1 list of tuple</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_inst</span><span class="o">.</span><span class="n">select_rows</span><span class="p">(</span><span class="s2">&quot;songs&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;rowid&quot;</span><span class="p">:</span><span class="n">rowid</span><span class="p">})</span></div>
 
 <div class="viewcode-block" id="MusicDB.get_song_by_artist"><a class="viewcode-back" href="../../../../../flaskserver/Database.html#src.main.python.flaskserv.Database.MusicDB.get_song_by_artist">[docs]</a>	<span class="k">def</span> <span class="nf">get_song_by_artist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">artist</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		TODO</span>
+<span class="sd">		&quot;&quot;&quot;</span>
 		<span class="k">pass</span></div>
 
 <div class="viewcode-block" id="MusicDB.get_all_songs"><a class="viewcode-back" href="../../../../../flaskserver/Database.html#src.main.python.flaskserv.Database.MusicDB.get_all_songs">[docs]</a>	<span class="k">def</span> <span class="nf">get_all_songs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">		Returns all songs in songs table of database given in constructor</span>
+<span class="sd">		Returns all songs in database given in constructor.</span>
+
+<span class="sd">		:returns: all rows of ``songs`` table in database.</span>
+<span class="sd">		:rtype: list of tuples</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_inst</span><span class="o">.</span><span class="n">select_columns</span><span class="p">(</span><span class="s2">&quot;songs&quot;</span><span class="p">,</span>
 			<span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;artist&quot;</span><span class="p">,</span> <span class="s2">&quot;duration&quot;</span><span class="p">,</span> <span class="s2">&quot;file_path&quot;</span><span class="p">,</span> <span class="s2">&quot;meta_dat&quot;</span><span class="p">])</span></div></div>
@@ -321,11 +332,18 @@
 
 <div class="viewcode-block" id="UserDB.get_user_by_id"><a class="viewcode-back" href="../../../../../flaskserver/Database.html#src.main.python.flaskserv.Database.UserDB.get_user_by_id">[docs]</a>	<span class="k">def</span> <span class="nf">get_user_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">id_n</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">		TODO</span>
+<span class="sd">		Get user by id.</span>
+
+<span class="sd">		:param int id_n: ``users`` table column ``id`` to match and return whole row from.</span>
+<span class="sd">		:returns: user with ``id==id_n``</span>
+<span class="sd">		:rtype: length 1 list of tuple</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_inst</span><span class="o">.</span><span class="n">select_rows</span><span class="p">(</span><span class="s2">&quot;users&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span><span class="n">id_n</span><span class="p">})</span></div>
 
 <div class="viewcode-block" id="UserDB.get_user_by_name"><a class="viewcode-back" href="../../../../../flaskserver/Database.html#src.main.python.flaskserv.Database.UserDB.get_user_by_name">[docs]</a>	<span class="k">def</span> <span class="nf">get_user_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		TODO</span>
+<span class="sd">		&quot;&quot;&quot;</span>
 		<span class="k">pass</span></div>
 
 <div class="viewcode-block" id="UserDB.get_column"><a class="viewcode-back" href="../../../../../flaskserver/Database.html#src.main.python.flaskserv.Database.UserDB.get_column">[docs]</a>	<span class="k">def</span> <span class="nf">get_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_name</span><span class="p">):</span>
@@ -340,7 +358,10 @@
 
 <div class="viewcode-block" id="UserDB.get_all_users"><a class="viewcode-back" href="../../../../../flaskserver/Database.html#src.main.python.flaskserv.Database.UserDB.get_all_users">[docs]</a>	<span class="k">def</span> <span class="nf">get_all_users</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">		Returns all users in users table of database given in constructor</span>
+<span class="sd">		Returns all users in database given in constructor.</span>
+
+<span class="sd">		:returns: all rows of ``users`` table in database.</span>
+<span class="sd">		:rtype: list of tuples</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_inst</span><span class="o">.</span><span class="n">select_columns</span><span class="p">(</span><span class="s2">&quot;users&quot;</span><span class="p">,</span>
 			<span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;meta_dat&quot;</span><span class="p">])</span></div></div>

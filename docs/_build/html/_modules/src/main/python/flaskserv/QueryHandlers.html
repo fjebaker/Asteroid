@@ -91,7 +91,7 @@
 
 <span class="sd">	:param query: the query request</span>
 <span class="sd">	:type query: byte string</span>
-<span class="sd">	:returns: json object containing query result</span>
+<span class="sd">	:returns: :class:`flask.Response` containing query result</span>
 <span class="sd">	&quot;&quot;&quot;</span>
 
 	<span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;artist&quot;</span><span class="p">,</span> <span class="s2">&quot;duration&quot;</span><span class="p">,</span> <span class="s2">&quot;file_path&quot;</span><span class="p">,</span> <span class="s2">&quot;meta_dat&quot;</span><span class="p">]</span> <span class="c1">#: json keys for parsing database</span>
@@ -101,10 +101,10 @@
 
 <div class="viewcode-block" id="MusicQuery.getAllSongs"><a class="viewcode-back" href="../../../../../flaskserver/QueryHandlers.html#src.main.python.flaskserv.QueryHandlers.MusicQuery.getAllSongs">[docs]</a>	<span class="k">def</span> <span class="nf">getAllSongs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">		Fetch from database the whole songs table. Looks in environment variable `MUSIC_DB_PATH` for the database path.</span>
+<span class="sd">		Fetch from database the whole songs table. Looks in environment variable ``MUSIC_DB_PATH`` for the database path.</span>
 <span class="sd">		Converts the list of tuples from database call into a dictionary.</span>
 
-<span class="sd">		:returns: dictionary containing the parsed songs table</span>
+<span class="sd">		:returns: :class:`flask.Response` with json of dictionary containing all songs, and ``status==200``.</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="n">db_result</span> <span class="o">=</span> <span class="n">MusicDB</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;MUSIC_DB_PATH&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">get_all_songs</span><span class="p">()</span>
 
@@ -123,7 +123,9 @@
 
 <div class="viewcode-block" id="MusicQuery.id"><a class="viewcode-back" href="../../../../../flaskserver/QueryHandlers.html#src.main.python.flaskserv.QueryHandlers.MusicQuery.id">[docs]</a>	<span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">		TODO</span>
+<span class="sd">		Query database for a specific row with id from query string parameter ``?id=``.</span>
+
+<span class="sd">		:returns: :class:`flask.Response` with json of nested tuple in list containing song with specified id, and ``status==200``.</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 
 		<span class="c1"># todo could probably merge these two</span>
@@ -150,7 +152,7 @@
 		<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">		Default case is an empty dictionary.</span>
 
-<span class="sd">		:returns: empty dictionary</span>
+<span class="sd">		:returns: :class:`flask.Response` with empty json object, and ``status==400``.</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="n">Response</span><span class="p">(</span>
 				<span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({}),</span>
@@ -165,7 +167,7 @@
 
 <span class="sd">	:param query: the query request</span>
 <span class="sd">	:type query: byte string</span>
-<span class="sd">	:returns: json object containing query result</span>
+<span class="sd">	:returns: :class:`flask.Response` containing query result</span>
 <span class="sd">	&quot;&quot;&quot;</span>
 
 	<span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;hash_pw&quot;</span><span class="p">,</span> <span class="s2">&quot;meta_dat&quot;</span><span class="p">]</span> <span class="c1">#: json keys for parsing database</span>
@@ -175,10 +177,10 @@
 
 <div class="viewcode-block" id="UserQuery.getAllUsers"><a class="viewcode-back" href="../../../../../flaskserver/QueryHandlers.html#src.main.python.flaskserv.QueryHandlers.UserQuery.getAllUsers">[docs]</a>	<span class="k">def</span> <span class="nf">getAllUsers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">		Fetch from database the whole users table. Looks in environment variable `USER_DB_PATH` for the database path.</span>
+<span class="sd">		Fetch from database the whole users table. Looks in environment variable ``USER_DB_PATH`` for the database path.</span>
 <span class="sd">		Converts the list of tuples from database call into a dictionary.</span>
 
-<span class="sd">		:returns: dictionary containing the parsed users table</span>
+<span class="sd">		:returns: :class:`flask.Response` with json of dictionary containing all users, and ``status==200``.</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="n">db_result</span> <span class="o">=</span> <span class="n">UserDB</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;USER_DB_PATH&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">get_all_users</span><span class="p">()</span>
 
@@ -197,7 +199,9 @@
 
 <div class="viewcode-block" id="UserQuery.id"><a class="viewcode-back" href="../../../../../flaskserver/QueryHandlers.html#src.main.python.flaskserv.QueryHandlers.UserQuery.id">[docs]</a>	<span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">		TODO</span>
+<span class="sd">		Query database for a specific row with id from query string parameter ``?id=``.</span>
+
+<span class="sd">		:returns: :class:`flask.Response` with json of nested tuple in list containing user with specified id, and ``status==200``.</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 
 		<span class="c1"># todo could probably merge these two</span>
@@ -224,7 +228,7 @@
 		<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">		Default case is an empty dictionary.</span>
 
-<span class="sd">		:returns: empty dictionary</span>
+<span class="sd">		:returns: :class:`flask.Response` with empty json object, and ``status==400``.</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="n">Response</span><span class="p">(</span>
 				<span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({}),</span>

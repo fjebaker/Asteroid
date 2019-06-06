@@ -7,7 +7,13 @@ import threading, os
 
 class AudioHandler(threading.Thread):
 	"""
-	Controls playback
+	Controlls how the music is being played. Will spawn instances of :class:`src.main.python.player.PlayStream` for each song.
+	Handles the :class:`src.main.python.player.ConditionObject` in response to INET server commands.
+	Determines playback from the music database also handles by the HTTP server.
+	Has ``self.daemon = True``.
+
+	:param queue: queue to get new INET server commands.
+	:type queue: :class:`queue.Queue`
 	"""
 	def __init__(self, queue):
 		threading.Thread.__init__(self)
@@ -20,13 +26,13 @@ class AudioHandler(threading.Thread):
 		self.first = True 		# hacky, since first call must be over socket msg
 
 	def run(self):
-		"""
-		TODO
-
-		needs to check if a song is playing, if not request next file and then play
-
-		enhance: make it async
-		"""
+		'''
+		Inherited and overwritten :meth:`threading.Thread.run`; called when :attr:`self.start()` method is invoked.
+		Checks if a new message has been received in :attr:`self.queue`, and if so, acts upon it.
+		Else, checks if current playback has finished, i.e. ``ConditionObject.done == True``,
+		in which case tries to fetch a new item from the ``playlist`` table in the database, and if one exists,
+		will play most voted song.
+		'''
 		while True:
 			try:
 				msg = self.queue.get(timeout=0.1)
@@ -44,7 +50,11 @@ class AudioHandler(threading.Thread):
 
 	def fetch_playlist_item(self):
 		"""
-		TODO
+		Uses an instance of :class:`src.main.python.flaskserv.model.PLaylist` to fetch the current ``playlist`` table.
+		Determines most voted song, and removes it from ``playlist``.
+
+		:returns: most voted song
+		:rtype: tuple
 		"""
 
 		pl = Playlist(os.environ["PLAYLIST_PATH"])
@@ -59,7 +69,11 @@ class AudioHandler(threading.Thread):
 
 	def get_path_from_database(self):
 		"""
-		TODO
+		Queries the ``songs`` table with :class:`src.main.python.flaskserv.Database.MusicDB` to determine
+		information on the next song to play given the song id from :meth:`self.fetch_playlist_item`.
+
+		:returns: the path to the most voted song
+		:rtype: str
 		"""
 		n_item = self.fetch_playlist_item()
 		if n_item == None:
@@ -71,7 +85,10 @@ class AudioHandler(threading.Thread):
 
 	def play(self, *args):
 		"""
-		TODO
+		Begin the playback -- first checks if ``*args`` contains a path, else calls :meth:`self.get_path_from_database`
+		to fetch a song path. Then checks if the file exists, returns ``None`` if false. Stops the current playback if a player
+		exists by calling :meth:`self.stop`. Creates a new :class:`src.main.python.player.PlayStream` instance, loads the song
+		and starts the playback. Finally, sets :attr:`self.curret_player` to new instance.
 		"""
 		if len(args) == 2:
 			path = args[1]
@@ -95,13 +112,14 @@ class AudioHandler(threading.Thread):
 
 	def pause(self, *args):
 		"""
-		TODO
+		Pause the playback -- calls :meth:`src.main.python.player.ConditionObject.toggle_pause` on own instance.
 		"""
 		self.condObj.toggle_pause()
 
 	def stop(self, *args):
 		"""
-		TODO
+		Sets the current instace of :attr:`src.main.python.player.ConditionObject.play` to ``False``, then spawns fresh instance
+		and sets :attr:`self.current_player` to ``None``.
 		"""
 		with self.condObj.lock:
 			self.condObj.play = False
