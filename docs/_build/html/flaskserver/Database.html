@@ -73,21 +73,8 @@ Will wrap all non-special functions with a decorator, providing a scoped instanc
 </table>
 <dl class="method">
 <dt id="src.main.python.flaskserv.Database.DBInstance.create_table">
-<code class="descname">create_table</code><span class="sig-paren">(</span><em>table_name</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#DBInstance.create_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.DBInstance.create_table" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a new table in the database.
-If ‘UNIQUE:col_name’ present in **kwargs, adds a CONSTRAINT to the table called unique_col, making col_name unique.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>table_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – name of table</li>
-<li><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – keys are columns, values are datatypes</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
+<code class="descname">create_table</code><span class="sig-paren">(</span><em>table_name</em>, <em>keys</em>, <em>types</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#DBInstance.create_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.DBInstance.create_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>TODO</p>
 </dd></dl>
 
 <dl class="method">
@@ -118,7 +105,7 @@ If ‘UNIQUE:col_name’ present in **kwargs, adds a CONSTRAINT to the table cal
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>table_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – name of the table to get the column names of</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of column names</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">tuple of column names</td>
 </tr>
 </tbody>
 </table>
@@ -134,7 +121,7 @@ If ‘UNIQUE:col_name’ present in **kwargs, adds a CONSTRAINT to the table cal
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>table_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – name of table</li>
-<li><strong>data</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – items are data values</li>
+<li><strong>data</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)"><em>tuple</em></a>) – items are data values</li>
 </ul>
 </td>
 </tr>
@@ -155,11 +142,11 @@ If ‘UNIQUE:col_name’ present in **kwargs, adds a CONSTRAINT to the table cal
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>table_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – name of table</li>
-<li><strong>column</strong> (<em>str/list</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>]</em>) – name of column to select from</li>
+<li><strong>column</strong> (<em>str/tuple</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>]</em>) – name of column to select from</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list of tuples with items from column [(x1, y1, …), (x2, y2, …), …]</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">tuple of tuples with items from column [(x1, y1, …), (x2, y2, …), …]</p>
 </td>
 </tr>
 </tbody>
@@ -336,6 +323,7 @@ Encapsulates <a class="reference internal" href="#src.main.python.flaskserv.Data
 <p class="caption"><span class="caption-text">JS Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../js/dynamic_load.html"><code class="docutils literal notranslate"><span class="pre">dynamic_load.js</span></code> Script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../js/account.html"><code class="docutils literal notranslate"><span class="pre">account.js</span></code> Script</a></li>
 </ul>
 
 <div class="relations">

@@ -33,13 +33,7 @@ class DBInstance:
 
 	def create_table(self, table_name, keys, types):
 		"""
-		Create a new table in the database.
-		If \'UNIQUE:col_name\' present in \\*\\*kwargs, adds a CONSTRAINT to the table called unique_col, making col_name unique.
-
-		:param table_name: name of table
-		:type table_name: str
-		:param \\*\\*kwargs: keys are columns, values are datatypes
-		:type \\*\\*kwargs: dict
+		TODO
 		"""
 		column_type = ""
 		constraint = ""
@@ -59,7 +53,7 @@ class DBInstance:
 		:param table_name: name of table
 		:type table_name: str
 		:param data: items are data values
-		:type data: list
+		:type data: tuple
 		:raises: Exception("Bad row format.")
 		"""
 		column_names = self.get_column_info(table_name)
@@ -93,8 +87,8 @@ class DBInstance:
 		:param table_name: name of table
 		:type table_name: str
 		:param column: name of column to select from
-		:type column: str/list[str]
-		:returns: list of tuples with items from column [(x1, y1, ...), (x2, y2, ...), ...]
+		:type column: str/tuple[str]
+		:returns: tuple of tuples with items from column [(x1, y1, ...), (x2, y2, ...), ...]
 		"""
 		if type(column_list) != tuple:
 			column_list = (column_list,)
@@ -149,7 +143,7 @@ class DBInstance:
 
 		:param table_name: name of the table to get the column names of
 		:type table_name: str
-		:return: list of column names
+		:return: tuple of column names
 		"""
 		cursor = self.handle.execute('''PRAGMA table_info({});'''.format(table_name))
 		cols = sorted(cursor.fetchall(), key=lambda x: int(x[0]))
@@ -167,9 +161,9 @@ class DBInstance:
 		at the moment only checks length of the two arguments is the same, in future will be more thorough
 
 		:param column_names: names of the columns to check against
-		:type column_names: list of str
+		:type column_names: tuple of str
 		:param row: names of columns provided by user
-		:type row: list of str
+		:type row: tuple of str
 		"""
 		ok = True
 		# TODO
@@ -247,7 +241,7 @@ class MusicDB(metaclass=DBAccessory):
 
 		:param int rowid: database table ``rowid`` to return whole row from.
 		:returns: song with ``rowid``
-		:rtype: length 1 list of tuple
+		:rtype: length 1 tuple of tuple
 		"""
 		return self.db_inst.select_rows("songs", {"rowid":rowid})
 
@@ -262,7 +256,7 @@ class MusicDB(metaclass=DBAccessory):
 		Returns all songs in database given in constructor.
 
 		:returns: all rows of ``songs`` table in database.
-		:rtype: list of tuples
+		:rtype: tuple of tuples
 		"""
 		return self.db_inst.select_columns("songs",
 			("name", "artist", "duration", "file_path", "meta_dat"))
@@ -301,7 +295,7 @@ class UserDB(metaclass=DBAccessory):
 
 		:param int id_n: ``users`` table column ``id`` to match and return whole row from.
 		:returns: user with ``id==id_n``
-		:rtype: length 1 list of tuple
+		:rtype: length 1 tuple of tuple
 		"""
 		return self.db_inst.select_rows("users", {"id":id_n})
 
@@ -317,7 +311,7 @@ class UserDB(metaclass=DBAccessory):
 
 		:param column_name: name of column to retrieve
 		:type column_name: str
-		:returns: list of tuples representing column
+		:returns: tuple of tuples representing column
 		"""
 		return self.db_inst.select_columns("users", column_name)
 
@@ -326,7 +320,7 @@ class UserDB(metaclass=DBAccessory):
 		Returns all users in database given in constructor.
 
 		:returns: all rows of ``users`` table in database.
-		:rtype: list of tuples
+		:rtype: tuple of tuples
 		"""
 		return self.db_inst.select_columns("users",
 			("id", "name", "meta_dat"))

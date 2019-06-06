@@ -77,6 +77,7 @@
 <span class="sd">		:param vote: vote value to change by (can be positive or negative)</span>
 <span class="sd">		:type vote: int</span>
 <span class="sd">		&quot;&quot;&quot;</span>
+		<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;DEBUG -- in update_vote, params are &quot;</span><span class="p">,</span> <span class="n">s_id</span><span class="p">,</span> <span class="n">vote</span><span class="p">)</span>
 		<span class="n">c_vote</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_inst</span><span class="o">.</span><span class="n">select_rows</span><span class="p">(</span><span class="s2">&quot;playlist&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;s_id&quot;</span><span class="p">:</span><span class="n">s_id</span><span class="p">})[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">db_inst</span><span class="o">.</span><span class="n">update_generic</span><span class="p">(</span><span class="s2">&quot;playlist&quot;</span><span class="p">,</span> 
 				<span class="p">{</span><span class="s2">&quot;vote&quot;</span><span class="p">:</span><span class="nb">int</span><span class="p">(</span><span class="n">c_vote</span><span class="p">)</span><span class="o">+</span><span class="nb">int</span><span class="p">(</span><span class="n">vote</span><span class="p">)},</span>
@@ -130,6 +131,7 @@
 <p class="caption"><span class="caption-text">JS Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../../js/dynamic_load.html"><code class="docutils literal notranslate"><span class="pre">dynamic_load.js</span></code> Script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../js/account.html"><code class="docutils literal notranslate"><span class="pre">account.js</span></code> Script</a></li>
 </ul>
 
 <div class="relations">

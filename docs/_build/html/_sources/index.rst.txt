@@ -25,6 +25,7 @@ Section 1.2 JS Code:
    :caption: JS Contents:
 
    js/dynamic_load
+   js/account
 
 
 

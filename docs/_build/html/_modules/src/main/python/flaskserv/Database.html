@@ -66,19 +66,13 @@
 		<span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 			
 
-<div class="viewcode-block" id="DBInstance.create_table"><a class="viewcode-back" href="../../../../../flaskserver/Database.html#src.main.python.flaskserv.Database.DBInstance.create_table">[docs]</a>	<span class="k">def</span> <span class="nf">create_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="DBInstance.create_table"><a class="viewcode-back" href="../../../../../flaskserver/Database.html#src.main.python.flaskserv.Database.DBInstance.create_table">[docs]</a>	<span class="k">def</span> <span class="nf">create_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">types</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">		Create a new table in the database.</span>
-<span class="sd">		If \&#39;UNIQUE:col_name\&#39; present in \\*\\*kwargs, adds a CONSTRAINT to the table called unique_col, making col_name unique.</span>
-
-<span class="sd">		:param table_name: name of table</span>
-<span class="sd">		:type table_name: str</span>
-<span class="sd">		:param \\*\\*kwargs: keys are columns, values are datatypes</span>
-<span class="sd">		:type \\*\\*kwargs: dict</span>
+<span class="sd">		TODO</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="n">column_type</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 		<span class="n">constraint</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-		<span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+		<span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">types</span><span class="p">):</span>
 			<span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="s2">&quot;UNIQUE&quot;</span><span class="p">:</span>
 				<span class="n">constraint</span> <span class="o">+=</span> <span class="s2">&quot;, CONSTRAINT unique_col UNIQUE (</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
 				<span class="k">continue</span>
@@ -94,11 +88,10 @@
 <span class="sd">		:param table_name: name of table</span>
 <span class="sd">		:type table_name: str</span>
 <span class="sd">		:param data: items are data values</span>
-<span class="sd">		:type data: list</span>
+<span class="sd">		:type data: tuple</span>
 <span class="sd">		:raises: Exception(&quot;Bad row format.&quot;)</span>
 <span class="sd">		&quot;&quot;&quot;</span>
-		<span class="n">column_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_column_info</span><span class="p">(</span><span class="n">table_name</span><span class="p">)</span>
-		<span class="n">column_names</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">column_info</span><span class="p">]</span>
+		<span class="n">column_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_column_info</span><span class="p">(</span><span class="n">table_name</span><span class="p">)</span>
 		<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_row_correct</span><span class="p">(</span><span class="n">column_names</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
 			<span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Bad row format.&quot;</span><span class="p">)</span>
 
@@ -119,7 +112,7 @@
 		<span class="n">condition</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">condition</span><span class="o">.</span><span class="n">items</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
 		<span class="n">condition_string</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">condition</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot; = &#39;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">condition</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;&#39;&quot;</span>
 
-		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;SELECT * FROM </span><span class="si">{}</span><span class="s1"> WHERE </span><span class="si">{}</span><span class="s1">&#39;&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">table_name</span><span class="p">,</span> <span class="n">condition_string</span><span class="p">))</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span></div>
+		<span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;SELECT * FROM </span><span class="si">{}</span><span class="s1"> WHERE </span><span class="si">{}</span><span class="s1"> ORDER BY rowid ASC;&#39;&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">table_name</span><span class="p">,</span> <span class="n">condition_string</span><span class="p">))</span><span class="o">.</span><span class="n">fetchall</span><span class="p">())</span></div>
 	
 
 <div class="viewcode-block" id="DBInstance.select_columns"><a class="viewcode-back" href="../../../../../flaskserver/Database.html#src.main.python.flaskserv.Database.DBInstance.select_columns">[docs]</a>	<span class="k">def</span> <span class="nf">select_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">column_list</span><span class="p">):</span>
@@ -129,14 +122,14 @@
 <span class="sd">		:param table_name: name of table</span>
 <span class="sd">		:type table_name: str</span>
 <span class="sd">		:param column: name of column to select from</span>
-<span class="sd">		:type column: str/list[str]</span>
-<span class="sd">		:returns: list of tuples with items from column [(x1, y1, ...), (x2, y2, ...), ...]</span>
+<span class="sd">		:type column: str/tuple[str]</span>
+<span class="sd">		:returns: tuple of tuples with items from column [(x1, y1, ...), (x2, y2, ...), ...]</span>
 <span class="sd">		&quot;&quot;&quot;</span>
-		<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">column_list</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">list</span><span class="p">:</span>
-			<span class="n">column_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">column_list</span><span class="p">]</span>
+		<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">column_list</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">tuple</span><span class="p">:</span>
+			<span class="n">column_list</span> <span class="o">=</span> <span class="p">(</span><span class="n">column_list</span><span class="p">,)</span>
 		<span class="n">cols</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">column_list</span><span class="p">)</span>
 		<span class="c1"># print(&#39;&#39;&#39;SELECT {} from {}&#39;&#39;&#39;.format(cols, table_name))</span>
-		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;SELECT </span><span class="si">{}</span><span class="s1"> FROM </span><span class="si">{}</span><span class="s1">&#39;&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cols</span><span class="p">,</span> <span class="n">table_name</span><span class="p">))</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span></div>
+		<span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;SELECT </span><span class="si">{}</span><span class="s1"> FROM </span><span class="si">{}</span><span class="s1"> ORDER BY rowid ASC;&#39;&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cols</span><span class="p">,</span> <span class="n">table_name</span><span class="p">))</span><span class="o">.</span><span class="n">fetchall</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="DBInstance.update_generic"><a class="viewcode-back" href="../../../../../flaskserver/Database.html#src.main.python.flaskserv.Database.DBInstance.update_generic">[docs]</a>	<span class="k">def</span> <span class="nf">update_generic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">changes</span><span class="p">,</span> <span class="n">condition</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
@@ -174,9 +167,9 @@
 <span class="sd">		:param condition: the condition to be met to qualify for removal</span>
 <span class="sd">		:type condition: dict		</span>
 <span class="sd">		&quot;&quot;&quot;</span>
-		<span class="n">condition</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">condition</span><span class="o">.</span><span class="n">items</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="n">condition</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">condition</span><span class="o">.</span><span class="n">items</span><span class="p">()))[</span><span class="mi">0</span><span class="p">]</span>
 		<span class="n">condition_string</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">condition</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot; = &#39;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">condition</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;&#39;&quot;</span>
-
+		<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;DEBUG -- in delete_rows making query: &quot;</span> <span class="o">+</span> <span class="s1">&#39;&#39;&#39;DELETE FROM </span><span class="si">{}</span><span class="s1"> WHERE </span><span class="si">{}</span><span class="s1">&#39;&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">table_name</span><span class="p">,</span> <span class="n">condition_string</span><span class="p">))</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;DELETE FROM </span><span class="si">{}</span><span class="s1"> WHERE </span><span class="si">{}</span><span class="s1">&#39;&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">table_name</span><span class="p">,</span> <span class="n">condition_string</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="DBInstance.get_column_info"><a class="viewcode-back" href="../../../../../flaskserver/Database.html#src.main.python.flaskserv.Database.DBInstance.get_column_info">[docs]</a>	<span class="k">def</span> <span class="nf">get_column_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">):</span>
@@ -185,10 +178,11 @@
 
 <span class="sd">		:param table_name: name of the table to get the column names of</span>
 <span class="sd">		:type table_name: str</span>
-<span class="sd">		:return: list of column names</span>
+<span class="sd">		:return: tuple of column names</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="n">cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;PRAGMA table_info(</span><span class="si">{}</span><span class="s1">);&#39;&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">table_name</span><span class="p">))</span>
-		<span class="k">return</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span></div>
+		<span class="n">cols</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+		<span class="k">return</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">cols</span><span class="p">])</span></div>
 
 	<span class="k">def</span> <span class="nf">_save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
@@ -202,9 +196,9 @@
 <span class="sd">		at the moment only checks length of the two arguments is the same, in future will be more thorough</span>
 
 <span class="sd">		:param column_names: names of the columns to check against</span>
-<span class="sd">		:type column_names: list of str</span>
+<span class="sd">		:type column_names: tuple of str</span>
 <span class="sd">		:param row: names of columns provided by user</span>
-<span class="sd">		:type row: list of str</span>
+<span class="sd">		:type row: tuple of str</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="n">ok</span> <span class="o">=</span> <span class="kc">True</span>
 		<span class="c1"># TODO</span>
@@ -282,7 +276,7 @@
 
 <span class="sd">		:param int rowid: database table ``rowid`` to return whole row from.</span>
 <span class="sd">		:returns: song with ``rowid``</span>
-<span class="sd">		:rtype: length 1 list of tuple</span>
+<span class="sd">		:rtype: length 1 tuple of tuple</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_inst</span><span class="o">.</span><span class="n">select_rows</span><span class="p">(</span><span class="s2">&quot;songs&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;rowid&quot;</span><span class="p">:</span><span class="n">rowid</span><span class="p">})</span></div>
 
@@ -297,10 +291,10 @@
 <span class="sd">		Returns all songs in database given in constructor.</span>
 
 <span class="sd">		:returns: all rows of ``songs`` table in database.</span>
-<span class="sd">		:rtype: list of tuples</span>
+<span class="sd">		:rtype: tuple of tuples</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_inst</span><span class="o">.</span><span class="n">select_columns</span><span class="p">(</span><span class="s2">&quot;songs&quot;</span><span class="p">,</span>
-			<span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;artist&quot;</span><span class="p">,</span> <span class="s2">&quot;duration&quot;</span><span class="p">,</span> <span class="s2">&quot;file_path&quot;</span><span class="p">,</span> <span class="s2">&quot;meta_dat&quot;</span><span class="p">])</span></div></div>
+			<span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;artist&quot;</span><span class="p">,</span> <span class="s2">&quot;duration&quot;</span><span class="p">,</span> <span class="s2">&quot;file_path&quot;</span><span class="p">,</span> <span class="s2">&quot;meta_dat&quot;</span><span class="p">))</span></div></div>
 
 
 <div class="viewcode-block" id="UserDB"><a class="viewcode-back" href="../../../../../flaskserver/Database.html#src.main.python.flaskserv.Database.UserDB">[docs]</a><span class="k">class</span> <span class="nc">UserDB</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">DBAccessory</span><span class="p">):</span>
@@ -336,7 +330,7 @@
 
 <span class="sd">		:param int id_n: ``users`` table column ``id`` to match and return whole row from.</span>
 <span class="sd">		:returns: user with ``id==id_n``</span>
-<span class="sd">		:rtype: length 1 list of tuple</span>
+<span class="sd">		:rtype: length 1 tuple of tuple</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_inst</span><span class="o">.</span><span class="n">select_rows</span><span class="p">(</span><span class="s2">&quot;users&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span><span class="n">id_n</span><span class="p">})</span></div>
 
@@ -352,7 +346,7 @@
 
 <span class="sd">		:param column_name: name of column to retrieve</span>
 <span class="sd">		:type column_name: str</span>
-<span class="sd">		:returns: list of tuples representing column</span>
+<span class="sd">		:returns: tuple of tuples representing column</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_inst</span><span class="o">.</span><span class="n">select_columns</span><span class="p">(</span><span class="s2">&quot;users&quot;</span><span class="p">,</span> <span class="n">column_name</span><span class="p">)</span></div>
 
@@ -361,10 +355,10 @@
 <span class="sd">		Returns all users in database given in constructor.</span>
 
 <span class="sd">		:returns: all rows of ``users`` table in database.</span>
-<span class="sd">		:rtype: list of tuples</span>
+<span class="sd">		:rtype: tuple of tuples</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_inst</span><span class="o">.</span><span class="n">select_columns</span><span class="p">(</span><span class="s2">&quot;users&quot;</span><span class="p">,</span>
-			<span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;meta_dat&quot;</span><span class="p">])</span></div></div>
+			<span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;meta_dat&quot;</span><span class="p">))</span></div></div>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 	<span class="k">pass</span>
@@ -394,6 +388,7 @@
 <p class="caption"><span class="caption-text">JS Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../js/dynamic_load.html"><code class="docutils literal notranslate"><span class="pre">dynamic_load.js</span></code> Script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../js/account.html"><code class="docutils literal notranslate"><span class="pre">account.js</span></code> Script</a></li>
 </ul>
 
 <div class="relations">

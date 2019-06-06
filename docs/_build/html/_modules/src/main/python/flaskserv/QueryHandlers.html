@@ -94,7 +94,7 @@
 <span class="sd">	:returns: :class:`flask.Response` containing query result</span>
 <span class="sd">	&quot;&quot;&quot;</span>
 
-	<span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;artist&quot;</span><span class="p">,</span> <span class="s2">&quot;duration&quot;</span><span class="p">,</span> <span class="s2">&quot;file_path&quot;</span><span class="p">,</span> <span class="s2">&quot;meta_dat&quot;</span><span class="p">]</span> <span class="c1">#: json keys for parsing database</span>
+	<span class="n">keys</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;artist&quot;</span><span class="p">,</span> <span class="s2">&quot;duration&quot;</span><span class="p">,</span> <span class="s2">&quot;file_path&quot;</span><span class="p">,</span> <span class="s2">&quot;meta_dat&quot;</span><span class="p">)</span> <span class="c1">#: json keys for parsing database</span>
 
 	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
 		<span class="n">BaseQuery</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">)</span>
@@ -108,11 +108,16 @@
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="n">db_result</span> <span class="o">=</span> <span class="n">MusicDB</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;MUSIC_DB_PATH&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">get_all_songs</span><span class="p">()</span>
 
-		<span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span> <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="s2">&quot;file_path&quot;</span><span class="p">]</span>
 		<span class="n">all_songs</span> <span class="o">=</span> <span class="p">[]</span>
 		<span class="k">for</span> <span class="n">song_tup</span> <span class="ow">in</span> <span class="n">db_result</span><span class="p">:</span>
 			<span class="n">song</span> <span class="o">=</span> <span class="p">{}</span>
-			<span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">song_tup</span><span class="p">):</span>
+			<span class="n">song_gen</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">song_tup</span><span class="p">)</span>		
+
+			<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">:</span>
+				<span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;file_path&quot;</span><span class="p">:</span>
+					<span class="k">continue</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="n">value</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">song_gen</span><span class="p">)</span>
 				<span class="n">song</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 			<span class="n">all_songs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">song</span><span class="p">)</span>
 
@@ -170,7 +175,7 @@
 <span class="sd">	:returns: :class:`flask.Response` containing query result</span>
 <span class="sd">	&quot;&quot;&quot;</span>
 
-	<span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;hash_pw&quot;</span><span class="p">,</span> <span class="s2">&quot;meta_dat&quot;</span><span class="p">]</span> <span class="c1">#: json keys for parsing database</span>
+	<span class="n">keys</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;hash_pw&quot;</span><span class="p">,</span> <span class="s2">&quot;meta_dat&quot;</span><span class="p">)</span> <span class="c1">#: json keys for parsing database</span>
 
 	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
 		<span class="n">BaseQuery</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">)</span>
@@ -184,7 +189,7 @@
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="n">db_result</span> <span class="o">=</span> <span class="n">UserDB</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;USER_DB_PATH&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">get_all_users</span><span class="p">()</span>
 
-		<span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span> <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="s2">&quot;hash_pw&quot;</span><span class="p">]</span>		<span class="c1"># bad key filtering :: TODO</span>
+		<span class="n">keys</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;meta_dat&quot;</span><span class="p">)</span>	<span class="c1"># bad key filtering :: TODO</span>
 		<span class="n">all_users</span> <span class="o">=</span> <span class="p">[]</span>
 		<span class="k">for</span> <span class="n">user_tup</span> <span class="ow">in</span> <span class="n">db_result</span><span class="p">:</span>
 			<span class="n">user</span> <span class="o">=</span> <span class="p">{}</span>
@@ -260,6 +265,7 @@
 <p class="caption"><span class="caption-text">JS Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../js/dynamic_load.html"><code class="docutils literal notranslate"><span class="pre">dynamic_load.js</span></code> Script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../js/account.html"><code class="docutils literal notranslate"><span class="pre">account.js</span></code> Script</a></li>
 </ul>
 
 <div class="relations">

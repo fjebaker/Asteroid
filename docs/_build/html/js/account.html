@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>dynamic_load.js Script &#8212; Asteroid 0.0.0 documentation</title>
+    <title>account.js Script &#8212; Asteroid 0.0.0 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -16,8 +16,7 @@
     <script type="text/javascript" src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="account.js Script" href="account.html" />
-    <link rel="prev" title="Vote Class" href="../flaskserver/model/Vote.html" />
+    <link rel="prev" title="dynamic_load.js Script" href="dynamic_load.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
@@ -34,19 +33,18 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="dynamic-load-js-script">
-<h1><code class="docutils literal notranslate"><span class="pre">dynamic_load.js</span></code> Script<a class="headerlink" href="#dynamic-load-js-script" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="account-js-script">
+<h1><code class="docutils literal notranslate"><span class="pre">account.js</span></code> Script<a class="headerlink" href="#account-js-script" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
-<dt id="insert_before">
-<code class="descname">insert_before</code><span class="sig-paren">(</span><em>element</em>, <em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#insert_before" title="Permalink to this definition">¶</a></dt>
-<dd><p>Used for inserting a script into the current html document.</p>
+<dt id="selectCookieDuration">
+<code class="descname">selectCookieDuration</code><span class="sig-paren">(</span><em>select</em><span class="sig-paren">)</span><a class="headerlink" href="#selectCookieDuration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Callback used for modifying the “cookieDuration” cookie via a ‘select’ element on the ‘change’ event and reloading the page with new expiry times on all cookies.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>element</strong> (<em>Object</em>) – document element before which the script should be inserted</li>
-<li><strong>path</strong> (<em>string</em>) – path the the .js script</li>
+<li><strong>select</strong> (<em>Object</em>) – the select element whose ‘change’ event has been triggered.</li>
 </ul>
 </td>
 </tr>
@@ -55,21 +53,9 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="insert_all_before">
-<code class="descname">insert_all_before</code><span class="sig-paren">(</span><em>element</em>, <em>paths</em><span class="sig-paren">)</span><a class="headerlink" href="#insert_all_before" title="Permalink to this definition">¶</a></dt>
-<dd><p>Used for inserting multiple scripts into a html document in a specific order.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>element</strong> (<em>Object</em>) – document element before which the scripts should be inserted</li>
-<li><strong>paths</strong> (<em>Array</em>) – paths to the various .js scripts</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
+<dt id="putOptions">
+<code class="descname">putOptions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#putOptions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used for supplying a select element with the options relevant to setting the “cookieDuration” cookie</p>
 </dd></dl>
 
 </div>
@@ -98,16 +84,15 @@
 </ul>
 <p class="caption"><span class="caption-text">JS Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">dynamic_load.js</span></code> Script</a></li>
-<li class="toctree-l1"><a class="reference internal" href="account.html"><code class="docutils literal notranslate"><span class="pre">account.js</span></code> Script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dynamic_load.html"><code class="docutils literal notranslate"><span class="pre">dynamic_load.js</span></code> Script</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">account.js</span></code> Script</a></li>
 </ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="../flaskserver/model/Vote.html" title="previous chapter"><code class="docutils literal notranslate"><span class="pre">Vote</span></code> Class</a></li>
-      <li>Next: <a href="account.html" title="next chapter"><code class="docutils literal notranslate"><span class="pre">account.js</span></code> Script</a></li>
+      <li>Previous: <a href="dynamic_load.html" title="previous chapter"><code class="docutils literal notranslate"><span class="pre">dynamic_load.js</span></code> Script</a></li>
   </ul></li>
 </ul>
 </div>
@@ -143,7 +128,7 @@
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
-      <a href="../_sources/js/dynamic_load.rst.txt"
+      <a href="../_sources/js/account.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 
