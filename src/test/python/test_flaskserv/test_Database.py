@@ -73,8 +73,8 @@ class TestDBInstance():
 		with Database.DBInstance(temp_db) as db:
 			db.create_table("test_table", c1="text", c2="text", c3="real")
 		with Database.DBInstance(temp_db) as db:
-			assert db.get_column_info("test_tabl") == []
-			assert db.get_column_info("test_table") != []
+			assert db.get_column_info("test_tabl") == ()
+			assert db.get_column_info("test_table") != ()
 
 	def test_unique(self):
 		with Database.DBInstance(":memory:") as db:
@@ -167,7 +167,7 @@ class TestUserDB():
 				assert str(x) == str(y)
 
 	def test_get_column(self):
-		desire = [(0,), (1,)]
+		desire = ((0,), (1,))
 		out = self.udb.get_column("id")
 		assert desire == out
 		for x, y in zip(out, desire):
