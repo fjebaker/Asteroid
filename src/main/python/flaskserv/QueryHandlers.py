@@ -76,7 +76,7 @@ class MusicQuery(BaseQuery):
 		all_songs = []
 		for song_tup in db_result:
 			song = {}
-			for key, value in zip(keys, song_tup):
+			for key, value in zip(self.keys, song_tup):
 				song[key] = value
 			all_songs.append(song)
 
