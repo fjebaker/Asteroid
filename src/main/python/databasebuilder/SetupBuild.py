@@ -13,8 +13,13 @@ def get_song_item(song_path):
 	"""
 	TODO
 	"""
-	with exiftool.ExifTool() as et:
-		metadata = et.get_metadata(song_path)
+	#with exiftool.ExifTool() as et:
+	#	metadata = et.get_metadata(song_path)
+
+	et = exiftool.ExifTool()
+	et.start()
+	metadata = et.get_metadata(song_path)
+	et.terminate()
 
 	artist = metadata["RIFF:Artist"]
 	title = metadata["RIFF:Title"]
@@ -54,7 +59,7 @@ def build_music(folder_location):
 		try:
 			song = get_song_item(file)
 			db.MusicDB(os.environ["MUSIC_DB_PATH"]).add_song(song)
-		except Exception as e:
+		except Exception as e:	# TODO, song doesn't exist if fails
 			print("[!] trying to add song '{}', raised exception: \n\t\t'{}'".format(song['file_path'], str(e)))
 		else:
 			print("[+] added '{}' by '{}' @ '{}' to database".format(song['name'], song['artist'], song['file_path']))
