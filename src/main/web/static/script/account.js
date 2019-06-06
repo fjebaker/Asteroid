@@ -1,14 +1,20 @@
 var bodyDiv = document.getElementById("bodyDiv"); //This is standard throughout all HTML
 bodyDiv.innerHTML = "Expiration time for basic client-side stored cookies: <select onchange='selectCookieDuration(this)' id='cookieDurationSelector'></select>"
 
-//Function called when the selector for cookie duration is changed
+/**
+ * Callback used for modifying the "cookieDuration" cookie via a 'select' element on the 'change' event and reloading the page with new expiry times on all cookies.
+ *
+ * @param {Object} select - the select element whose 'change' event has been triggered.
+ */
 function selectCookieDuration(select) {
     setCookie("cookieDuration",select.value,convertNameToDuration(select.value));
     refreshCookies(convertNameToDuration(select.value)); //Ensuring all cookies are updated with the current cookie duration
     window.location.href = window.location.href;
 }
 
-//Function for furnishing the select element with relevant options
+/**
+ *  Used for supplying a select element with the options relevant to setting the "cookieDuration" cookie
+ */
 function putOptions() {
     var cookieDurationSelector = document.getElementById("cookieDurationSelector");
     var keys = ['minute','hour','day','week','month','year'];
