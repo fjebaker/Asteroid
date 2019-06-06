@@ -9,7 +9,7 @@ def temp_db(tmpdir_factory):
 	fn = str(tmpdir_factory.mktemp("data").join("test.db"))
 
 	with Database.DBInstance(fn) as db:
-		db.create_table("songs", name="text", artist="text", duration="real", meta_dat="text", file_path="text", UNIQUE="name, artist, file_path")
+		db.create_table("songs", name="text", artist="text", duration="real", file_path="text", meta_dat="text", UNIQUE="name, artist, file_path")
 		db.create_table("users", id="long", name="text", hash_pw="long", meta_dat="text", UNIQUE="id")
 		db.create_table("playlist", s_id="long", u_id="long", vote="long", UNIQUE="s_id")
 

@@ -63,7 +63,7 @@ class TestDBInstance():
 			db.create_table("test_table", c1="text", c2="text", c3="real")
 			db.insert_entire_row("test_table", ("test1", "test2", 9))
 			db.insert_entire_row("test_table", ("test1.1", "test2.1", 9.1))
-			out = db.select_columns("test_table", ["c1", "c3"])
+			out = db.select_columns("test_table", ("c1", "c3"))
 		desire = [('test1', 9.0), ('test1.1', 9.1)]
 		for i, j in zip(out, desire):
 			for x, y in zip(i, j):
@@ -88,7 +88,7 @@ class TestDBInstance():
 			db.insert_entire_row("test_table", ("test1", "test2", 11))
 			db.insert_entire_row("test_table", ("test2", "test2", 12))
 			db.update_generic("test_table", {"c2":"test3", "c3":11}, {"c1":"test1"})
-			out = db.select_columns("test_table", ["c1", "c2", "c3"])
+			out = db.select_columns("test_table", ("c1", "c2", "c3"))
 		for i, j in zip(out, desire):
 			for x, y in zip(i, j):
 				assert str(x) == str(y)
