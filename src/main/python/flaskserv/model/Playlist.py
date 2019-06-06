@@ -42,6 +42,7 @@ class Playlist(metaclass=DBAccessory):
 		:param vote: vote value to change by (can be positive or negative)
 		:type vote: int
 		"""
+		print("DEBUG -- in update_vote, params are ", s_id, vote)
 		c_vote = self.db_inst.select_rows("playlist", {"s_id":s_id})[0][2]
 		self.db_inst.update_generic("playlist", 
 				{"vote":int(c_vote)+int(vote)},
