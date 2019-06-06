@@ -104,9 +104,8 @@ class TestDBInstance():
 			db.insert_entire_row("test_table", ("test2", "test2", 12))
 			out1 = db.select_rows("test_table", {"c3":9})
 			out2 = db.select_rows("test_table", {"c1":"test1"})
-		for i, j in zip(out1, desire1):
-			for x, y in zip(i, j):
-				assert str(x) == str(y)
+		for x, y in zip(out1[0], desire1):
+			assert str(x) == str(y)
 		for i, j in zip(out2, desire2):
 			for x, y in zip(i, j):
 				assert str(x) == str(y)
