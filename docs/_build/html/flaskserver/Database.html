@@ -1,0 +1,417 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Database Classes &#8212; Asteroid 0.0.0 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="QueryHandlers Classes" href="QueryHandlers.html" />
+    <link rel="prev" title="FlaskServ Module" href="flaskserv_module.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-src.main.python.flaskserv.Database">
+<span id="database-classes"></span><h1><code class="docutils literal notranslate"><span class="pre">Database</span></code> Classes<a class="headerlink" href="#module-src.main.python.flaskserv.Database" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="src.main.python.flaskserv.Database.DBAccessory">
+<em class="property">class </em><code class="descclassname">src.main.python.flaskserv.Database.</code><code class="descname">DBAccessory</code><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#DBAccessory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.DBAccessory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code></a></p>
+<p>Metaclass for the Database classes <a class="reference internal" href="#src.main.python.flaskserv.Database.MusicDB" title="src.main.python.flaskserv.Database.MusicDB"><code class="xref py py-class docutils literal notranslate"><span class="pre">MusicDB</span></code></a> and <a class="reference internal" href="#src.main.python.flaskserv.Database.UserDB" title="src.main.python.flaskserv.Database.UserDB"><code class="xref py py-class docutils literal notranslate"><span class="pre">UserDB</span></code></a>.
+Will wrap all non-special functions with a decorator, providing a scoped instance of <a class="reference internal" href="#src.main.python.flaskserv.Database.DBInstance" title="src.main.python.flaskserv.Database.DBInstance"><code class="xref py py-class docutils literal notranslate"><span class="pre">DBInstance</span></code></a>.</p>
+<dl class="classmethod">
+<dt id="src.main.python.flaskserv.Database.DBAccessory.deco">
+<em class="property">classmethod </em><code class="descname">deco</code><span class="sig-paren">(</span><em>func</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#DBAccessory.deco"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.DBAccessory.deco" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator which calls function with scoped <a class="reference internal" href="#src.main.python.flaskserv.Database.DBInstance" title="src.main.python.flaskserv.Database.DBInstance"><code class="xref py py-class docutils literal notranslate"><span class="pre">DBInstance</span></code></a> in the class dict</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>func</strong> (<em>function reference</em>) – function to decorate</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="src.main.python.flaskserv.Database.DBInstance">
+<em class="property">class </em><code class="descclassname">src.main.python.flaskserv.Database.</code><code class="descname">DBInstance</code><span class="sig-paren">(</span><em>handle</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#DBInstance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.DBInstance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Provides a specified wrapper for sqlite3 queries</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>handle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – location of sqlite database (can be :memory:)</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="src.main.python.flaskserv.Database.DBInstance._is_row_correct">
+<code class="descname">_is_row_correct</code><span class="sig-paren">(</span><em>column_names</em>, <em>row</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#DBInstance._is_row_correct"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.DBInstance._is_row_correct" title="Permalink to this definition">¶</a></dt>
+<dd><p>internal method to validate whether a row string matches the table row
+at the moment only checks length of the two arguments is the same, in future will be more thorough</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>column_names</strong> (<em>list of str</em>) – names of the columns to check against</li>
+<li><strong>row</strong> (<em>list of str</em>) – names of columns provided by user</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="src.main.python.flaskserv.Database.DBInstance._save">
+<code class="descname">_save</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#DBInstance._save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.DBInstance._save" title="Permalink to this definition">¶</a></dt>
+<dd><p>internal method for commiting changes to the database</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="src.main.python.flaskserv.Database.DBInstance.create_table">
+<code class="descname">create_table</code><span class="sig-paren">(</span><em>table_name</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#DBInstance.create_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.DBInstance.create_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new table in the database.
+If ‘UNIQUE:col_name’ present in **kwargs, adds a CONSTRAINT to the table called unique_col, making col_name unique.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>table_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – name of table</li>
+<li><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – keys are columns, values are datatypes</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="src.main.python.flaskserv.Database.DBInstance.delete_rows">
+<code class="descname">delete_rows</code><span class="sig-paren">(</span><em>table_name</em>, <em>condition</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#DBInstance.delete_rows"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.DBInstance.delete_rows" title="Permalink to this definition">¶</a></dt>
+<dd><p>delete rows from a table in database if condition is met</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>table_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – name of table</li>
+<li><strong>condition</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the condition to be met to qualify for removal</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="src.main.python.flaskserv.Database.DBInstance.get_column_info">
+<code class="descname">get_column_info</code><span class="sig-paren">(</span><em>table_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#DBInstance.get_column_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.DBInstance.get_column_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>method for getting the column info of a table</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>table_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – name of the table to get the column names of</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of column names</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="src.main.python.flaskserv.Database.DBInstance.insert_entire_row">
+<code class="descname">insert_entire_row</code><span class="sig-paren">(</span><em>table_name</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#DBInstance.insert_entire_row"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.DBInstance.insert_entire_row" title="Permalink to this definition">¶</a></dt>
+<dd><p>insert a row of values into a given table</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>table_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – name of table</li>
+<li><strong>data</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – items are data values</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last">Exception(“Bad row format.”)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="src.main.python.flaskserv.Database.DBInstance.select_columns">
+<code class="descname">select_columns</code><span class="sig-paren">(</span><em>table_name</em>, <em>column_list</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#DBInstance.select_columns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.DBInstance.select_columns" title="Permalink to this definition">¶</a></dt>
+<dd><p>select whole column from table</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>table_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – name of table</li>
+<li><strong>column</strong> (<em>str/list</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>]</em>) – name of column to select from</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list of tuples with items from column [(x1, y1, …), (x2, y2, …), …]</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="src.main.python.flaskserv.Database.DBInstance.select_rows">
+<code class="descname">select_rows</code><span class="sig-paren">(</span><em>table_name</em>, <em>condition</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#DBInstance.select_rows"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.DBInstance.select_rows" title="Permalink to this definition">¶</a></dt>
+<dd><p>select rows from table which meat condition</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>table_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – name of table</li>
+<li><strong>condition</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the condition to be met to qualify for selection</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="src.main.python.flaskserv.Database.DBInstance.update_generic">
+<code class="descname">update_generic</code><span class="sig-paren">(</span><em>table_name</em>, <em>changes</em>, <em>condition</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#DBInstance.update_generic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.DBInstance.update_generic" title="Permalink to this definition">¶</a></dt>
+<dd><p>update entries according to condition in the database</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>table_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – name of the table to update</li>
+<li><strong>changes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – changes to enact e.g. <cite>{col1:value1, …}</cite></li>
+<li><strong>condition</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the condition to be met to qualify for changes e.g. <cite>{col3:value3}</cite></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>TODO check the changes fit the table</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="src.main.python.flaskserv.Database.MusicDB">
+<em class="property">class </em><code class="descclassname">src.main.python.flaskserv.Database.</code><code class="descname">MusicDB</code><span class="sig-paren">(</span><em>db_handle</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#MusicDB"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.MusicDB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Provides methods for interacting with the music database.
+Encapsulates <a class="reference internal" href="#src.main.python.flaskserv.Database.DBInstance" title="src.main.python.flaskserv.Database.DBInstance"><code class="xref py py-class docutils literal notranslate"><span class="pre">DBInstance</span></code></a></p>
+<p>Assumes database already has a table with format</p>
+<blockquote>
+<div><p>songs</p>
+<p>name, artist, duration, path, meta_dat</p>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>db_handle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – sqlite database handle</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="src.main.python.flaskserv.Database.MusicDB.add_song">
+<code class="descname">add_song</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#MusicDB.add_song"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.MusicDB.add_song" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="src.main.python.flaskserv.Database.MusicDB.get_all_songs">
+<code class="descname">get_all_songs</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#MusicDB.get_all_songs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.MusicDB.get_all_songs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="src.main.python.flaskserv.Database.MusicDB.get_by_rowid">
+<code class="descname">get_by_rowid</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#MusicDB.get_by_rowid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.MusicDB.get_by_rowid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="src.main.python.flaskserv.Database.MusicDB.get_song_by_artist">
+<code class="descname">get_song_by_artist</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#MusicDB.get_song_by_artist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.MusicDB.get_song_by_artist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="src.main.python.flaskserv.Database.MusicDB.get_song_by_name">
+<code class="descname">get_song_by_name</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#MusicDB.get_song_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.MusicDB.get_song_by_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="src.main.python.flaskserv.Database.UserDB">
+<em class="property">class </em><code class="descclassname">src.main.python.flaskserv.Database.</code><code class="descname">UserDB</code><span class="sig-paren">(</span><em>db_handle</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#UserDB"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.UserDB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Provides methods for interacting with the static user database.
+Encapsulates <a class="reference internal" href="#src.main.python.flaskserv.Database.DBInstance" title="src.main.python.flaskserv.Database.DBInstance"><code class="xref py py-class docutils literal notranslate"><span class="pre">DBInstance</span></code></a></p>
+<p>Assumes database already has a table with format</p>
+<blockquote>
+<div><p>users</p>
+<p>id, name, hash_pw, meta_dat</p>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>db_handle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – sqlite database handle</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="src.main.python.flaskserv.Database.UserDB.add_user">
+<code class="descname">add_user</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#UserDB.add_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.UserDB.add_user" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="src.main.python.flaskserv.Database.UserDB.get_all_users">
+<code class="descname">get_all_users</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#UserDB.get_all_users"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.UserDB.get_all_users" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="src.main.python.flaskserv.Database.UserDB.get_column">
+<code class="descname">get_column</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#UserDB.get_column"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.UserDB.get_column" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="src.main.python.flaskserv.Database.UserDB.get_user_by_id">
+<code class="descname">get_user_by_id</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#UserDB.get_user_by_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.UserDB.get_user_by_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="src.main.python.flaskserv.Database.UserDB.get_user_by_name">
+<code class="descname">get_user_by_name</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#UserDB.get_user_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.UserDB.get_user_by_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="src.main.python.flaskserv.Database.sanitise">
+<code class="descclassname">src.main.python.flaskserv.Database.</code><code class="descname">sanitise</code><span class="sig-paren">(</span><em>func</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#sanitise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.sanitise" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Asteroid</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Python Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../player/audio_module.html"><code class="docutils literal notranslate"><span class="pre">Audio</span></code> Module</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="flaskserv_module.html"><code class="docutils literal notranslate"><span class="pre">FlaskServ</span></code> Module</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">Database</span></code> Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="QueryHandlers.html"><code class="docutils literal notranslate"><span class="pre">QueryHandlers</span></code> Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="FormHandlers.html"><code class="docutils literal notranslate"><span class="pre">FormHandlers</span></code> Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model/model_sub.html"><code class="docutils literal notranslate"><span class="pre">model</span></code> sub-module</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">JS Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../js/dynamic_load.html"><code class="docutils literal notranslate"><span class="pre">dynamic_load.js</span></code> Script</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="flaskserv_module.html"><code class="docutils literal notranslate"><span class="pre">FlaskServ</span></code> Module</a><ul>
+      <li>Previous: <a href="flaskserv_module.html" title="previous chapter"><code class="docutils literal notranslate"><span class="pre">FlaskServ</span></code> Module</a></li>
+      <li>Next: <a href="QueryHandlers.html" title="next chapter"><code class="docutils literal notranslate"><span class="pre">QueryHandlers</span></code> Classes</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Moontemple.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/flaskserver/Database.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

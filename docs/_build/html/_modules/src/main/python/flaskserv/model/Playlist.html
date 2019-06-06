@@ -1,0 +1,181 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>src.main.python.flaskserv.model.Playlist &#8212; Asteroid 0.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../../../" src="../../../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for src.main.python.flaskserv.model.Playlist</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">src.main.python.flaskserv.Database</span> <span class="k">import</span> <span class="n">DBAccessory</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<div class="viewcode-block" id="Playlist"><a class="viewcode-back" href="../../../../../../flaskserver/model/Playlist.html#src.main.python.flaskserv.model.Playlist.Playlist">[docs]</a><span class="k">class</span> <span class="nc">Playlist</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">DBAccessory</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Class for accessing the playlist database.</span>
+<span class="sd">	Has metaclass :class:`Database.DBAccessory`.</span>
+<span class="sd">	Requires a table in format</span>
+
+<span class="sd">		playlist</span>
+
+<span class="sd">		s_id (long), u_id (long), vote (long)</span>
+
+
+<span class="sd">	:param db_handle: database handle in which playlist table exists</span>
+<span class="sd">	:type db_handle: str</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db_handle</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">db_handle</span> <span class="o">=</span> <span class="n">db_handle</span>
+
+	<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		add a new entry to the playlist table</span>
+
+<span class="sd">		:param item: song item, in format {s_id, u_id, vote}</span>
+<span class="sd">		:type item: dict</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">db_inst</span><span class="o">.</span><span class="n">insert_entire_row</span><span class="p">(</span><span class="s2">&quot;playlist&quot;</span><span class="p">,</span>
+			<span class="p">[</span>
+				<span class="n">item</span><span class="p">[</span><span class="s2">&quot;s_id&quot;</span><span class="p">],</span>
+				<span class="n">item</span><span class="p">[</span><span class="s2">&quot;u_id&quot;</span><span class="p">],</span>
+				<span class="n">item</span><span class="p">[</span><span class="s2">&quot;vote&quot;</span><span class="p">],</span>
+			<span class="p">])</span>
+
+	<span class="k">def</span> <span class="nf">update_vote</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s_id</span><span class="p">,</span> <span class="n">vote</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		updates the entry in playlist table for a given song id, adding vote to the exisiting vote value</span>
+
+<span class="sd">		:param s_id: song id to remove from playlist</span>
+<span class="sd">		:type s_id: int</span>
+<span class="sd">		:param vote: vote value to change by (can be positive or negative)</span>
+<span class="sd">		:type vote: int</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">c_vote</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_inst</span><span class="o">.</span><span class="n">select_rows</span><span class="p">(</span><span class="s2">&quot;playlist&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;s_id&quot;</span><span class="p">:</span><span class="n">s_id</span><span class="p">})[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">db_inst</span><span class="o">.</span><span class="n">update_generic</span><span class="p">(</span><span class="s2">&quot;playlist&quot;</span><span class="p">,</span> 
+				<span class="p">{</span><span class="s2">&quot;vote&quot;</span><span class="p">:</span><span class="nb">int</span><span class="p">(</span><span class="n">c_vote</span><span class="p">)</span><span class="o">+</span><span class="nb">int</span><span class="p">(</span><span class="n">vote</span><span class="p">)},</span>
+				<span class="p">{</span><span class="s2">&quot;s_id&quot;</span><span class="p">:</span><span class="n">s_id</span><span class="p">}</span>
+			<span class="p">)</span>
+
+	
+
+	<span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s_id</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		removes the row containing song id `s_id` from the database</span>
+
+<span class="sd">		:param s_id: song id to remove from playlist</span>
+<span class="sd">		:type s_id: int</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">db_inst</span><span class="o">.</span><span class="n">delete_rows</span><span class="p">(</span><span class="s2">&quot;playlist&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;s_id&quot;</span><span class="p">:</span><span class="n">s_id</span><span class="p">})</span>
+
+	<span class="k">def</span> <span class="nf">get_playlist</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		returns the playlist table from the database given to constructor</span>
+<span class="sd">		has structure</span>
+
+<span class="sd">			song_id, user_requested_id, vote_values</span>
+<span class="sd">		</span>
+<span class="sd">		:returns: list[int, int, int]</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_inst</span><span class="o">.</span><span class="n">select_columns</span><span class="p">(</span><span class="s2">&quot;playlist&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../../../../index.html">Asteroid</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Python Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../player/audio_module.html"><code class="docutils literal notranslate"><span class="pre">Audio</span></code> Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../flaskserver/flaskserv_module.html"><code class="docutils literal notranslate"><span class="pre">FlaskServ</span></code> Module</a></li>
+</ul>
+<p class="caption"><span class="caption-text">JS Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../js/dynamic_load.html"><code class="docutils literal notranslate"><span class="pre">dynamic_load.js</span></code> Script</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Moontemple.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

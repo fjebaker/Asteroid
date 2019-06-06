@@ -1,0 +1,219 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>src.main.python.player.AudioHandler &#8212; Asteroid 0.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for src.main.python.player.AudioHandler</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">src.main.python.player.PlayStream</span> <span class="k">import</span> <span class="n">PlayStream</span> 
+<span class="kn">from</span> <span class="nn">src.main.python.player.ConditionObject</span> <span class="k">import</span> <span class="n">ConditionObject</span> 
+<span class="kn">from</span> <span class="nn">src.main.python.flaskserv.model.Playlist</span> <span class="k">import</span> <span class="n">Playlist</span>
+<span class="kn">from</span> <span class="nn">src.main.python.flaskserv.Database</span> <span class="k">import</span> <span class="n">MusicDB</span>
+<span class="kn">from</span> <span class="nn">queue</span> <span class="k">import</span> <span class="n">Queue</span>
+<span class="kn">import</span> <span class="nn">threading</span><span class="o">,</span> <span class="nn">os</span>
+
+<div class="viewcode-block" id="AudioHandler"><a class="viewcode-back" href="../../../../../player/AudioHandler.html#src.main.python.player.AudioHandler.AudioHandler">[docs]</a><span class="k">class</span> <span class="nc">AudioHandler</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Controls playback</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">queue</span><span class="p">):</span>
+		<span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">queue</span> <span class="o">=</span> <span class="n">queue</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">out_queue</span> <span class="o">=</span> <span class="n">Queue</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">current_player</span> <span class="o">=</span> <span class="kc">None</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">condObj</span> <span class="o">=</span> <span class="n">ConditionObject</span><span class="p">()</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">first</span> <span class="o">=</span> <span class="kc">True</span> 		<span class="c1"># hacky, since first call must be over socket msg</span>
+
+<div class="viewcode-block" id="AudioHandler.run"><a class="viewcode-back" href="../../../../../player/AudioHandler.html#src.main.python.player.AudioHandler.AudioHandler.run">[docs]</a>	<span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		TODO</span>
+
+<span class="sd">		needs to check if a song is playing, if not request next file and then play</span>
+
+<span class="sd">		enhance: make it async</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+			<span class="k">try</span><span class="p">:</span>
+				<span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+			<span class="k">except</span><span class="p">:</span>
+				<span class="n">play</span> <span class="o">=</span> <span class="kc">False</span>
+				<span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">condObj</span><span class="o">.</span><span class="n">lock</span><span class="p">:</span>
+					<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">condObj</span><span class="o">.</span><span class="n">done</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">first</span><span class="p">:</span>
+						<span class="n">play</span> <span class="o">=</span> <span class="kc">True</span>
+				<span class="k">if</span> <span class="n">play</span><span class="p">:</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">play</span><span class="p">()</span>
+
+			<span class="k">else</span><span class="p">:</span>
+				<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;DEBUG&quot;</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+				<span class="bp">self</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">msg</span><span class="p">[</span><span class="mi">0</span><span class="p">])(</span><span class="o">*</span><span class="n">msg</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AudioHandler.fetch_playlist_item"><a class="viewcode-back" href="../../../../../player/AudioHandler.html#src.main.python.player.AudioHandler.AudioHandler.fetch_playlist_item">[docs]</a>	<span class="k">def</span> <span class="nf">fetch_playlist_item</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		TODO</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="n">pl</span> <span class="o">=</span> <span class="n">Playlist</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;PLAYLIST_PATH&quot;</span><span class="p">])</span>
+		<span class="n">playlist</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">get_playlist</span><span class="p">()</span>
+
+		<span class="k">if</span> <span class="n">playlist</span> <span class="o">==</span> <span class="p">[]:</span>
+			<span class="k">return</span> <span class="kc">None</span>
+
+		<span class="n">most_voted_song</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">playlist</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]))[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>		
+		<span class="n">pl</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">most_voted_song</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+		<span class="k">return</span> <span class="n">most_voted_song</span></div>
+
+<div class="viewcode-block" id="AudioHandler.get_path_from_database"><a class="viewcode-back" href="../../../../../player/AudioHandler.html#src.main.python.player.AudioHandler.AudioHandler.get_path_from_database">[docs]</a>	<span class="k">def</span> <span class="nf">get_path_from_database</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		TODO</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">n_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch_playlist_item</span><span class="p">()</span>
+		<span class="k">if</span> <span class="n">n_item</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="c1"># TODO</span>
+			<span class="k">return</span> <span class="kc">None</span>
+
+		<span class="n">song</span> <span class="o">=</span> <span class="n">MusicDB</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;MUSIC_PATH&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">get_by_rowid</span><span class="p">(</span><span class="n">n_item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="k">return</span> <span class="n">song</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="AudioHandler.play"><a class="viewcode-back" href="../../../../../player/AudioHandler.html#src.main.python.player.AudioHandler.AudioHandler.play">[docs]</a>	<span class="k">def</span> <span class="nf">play</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		TODO</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+			<span class="n">path</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_path_from_database</span><span class="p">()</span>
+			<span class="k">if</span> <span class="n">path</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+				<span class="k">return</span>
+			<span class="c1"># check file exists</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+			<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;DEBUG -- file does not exist&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+			<span class="k">return</span>
+
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_player</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+		<span class="n">player</span> <span class="o">=</span> <span class="n">PlayStream</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">condObj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_queue</span><span class="p">)</span>
+		<span class="n">player</span><span class="o">.</span><span class="n">loadsong</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+		<span class="n">player</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">current_player</span> <span class="o">=</span> <span class="n">player</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">first</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="AudioHandler.pause"><a class="viewcode-back" href="../../../../../player/AudioHandler.html#src.main.python.player.AudioHandler.AudioHandler.pause">[docs]</a>	<span class="k">def</span> <span class="nf">pause</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		TODO</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">condObj</span><span class="o">.</span><span class="n">toggle_pause</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="AudioHandler.stop"><a class="viewcode-back" href="../../../../../player/AudioHandler.html#src.main.python.player.AudioHandler.AudioHandler.stop">[docs]</a>	<span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		TODO</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">condObj</span><span class="o">.</span><span class="n">lock</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">condObj</span><span class="o">.</span><span class="n">play</span> <span class="o">=</span> <span class="kc">False</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">condObj</span> <span class="o">=</span> <span class="n">ConditionObject</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">current_player</span> <span class="o">=</span> <span class="kc">None</span></div></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../../../index.html">Asteroid</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Python Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../player/audio_module.html"><code class="docutils literal notranslate"><span class="pre">Audio</span></code> Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../flaskserver/flaskserv_module.html"><code class="docutils literal notranslate"><span class="pre">FlaskServ</span></code> Module</a></li>
+</ul>
+<p class="caption"><span class="caption-text">JS Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../js/dynamic_load.html"><code class="docutils literal notranslate"><span class="pre">dynamic_load.js</span></code> Script</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Moontemple.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

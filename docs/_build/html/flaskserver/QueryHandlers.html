@@ -1,0 +1,277 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>QueryHandlers Classes &#8212; Asteroid 0.0.0 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="FormHandlers Classes" href="FormHandlers.html" />
+    <link rel="prev" title="Database Classes" href="Database.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-src.main.python.flaskserv.QueryHandlers">
+<span id="queryhandlers-classes"></span><h1><code class="docutils literal notranslate"><span class="pre">QueryHandlers</span></code> Classes<a class="headerlink" href="#module-src.main.python.flaskserv.QueryHandlers" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="src.main.python.flaskserv.QueryHandlers.BaseQuery">
+<em class="property">class </em><code class="descclassname">src.main.python.flaskserv.QueryHandlers.</code><code class="descname">BaseQuery</code><span class="sig-paren">(</span><em>query</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/QueryHandlers.html#BaseQuery"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.QueryHandlers.BaseQuery" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Abstract class off of which to construct query classes for the different databases</p>
+<p>Has <code class="xref py py-meth docutils literal notranslate"><span class="pre">__call__()</span></code> defined which uses <code class="xref py py-meth docutils literal notranslate"><span class="pre">__getattribute__()</span></code> calls on sanitised query string to produce appropriate response.
+The response method should be defined in the inheriting class.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>query</strong> (<em>byte string</em>) – the query request</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">json object containing query result</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="src.main.python.flaskserv.QueryHandlers.BaseQuery.clean_query">
+<code class="descname">clean_query</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/QueryHandlers.html#BaseQuery.clean_query"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.QueryHandlers.BaseQuery.clean_query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sanitises and converts the query passed in constructor to a python string.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="src.main.python.flaskserv.QueryHandlers.BaseQuery.defaultCase">
+<code class="descname">defaultCase</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/QueryHandlers.html#BaseQuery.defaultCase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.QueryHandlers.BaseQuery.defaultCase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Must be defined in inheriting class.</p>
+<p>Should return the default case / error case - i.e. if the query does not match to a known query.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="src.main.python.flaskserv.QueryHandlers.MusicQuery">
+<em class="property">class </em><code class="descclassname">src.main.python.flaskserv.QueryHandlers.</code><code class="descname">MusicQuery</code><span class="sig-paren">(</span><em>query</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/QueryHandlers.html#MusicQuery"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.QueryHandlers.MusicQuery" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#src.main.python.flaskserv.QueryHandlers.BaseQuery" title="src.main.python.flaskserv.QueryHandlers.BaseQuery"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.main.python.flaskserv.QueryHandlers.BaseQuery</span></code></a></p>
+<p>Handler for interfacing between music database and the web server.
+Inherits from <a class="reference internal" href="#src.main.python.flaskserv.QueryHandlers.BaseQuery" title="src.main.python.flaskserv.QueryHandlers.BaseQuery"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseQuery</span></code></a>.
+Encapsulates <code class="xref py py-class docutils literal notranslate"><span class="pre">Database.MusicDB</span></code> to make database queries.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>query</strong> (<em>byte string</em>) – the query request</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">json object containing query result</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="src.main.python.flaskserv.QueryHandlers.MusicQuery.defaultCase">
+<code class="descname">defaultCase</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/QueryHandlers.html#MusicQuery.defaultCase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.QueryHandlers.MusicQuery.defaultCase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default case is an empty dictionary.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">empty dictionary</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="src.main.python.flaskserv.QueryHandlers.MusicQuery.getAllSongs">
+<code class="descname">getAllSongs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/QueryHandlers.html#MusicQuery.getAllSongs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.QueryHandlers.MusicQuery.getAllSongs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetch from database the whole songs table. Looks in environment variable <cite>MUSIC_DB_PATH</cite> for the database path.
+Converts the list of tuples from database call into a dictionary.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">dictionary containing the parsed songs table</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="src.main.python.flaskserv.QueryHandlers.MusicQuery.id">
+<code class="descname">id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/QueryHandlers.html#MusicQuery.id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.QueryHandlers.MusicQuery.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>TODO</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="src.main.python.flaskserv.QueryHandlers.MusicQuery.keys">
+<code class="descname">keys</code><em class="property"> = ['name', 'artist', 'duration', 'file_path', 'meta_dat']</em><a class="headerlink" href="#src.main.python.flaskserv.QueryHandlers.MusicQuery.keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>json keys for parsing database</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="src.main.python.flaskserv.QueryHandlers.UserQuery">
+<em class="property">class </em><code class="descclassname">src.main.python.flaskserv.QueryHandlers.</code><code class="descname">UserQuery</code><span class="sig-paren">(</span><em>query</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/QueryHandlers.html#UserQuery"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.QueryHandlers.UserQuery" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#src.main.python.flaskserv.QueryHandlers.BaseQuery" title="src.main.python.flaskserv.QueryHandlers.BaseQuery"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.main.python.flaskserv.QueryHandlers.BaseQuery</span></code></a></p>
+<p>Handler for interfacing between user database and the web server.
+Inherits from <a class="reference internal" href="#src.main.python.flaskserv.QueryHandlers.BaseQuery" title="src.main.python.flaskserv.QueryHandlers.BaseQuery"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseQuery</span></code></a>.
+Encapsulates <code class="xref py py-class docutils literal notranslate"><span class="pre">Database.UserDB</span></code> to make database queries.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>query</strong> (<em>byte string</em>) – the query request</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">json object containing query result</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="src.main.python.flaskserv.QueryHandlers.UserQuery.defaultCase">
+<code class="descname">defaultCase</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/QueryHandlers.html#UserQuery.defaultCase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.QueryHandlers.UserQuery.defaultCase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default case is an empty dictionary.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">empty dictionary</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="src.main.python.flaskserv.QueryHandlers.UserQuery.getAllUsers">
+<code class="descname">getAllUsers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/QueryHandlers.html#UserQuery.getAllUsers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.QueryHandlers.UserQuery.getAllUsers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetch from database the whole users table. Looks in environment variable <cite>USER_DB_PATH</cite> for the database path.
+Converts the list of tuples from database call into a dictionary.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">dictionary containing the parsed users table</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="src.main.python.flaskserv.QueryHandlers.UserQuery.id">
+<code class="descname">id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/QueryHandlers.html#UserQuery.id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.QueryHandlers.UserQuery.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>TODO</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="src.main.python.flaskserv.QueryHandlers.UserQuery.keys">
+<code class="descname">keys</code><em class="property"> = ['id', 'name', 'hash_pw', 'meta_dat']</em><a class="headerlink" href="#src.main.python.flaskserv.QueryHandlers.UserQuery.keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>json keys for parsing database</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Asteroid</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Python Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../player/audio_module.html"><code class="docutils literal notranslate"><span class="pre">Audio</span></code> Module</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="flaskserv_module.html"><code class="docutils literal notranslate"><span class="pre">FlaskServ</span></code> Module</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="Database.html"><code class="docutils literal notranslate"><span class="pre">Database</span></code> Classes</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">QueryHandlers</span></code> Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="FormHandlers.html"><code class="docutils literal notranslate"><span class="pre">FormHandlers</span></code> Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model/model_sub.html"><code class="docutils literal notranslate"><span class="pre">model</span></code> sub-module</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">JS Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../js/dynamic_load.html"><code class="docutils literal notranslate"><span class="pre">dynamic_load.js</span></code> Script</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="flaskserv_module.html"><code class="docutils literal notranslate"><span class="pre">FlaskServ</span></code> Module</a><ul>
+      <li>Previous: <a href="Database.html" title="previous chapter"><code class="docutils literal notranslate"><span class="pre">Database</span></code> Classes</a></li>
+      <li>Next: <a href="FormHandlers.html" title="next chapter"><code class="docutils literal notranslate"><span class="pre">FormHandlers</span></code> Classes</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Moontemple.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/flaskserver/QueryHandlers.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
