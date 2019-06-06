@@ -1,5 +1,12 @@
 var bodyDiv = document.getElementById("bodyDiv"); //This is standard for all HTML files
 
+/*
+ * Callback used for dealing with loaded 'getAllUsers' JSON data in the process of submitting a username for authorisation.
+ *
+ * @param {string|Object} data - the JSON data, if successfully loaded, or a string giving the error status if loading was unsuccessful.
+ * @param {string} submittedName - the username submitted by the user, with possible modification made by previously called functions.
+ * @param {Object} event - the event (default implementation: a "click" event) which triggered the username submission.
+ */
 function _dealWithReceivedJson(data,submittedName,event){
     //Needs changing for proper reporting
     var messageSection = document.createElement("p");
@@ -39,7 +46,11 @@ function _dealWithReceivedJson(data,submittedName,event){
     bodyDiv.appendChild(messageSection);
 }
 
-//Event to be called upon form submission
+/*
+ * Callback used for the submission trigger in the process of a user submitting a username for authorisation.
+ *
+ * @param {Object} event - the event (default implementation: a "click" event) which triggered the username submission.
+ */
 function _submitClick(event) {
     event.preventDefault();
     var submittedName = document.getElementById("usernameInput").value;
