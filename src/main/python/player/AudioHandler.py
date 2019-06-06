@@ -60,7 +60,7 @@ class AudioHandler(threading.Thread):
 		pl = Playlist(os.environ["PLAYLIST_PATH"])
 		playlist = pl.get_playlist()
 
-		if playlist == []:
+		if playlist == ():
 			return None
 
 		most_voted_song = sorted(playlist, key=lambda x: int(x[2]))[-1]		
