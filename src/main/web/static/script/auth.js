@@ -1,4 +1,4 @@
-var bodyDiv1 = document.getElementById("bodyDiv1"); //AAAA
+var bodyDiv = document.getElementById("bodyDiv"); //This is standard for all HTML files
 
 function _dealWithReceivedJson(data,submittedName,event){
     //Needs changing for proper reporting
@@ -18,8 +18,8 @@ function _dealWithReceivedJson(data,submittedName,event){
         } else {
             document.getElementById("usernameInput").value = submittedName;
             function success(request) {
-                if (request.status == 404) {
-                    messageSection.innerHTML = "404: POST response not found";
+                if (request.status == 400) {
+                    messageSection.innerHTML = "400: Bad request";
                 }
                 if (request.status == 201) {
                     setCookie("id", JSON.parse(request.response).id,getCookieDuration());
@@ -33,7 +33,7 @@ function _dealWithReceivedJson(data,submittedName,event){
             messageSection.innerHTML = "Username request sent";
         }
     }
-    bodyDiv1.appendChild(messageSection);
+    bodyDiv.appendChild(messageSection);
 }
 
 //Event to be called upon form submission
@@ -44,16 +44,16 @@ function _submitClick(event) {
     if (submittedName === '') {
         var messageSection = document.createElement("p");
         messageSection.innerHTML = "Blank usernames are not valid"
-        bodyDiv1.appendChild(messageSection);
+        bodyDiv.appendChild(messageSection);
     } else {
-        getJson("/db/users?=getAllUsers",function(data){_dealWithReceivedJson(data,submittedName,event);},function(data){messageSection.innerHTML = "Unable to load user data for uniqueness check";bodyDiv1.appendChild(messageSection);});
+        getJson("/db/users?=getAllUsers",function(data){_dealWithReceivedJson(data,submittedName,event);},function(data){messageSection.innerHTML = "Unable to load user data for uniqueness check";bodyDiv.appendChild(messageSection);});
     }
 }
 
 ensureKeyQuery("v",Math.random())
 
 if (getCookie("id") == "") {
-    bodyDiv1.innerHTML = "<p>Enter Username:</p>";
+    bodyDiv.innerHTML = "<p>Enter Username:</p>";
     const form = document.createElement('form');
     form.method = 'post';
     form.action = '/register';
@@ -67,7 +67,7 @@ if (getCookie("id") == "") {
     sendButton.value='submit';
     form.appendChild(sendButton);
     form.addEventListener("submit",_submitClick);
-    bodyDiv1.appendChild(form);
+    bodyDiv.appendChild(form);
 } else {
     document.location.href = "/?v="+Math.random();
 }

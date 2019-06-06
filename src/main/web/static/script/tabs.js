@@ -1,6 +1,5 @@
-//AAAA stuff
-var bodyDiv = document.getElementById("bodyDiv");
-bodyDiv.innerHTML = "<table style='width:100%' id='tabSettingTable'><tr><th>Tab</th><th>Active</th></tr></table>"
+var bodyDiv = document.getElementById("bodyDiv"); //This is standard for all HTML files
+bodyDiv.innerHTML = "<table style='width:100%' id='tabSettingTable'><tr><th>Tab</th><th>Active</th></tr></table>" //Is writing over this acceptable?
 var tabArr = getCookie("tabs").split(',');
 const maxTabSettingIndex = 6;
 //0: Voting 1: Rating 2: Queue 3: Downloaded 4: Favourites 5: Playlists
@@ -52,7 +51,7 @@ function changeCallback(index,box) {
     }
 }
 
-//aaa
+//this is okay (include meme.png here)
 var tabSettingTable = document.getElementById("tabSettingTable");
 
 for (var i=0; i<maxTabSettingIndex; i++) {
