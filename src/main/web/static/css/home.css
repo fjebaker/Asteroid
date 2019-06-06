@@ -21,7 +21,7 @@ button {
     border-radius: 5px;
     text-align: left;
     -webkit-transition-duration: 0.4s; 
-    transition-duration: 0.4s
+    transition-duration: 0.2s
 }
 
 button:hover {
@@ -32,20 +32,31 @@ button:hover {
 #upvote {
     font-size: 0px;
     background-color: #225473;
-    background: transparent url(upvote.png) no-repeat;
-    background-size: auto 100% ;
-    width: 30px;
-    height: 50px;
-    
+    background: transparent url(up_arrow.png) no-repeat;
+    background-size: 100% 100% ;
+    width: 35px;
+    height: 35px;
+    transition: all ease-in-out 0.2s;
 }
+
+#upvote:hover {
+    border: 1px solid #888;
+    background-color: #ddd;
+}
+    
 
 #downvote{
     font-size: 0px;
     background-color: #225473;
-    background: transparent url(downvote.png) no-repeat;
-    background-size: auto 100%;
-    width: 30px;
-    height: 50px;
+    background: transparent url(down_arrow.png) no-repeat;
+    background-size: 100% 100% ;
+    width: 35px;
+    height: 35px;
+}
+
+#downvote:hover {
+    border: 1px solid #888;
+    background-color: #ddd;
 }
 
 /* Header Formatting */
