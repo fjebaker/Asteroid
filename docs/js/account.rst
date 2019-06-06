@@ -1,5 +1,5 @@
 ``account.js`` Script
-==========================
+=====================
 
 .. js:autofunction:: selectCookieDuration
 
