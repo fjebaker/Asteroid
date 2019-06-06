@@ -265,7 +265,7 @@ class MusicDB(metaclass=DBAccessory):
 		:rtype: list of tuples
 		"""
 		return self.db_inst.select_columns("songs",
-			["name", "artist", "duration", "file_path", "meta_dat"])
+			["name", "artist", "duration", "meta_dat"])
 
 
 class UserDB(metaclass=DBAccessory):
