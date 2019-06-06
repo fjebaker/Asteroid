@@ -13,13 +13,8 @@ def get_song_item(song_path):
 	"""
 	TODO
 	"""
-	#with exiftool.ExifTool() as et:
-	#	metadata = et.get_metadata(song_path)
-
-	et = exiftool.ExifTool()
-	et.start()
-	metadata = et.get_metadata(song_path)
-	et.terminate()
+	with exiftool.ExifTool() as et:
+		metadata = et.get_metadata(song_path)
 
 	artist = metadata["RIFF:Artist"]
 	title = metadata["RIFF:Title"]
