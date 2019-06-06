@@ -46,10 +46,9 @@ class TestDBInstance():
 		db.create_table("test_table", c1="text", c2="text", c3="real")
 
 		out = db.get_column_info("test_table")
-		desire = ((0, 'c1', 'text', 0, None, 0), (1, 'c2', 'text', 0, None, 0), (2, 'c3', 'real', 0, None, 0))
-		for i, j in zip(out, desire):
-			for x, y in zip(i, j):
-				assert str(x) == str(y)
+		desire = ('c1', 'c2', 'c3')
+		for x, y in zip(out, desire):
+			assert str(x) == str(y)
 
 		with pytest.raises(Exception) as e:
 			db.get_column_info("__dd_-dd-_--")
@@ -64,7 +63,7 @@ class TestDBInstance():
 			db.insert_entire_row("test_table", ("test1", "test2", 9))
 			db.insert_entire_row("test_table", ("test1.1", "test2.1", 9.1))
 			out = db.select_columns("test_table", ("c1", "c3"))
-		desire = [('test1', 9.0), ('test1.1', 9.1)]
+		desire = (('test1', 9.0), ('test1.1', 9.1))
 		for i, j in zip(out, desire):
 			for x, y in zip(i, j):
 				assert str(x) == str(y)
