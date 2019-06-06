@@ -22,7 +22,7 @@ def temp_db(tmpdir_factory):
 				("s_id", "u_id", "vote", "UNIQUE"),
 				("long", "long", "long", "s_id")
 			)
-		
+
 	Database.MusicDB(fn).add_song(
 			{
 				"name":"test song",
@@ -66,7 +66,7 @@ class TestServerUsers():
 		for i in range(1, 4):
 			response = test_client.post('/register', data={"name":"TestUser" + str(i)}, follow_redirects=True)
 			assert response.status_code == 201
-			assert json.loads(response.data) == {"id":i}
+			assert json.loads(response.data.decode()) == {"id":i}
 
 		response = test_client.post('/register', data={"nome":"TestUser"}, follow_redirects=True)
 		assert response.status_code == 400
@@ -75,15 +75,15 @@ class TestServerUsers():
 		for i in range(1, 4):
 			response = test_client.get('/db/users', query_string={'id':1})
 			assert response.status_code == 200
-			assert json.loads(response.data) == {"id":1,"meta_dat":'',"name":"TestUser1"}
+			assert json.loads(response.data.decode()) == {"id":1,"meta_dat":'',"name":"TestUser1"}
 		response = test_client.get('/db/users', query_string={'id':0})
 		assert response.status_code == 400
-		assert json.loads(response.data) == {}
+		assert json.loads(response.data.decode()) == {}
 
 	def test_get_all_users(self, test_client):
 		response = test_client.get('/db/users', query_string={'':'getAllUsers'})
 		assert response.status_code == 200
-		for i in json.loads(response.data):
+		for i in json.loads(response.data.decode()):
 			assert i in [
 					{"id":1,"name":"TestUser1","meta_dat":''},
 					{"id":2,"meta_dat":'',"name":"TestUser2"},
@@ -95,7 +95,7 @@ class TestServerMusic():
 	def test_get_songs(self, test_client):
 		response = test_client.get("/db/music", query_string={'':'getAllSongs'})
 		assert response.status_code == 200
-		assert json.loads(response.data) == [{
+		assert json.loads(response.data.decode()) == [{
 				"name":"test song",
 				"artist":"test users",
 				"duration":666.0,
@@ -105,7 +105,7 @@ class TestServerMusic():
 	def test_get_song_by_id(self, test_client):
 		response = test_client.get("/db/music", query_string={'id':0})
 		assert response.status_code == 200
-		assert json.loads(response.data) == {
+		assert json.loads(response.data.decode()) == {
 				"name":"test song",
 				"artist":"test users",
 				"duration":666.0,
@@ -119,22 +119,22 @@ class TestPlaylist():
 	def test_vote_new(self, test_client):
 		response = test_client.post("/vote", data={'u_id':3, 's_id':1, 'vote':1})
 		assert response.status_code == 201
-		assert json.loads(response.data) == {"message":"added entry into playlist"}
+		assert json.loads(response.data.decode()) == {"message":"added entry into playlist"}
 
 	def test_vote_update(self, test_client):
 		response = test_client.post("/vote", data={'u_id':3, 's_id':1, 'vote':1})
 		assert response.status_code == 200
-		assert json.loads(response.data) == {"message":"updated vote"}
+		assert json.loads(response.data.decode()) == {"message":"updated vote"}
 
 	def test_vote_fail(self, test_client):
 		response = test_client.post("/vote", data={'u_id':3, '_id':1, 'vote':1})
 		assert response.status_code == 400
-		assert json.loads(response.data) == {"message":"no voting operation interpreted from request"}
+		assert json.loads(response.data.decode()) == {"message":"no voting operation interpreted from request"}
 
 	def test_fetch_playlist(self, test_client):
 		response = test_client.get("/vote")
 		assert response.status_code == 200
-		assert json.loads(response.data) == [[1, 3, 2]]
+		assert json.loads(response.data.decode()) == [[1, 3, 2]]
 
 
 
