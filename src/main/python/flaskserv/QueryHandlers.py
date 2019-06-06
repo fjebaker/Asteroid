@@ -59,7 +59,7 @@ class MusicQuery(BaseQuery):
 	:returns: :class:`flask.Response` containing query result
 	"""
 
-	keys = ["name", "artist", "duration", "meta_dat"] #: json keys for parsing database
+	keys = ("name", "artist", "duration", "meta_dat") #: json keys for parsing database
 
 	def __init__(self, query):
 		BaseQuery.__init__(self, query)
@@ -104,7 +104,7 @@ class MusicQuery(BaseQuery):
 			return self.defaultCase()
 		song = {}
 		keys = self.keys[:]
-		keys.insert(3, "file_path")
+		keys = ("name", "artist", "duration", "file_path", "meta_dat")
 		for key, value in zip(keys, db_result[0]):
 			if key == "file_path":
 				continue
@@ -136,7 +136,7 @@ class UserQuery(BaseQuery):
 	:returns: :class:`flask.Response` containing query result
 	"""
 
-	keys = ["id", "name", "hash_pw", "meta_dat"] #: json keys for parsing database
+	keys = ("id", "name", "hash_pw", "meta_dat") #: json keys for parsing database
 
 	def __init__(self, query):
 		BaseQuery.__init__(self, query)
@@ -150,7 +150,7 @@ class UserQuery(BaseQuery):
 		"""
 		db_result = UserDB(os.environ["USER_DB_PATH"]).get_all_users()
 
-		keys = [i for i in self.keys if i != "hash_pw"]		# bad key filtering :: TODO
+		keys = ("id", "name", "meta_dat")	# bad key filtering :: TODO
 		all_users = []
 		for user_tup in db_result:
 			user = {}
