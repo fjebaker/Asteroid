@@ -11,7 +11,10 @@ def mock_DB(request, tmpdir_factory):
 	fn = str(tmpdir_factory.mktemp("data").join("test.db"))
 
 	with Database.DBInstance(fn) as db:
-		db.create_table("playlist", s_id="long", u_id="long", vote="long", UNIQUE="s_id")
+		db.create_table("playlist", 
+				("s_id", "u_id", "vote", "UNIQUE"),
+				("long", "long", "long", "s_id")
+			)
 	request.cls.fn = fn
 	yield
 

@@ -31,7 +31,7 @@ class DBInstance:
 		self.handle.close()
 			
 
-	def create_table(self, table_name, **kwargs):
+	def create_table(self, table_name, keys, types):
 		"""
 		Create a new table in the database.
 		If \'UNIQUE:col_name\' present in \\*\\*kwargs, adds a CONSTRAINT to the table called unique_col, making col_name unique.
@@ -43,7 +43,7 @@ class DBInstance:
 		"""
 		column_type = ""
 		constraint = ""
-		for c, t in kwargs.items():
+		for c, t in zip(keys, types):
 			if c == "UNIQUE":
 				constraint += ", CONSTRAINT unique_col UNIQUE ({})".format(t)
 				continue
@@ -265,7 +265,7 @@ class MusicDB(metaclass=DBAccessory):
 		:rtype: list of tuples
 		"""
 		return self.db_inst.select_columns("songs",
-			("name", "artist", "duration", "meta_dat"))
+			("name", "artist", "duration", "file_path", "meta_dat"))
 
 
 class UserDB(metaclass=DBAccessory):

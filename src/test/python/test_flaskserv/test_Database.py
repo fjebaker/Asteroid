@@ -14,7 +14,10 @@ def MDB_inst(request, tmpdir_factory):
 	fn = str(tmpdir_factory.mktemp("data").join("test.db"))
 
 	with Database.DBInstance(fn) as db:
-		db.create_table("songs", name="text", artist="text", duration="real", meta_dat="text", file_path="text", UNIQUE="name, artist, file_path")
+		db.create_table("songs", 
+				("name", "artist", "duration", "meta_dat", "file_path", "UNIQUE"), 
+				("text", "text", "real", "text", "text", "name, artist, file_path")
+			)
 	mdb = Database.MusicDB(fn)
 	request.cls.mdb = mdb
 	yield
@@ -25,7 +28,10 @@ def UDB_inst(request, tmpdir_factory):
 	fn = str(tmpdir_factory.mktemp("data").join("test.db"))
 
 	with Database.DBInstance(fn) as db:
-		db.create_table("users", id="long", name="text", hash_pw="long", meta_dat="text", UNIQUE="id")
+		db.create_table("users", 
+				("id", "name", "hash_pw", "meta_dat", "UNIQUE"), 
+				("long", "text", "long", "text", "id")
+			)
 	udb = Database.UserDB(fn)
 	request.cls.udb = udb
 	yield
@@ -43,7 +49,10 @@ class TestDBInstance():
 
 	def test_table(self):
 		db = Database.DBInstance(":memory:")
-		db.create_table("test_table", c1="text", c2="text", c3="real")
+		db.create_table("test_table", 
+				("c1", "c2", "c3"),
+				("text", "text", "real")
+			)
 
 		out = db.get_column_info("test_table")
 		desire = ('c1', 'c2', 'c3')
@@ -55,11 +64,17 @@ class TestDBInstance():
 
 	def test_with(self):
 		with Database.DBInstance(":memory:") as db:
-			db.create_table("test_table", c1="text", c2="text", c3="real")
+			db.create_table("test_table", 
+				("c1", "c2", "c3"),
+				("text", "text", "real")
+			)
 
 	def test_insert_entire(self):
 		with Database.DBInstance(":memory:") as db:
-			db.create_table("test_table", c1="text", c2="text", c3="real")
+			db.create_table("test_table", 
+				("c1", "c2", "c3"),
+				("text", "text", "real")
+			)
 			db.insert_entire_row("test_table", ("test1", "test2", 9))
 			db.insert_entire_row("test_table", ("test1.1", "test2.1", 9.1))
 			out = db.select_columns("test_table", ("c1", "c3"))
@@ -70,19 +85,28 @@ class TestDBInstance():
 
 	def test_persitance(self, temp_db):
 		with Database.DBInstance(temp_db) as db:
-			db.create_table("test_table", c1="text", c2="text", c3="real")
+			db.create_table("test_table", 
+				("c1", "c2", "c3"),
+				("text", "text", "real")
+			)
 		with Database.DBInstance(temp_db) as db:
 			assert db.get_column_info("test_tabl") == ()
 			assert db.get_column_info("test_table") != ()
 
 	def test_unique(self):
 		with Database.DBInstance(":memory:") as db:
-			db.create_table("test_table", c1="text", c2="text", UNIQUE="c1")
+			db.create_table("test_table", 
+					("c1", "c2", "UNIQUE"),
+					("text", "text", "c1")
+				)
 
 	def test_update(self):
 		desire = (('test1', 'test3', 11.0), ('test1', 'test3', 11.0), ('test2', 'test2', 12.0))
 		with Database.DBInstance(":memory:") as db:
-			db.create_table("test_table", c1="text", c2="text", c3="real")
+			db.create_table("test_table", 
+				("c1", "c2", "c3"),
+				("text", "text", "real")
+			)
 			db.insert_entire_row("test_table", ("test1", "test2", 9))
 			db.insert_entire_row("test_table", ("test1", "test2", 11))
 			db.insert_entire_row("test_table", ("test2", "test2", 12))
@@ -97,7 +121,10 @@ class TestDBInstance():
 		desire1 = (('test1', 'test2', 9.0))
 		desire2 = (('test1', 'test2', 9.0), ('test1', 'test2', 11.0))
 		with Database.DBInstance(":memory:") as db:
-			db.create_table("test_table", c1="text", c2="text", c3="real")
+			db.create_table("test_table", 
+				("c1", "c2", "c3"),
+				("text", "text", "real")
+			)
 			db.insert_entire_row("test_table", ("test1", "test2", 9))
 			db.insert_entire_row("test_table", ("test1", "test2", 11))
 			db.insert_entire_row("test_table", ("test2", "test2", 12))
@@ -112,7 +139,10 @@ class TestDBInstance():
 	def test_delete(self):
 		desire = [('test1', 'test2', 9.0)]
 		with Database.DBInstance(":memory:") as db:
-			db.create_table("test_table", c1="text", c2="text", c3="real")
+			db.create_table("test_table", 
+				("c1", "c2", "c3"),
+				("text", "text", "real")
+			)
 			db.insert_entire_row("test_table", ("test1", "test2", 9))
 			db.insert_entire_row("test_table", ("test1", "test2", 11))
 			db.delete_rows("test_table", ({"c3":11}))
