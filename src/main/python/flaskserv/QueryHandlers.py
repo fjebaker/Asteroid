@@ -103,7 +103,9 @@ class MusicQuery(BaseQuery):
 		if len(db_result) == 0:
 			return self.defaultCase()
 		song = {}
-		for key, value in zip(self.keys, db_result[0]):
+		keys = self.keys[:]
+		keys.insert(3, "file_path")
+		for key, value in zip(keys, db_result[0]):
 			if key == "file_path":
 				continue
 			song[key] = value
