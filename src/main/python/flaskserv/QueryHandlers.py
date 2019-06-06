@@ -59,7 +59,7 @@ class MusicQuery(BaseQuery):
 	:returns: :class:`flask.Response` containing query result
 	"""
 
-	keys = ["name", "artist", "duration", "file_path", "meta_dat"] #: json keys for parsing database
+	keys = ["name", "artist", "duration", "meta_dat"] #: json keys for parsing database
 
 	def __init__(self, query):
 		BaseQuery.__init__(self, query)
@@ -73,7 +73,6 @@ class MusicQuery(BaseQuery):
 		"""
 		db_result = MusicDB(os.environ["MUSIC_DB_PATH"]).get_all_songs()
 
-		keys = [i for i in self.keys if i != "file_path"]
 		all_songs = []
 		for song_tup in db_result:
 			song = {}

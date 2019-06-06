@@ -62,8 +62,9 @@
 <span class="sd">		:type name: str</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="n">udb</span> <span class="o">=</span> <span class="n">UserDB</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;USER_DB_PATH&quot;</span><span class="p">])</span>
-		<span class="n">ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">udb</span><span class="o">.</span><span class="n">get_column</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)]</span>
+		<span class="n">ids</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">udb</span><span class="o">.</span><span class="n">get_column</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)]</span>
 
+		<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;DEBUG -- ids:&quot;</span><span class="p">,</span> <span class="n">ids</span><span class="p">)</span>
 		<span class="n">new_id</span> <span class="o">=</span> <span class="mi">1</span>	<span class="c1"># TODO: future, make the database auto increment</span>
 		<span class="k">if</span> <span class="n">ids</span> <span class="o">!=</span> <span class="p">[]:</span>
 			<span class="n">new_id</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
