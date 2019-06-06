@@ -46,7 +46,7 @@ class TestDBInstance():
 		db.create_table("test_table", c1="text", c2="text", c3="real")
 
 		out = db.get_column_info("test_table")
-		desire = [(0, 'c1', 'text', 0, None, 0), (1, 'c2', 'text', 0, None, 0), (2, 'c3', 'real', 0, None, 0)]
+		desire = ((0, 'c1', 'text', 0, None, 0), (1, 'c2', 'text', 0, None, 0), (2, 'c3', 'real', 0, None, 0))
 		for i, j in zip(out, desire):
 			for x, y in zip(i, j):
 				assert str(x) == str(y)
@@ -81,7 +81,7 @@ class TestDBInstance():
 			db.create_table("test_table", c1="text", c2="text", UNIQUE="c1")
 
 	def test_update(self):
-		desire = [('test1', 'test3', 11.0), ('test1', 'test3', 11.0), ('test2', 'test2', 12.0)]
+		desire = (('test1', 'test3', 11.0), ('test1', 'test3', 11.0), ('test2', 'test2', 12.0))
 		with Database.DBInstance(":memory:") as db:
 			db.create_table("test_table", c1="text", c2="text", c3="real")
 			db.insert_entire_row("test_table", ("test1", "test2", 9))
@@ -95,8 +95,8 @@ class TestDBInstance():
 
 	def test_fetch_rows(self):
 		# this is so terrible written lmao
-		desire1 = [('test1', 'test2', 9.0)]
-		desire2 = [('test1', 'test2', 9.0), ('test1', 'test2', 11.0)]
+		desire1 = (('test1', 'test2', 9.0))
+		desire2 = (('test1', 'test2', 9.0), ('test1', 'test2', 11.0))
 		with Database.DBInstance(":memory:") as db:
 			db.create_table("test_table", c1="text", c2="text", c3="real")
 			db.insert_entire_row("test_table", ("test1", "test2", 9))
@@ -135,7 +135,7 @@ class TestMusicDB():
 		self.mdb.add_song({"name":"Fishing For Fishies", "artist":"King Gizzard and the Lizard Wizard", "duration":298, "file_path":"", "meta_dat":""})
 
 	def test_song_fetch_all(self):
-		desire = [('You Too Must Die', 'GOLD', 333.0, '', ''), ('Plastic Boogie', 'King Gizzard and the Lizard Wizard', 181.0, '', ''), ('Fishing For Fishies', 'King Gizzard and the Lizard Wizard', 298.0, '', '')]
+		desire = (('You Too Must Die', 'GOLD', 333.0, '', ''), ('Plastic Boogie', 'King Gizzard and the Lizard Wizard', 181.0, '', ''), ('Fishing For Fishies', 'King Gizzard and the Lizard Wizard', 298.0, '', ''))
 		out = self.mdb.get_all_songs()
 		for i, j in zip(out, desire):
 			for x, y in zip(i, j):
@@ -160,7 +160,7 @@ class TestUserDB():
 		self.udb.add_user({"id":1, "name":"OtherTestUser", "hash_pw":0, "meta_dat":""})
 
 	def test_user_fetch_all(self):
-		desire = [(0, 'TestUser', ''), (1, 'OtherTestUser', '')]
+		desire = ((0, 'TestUser', ''), (1, 'OtherTestUser', ''))
 		out = self.udb.get_all_users()
 		for i, j in zip(out, desire):
 			for x, y in zip(i, j):
