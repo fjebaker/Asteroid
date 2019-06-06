@@ -64,10 +64,10 @@ function songLengthFormat(secs) {
     var secrem = secs % 60;
     var mins = (secs - secrem)/60;
     if (secrem < 10) {
-        return mins + ":0" + secrem;
+        return mins + ":0" + Math.round(secrem);
     }
     else {
-        return mins + ":" + secrem;
+        return mins + ":" + Math.round(secrem);
     }
 }
 
