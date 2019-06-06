@@ -31,7 +31,7 @@ class UserHandler():
 
 		new_id = 1	# TODO: future, make the database auto increment
 		if ids != []:
-			new_id = max(ids) + 1
+			new_id = int(max(ids)) + 1
 
 		udb.add_user({"id":new_id, "name":name, "hash_pw":0, "meta_dat":""})
 		return new_id
