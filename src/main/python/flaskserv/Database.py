@@ -84,7 +84,7 @@ class DBInstance:
 		condition = list(condition.items())[0]
 		condition_string = str(condition[0]) + " = '" + str(condition[1]) + "'"
 
-		return self.handle.execute('''SELECT * FROM {} WHERE {}'''.format(table_name, condition_string)).fetchall()
+		return self.handle.execute('''SELECT * FROM {} WHERE {} ORDER BY rowid'''.format(table_name, condition_string)).fetchall()
 	
 
 	def select_columns(self, table_name, column_list):
@@ -101,7 +101,7 @@ class DBInstance:
 			column_list = (column_list,)
 		cols = ", ".join(column_list)
 		# print('''SELECT {} from {}'''.format(cols, table_name))
-		return self.handle.execute('''SELECT {} FROM {}'''.format(cols, table_name)).fetchall()
+		return self.handle.execute('''SELECT {} FROM {} ORDER BY rowid'''.format(cols, table_name)).fetchall()
 
 	def update_generic(self, table_name, changes, condition):
 		"""
