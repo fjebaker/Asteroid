@@ -27,11 +27,12 @@ class UserHandler():
 		:type name: str
 		"""
 		udb = UserDB(os.environ["USER_DB_PATH"])
-		ids = [i[0] for i in udb.get_column("id")]
+		ids = [int(i[0]) for i in udb.get_column("id")]
 
+		print("DEBUG -- ids:", ids)
 		new_id = 1	# TODO: future, make the database auto increment
 		if ids != []:
-			new_id = int(max(ids)) + 1
+			new_id = max(ids) + 1
 
 		udb.add_user({"id":new_id, "name":name, "hash_pw":0, "meta_dat":""})
 		return new_id
