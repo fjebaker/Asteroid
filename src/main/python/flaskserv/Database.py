@@ -97,8 +97,8 @@ class DBInstance:
 		:type column: str/list[str]
 		:returns: list of tuples with items from column [(x1, y1, ...), (x2, y2, ...), ...]
 		"""
-		if type(column_list) != list:
-			column_list = [column_list]
+		if type(column_list) != tuple:
+			column_list = (column_list,)
 		cols = ", ".join(column_list)
 		# print('''SELECT {} from {}'''.format(cols, table_name))
 		return self.handle.execute('''SELECT {} FROM {}'''.format(cols, table_name)).fetchall()
@@ -265,7 +265,7 @@ class MusicDB(metaclass=DBAccessory):
 		:rtype: list of tuples
 		"""
 		return self.db_inst.select_columns("songs",
-			["name", "artist", "duration", "meta_dat"])
+			("name", "artist", "duration", "meta_dat"))
 
 
 class UserDB(metaclass=DBAccessory):
@@ -329,7 +329,7 @@ class UserDB(metaclass=DBAccessory):
 		:rtype: list of tuples
 		"""
 		return self.db_inst.select_columns("users",
-			["id", "name", "meta_dat"])
+			("id", "name", "meta_dat"))
 
 if __name__ == '__main__':
 	pass
