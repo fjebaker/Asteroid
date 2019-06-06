@@ -1,0 +1,56 @@
+/* Background Formatting */
+
+body  {
+  text-align: left;
+  background-color: #000000;
+  text-decoration: underline;
+}
+
+/* Button Formatting */
+
+button {
+    background-color: #111111;
+    color: #4f9e52;
+    font-family: verdana;
+    font-size: 15px;
+    padding: 10px 5px;
+    margin: 4px 1px;
+    border: #4f9e52;
+    cursor: pointer;
+    width: 75%;
+    border-radius: 5px;
+    text-align: left;
+    -webkit-transition-duration: 0.4s; 
+    transition-duration: 0.4s
+}
+
+button:hover {
+  background-color: #4CAF50; /* Green */
+  color: #000000;
+}
+
+#upvote {
+    font-size: 0px;
+    background-color: #225473;
+    background: transparent url(upvote.png) no-repeat;
+    background-size: auto 100% ;
+    width: 30px;
+    height: 50px;
+    
+}
+
+#downvote{
+    font-size: 0px;
+    background-color: #225473;
+    background: transparent url(downvote.png) no-repeat;
+    background-size: auto 100%;
+    width: 30px;
+    height: 50px;
+}
+
+/* Header Formatting */
+
+h1 {
+  color: green;
+}
+
