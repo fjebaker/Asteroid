@@ -1,5 +1,3 @@
-//TODO: stuff with queries
-
 var bodyDiv = document.getElementById("bodyDiv");
 insert_before(bodyDiv,"../script/post.js");
 bodyDiv.innerHTML = "<div id='listTabsDiv'></div><div id='listDiv'>list data goes here</div>";
@@ -7,9 +5,37 @@ var allSongsJSONData = "no result";
 //success func should check if string
 getJson("/db/music?=getAllSongs",function(data){allSongsJSONData = data;queue();},function(){document.location.href = document.location.href;});
 
+function _updateFavouriteCookie(id,removeBool) {
+    var currCookieData = getCookie("Favourites");
+    if (currCookieData === "") {
+        setCookie("Favourites",""+id,getCookieDuration());
+    } else {
+        var favArray = currCookieData.split(',');
+        var notPresent = true;
+        var presentId = 0;
+        for (var i=0; i<favArray.length; i++) {
+            if (favArray[i] == id) {
+                notPresent = false;
+                presentId = i;
+                i = favArray.length;
+            }
+        }
+        if (notPresent && !removeBool) {
+            currCookieData += ","+id;
+            setCookie("Favourites",currCookieData,getCookieDuration());
+        }
+        if (removeBool && !notPresent) {
+            favArray.splice(presentId,1);
+            setCookie("Favourites",favArray.join(','),getCookieDuration());
+        }
+    }
+}
+
 //Called upon form submission
 function _submitVote(event){
     event.preventDefault();
+    //add to favourites
+    _updateFavouriteCookie(event.target.elements.namedItem("songNameFormElement").value,(event.target.elements.namedItem("voteValueFormElement").value) < 0);
     function success(request) {
         if (request.status == 404) {
             console.log("404: POST response not found");
@@ -33,6 +59,7 @@ function createVoteForm(songid) {
     songName.type='hidden';
     songName.name='s_id';
     songName.value=songid;
+    songName.id="songNameFormElement";
     form.appendChild(songName);
     const uidValue = document.createElement('input');
     uidValue.type='hidden';
@@ -43,6 +70,7 @@ function createVoteForm(songid) {
     voteValue.type='hidden';
     voteValue.name='vote';
     voteValue.value='1';
+    voteValue.id="voteValueFormElement";
     form.appendChild(voteValue);
     const upvoteButton = document.createElement('button');
     upvoteButton.type='submit';
@@ -108,7 +136,7 @@ function _refreshDownloaded() {
 
 //Fills the listDiv with the server's downloaded song list
 function downloaded() {
-    document.getElementById("listDiv").innerHTML = "<table style='width:100%' id='downloadedVotingTable'><tr><th>Name</th><th>Artist</th><th>Duration</th><th>Vote</th></tr><tr><td><input type='text' id='nameSearchInput' onchange='_refreshDownloaded()'></td><td><input type='text' id='artistSearchInput' onchange='_refreshDownloaded()'></td><td><input type='text' id='durationSearchInput' onchange='_refreshDownloaded()'></td><td></td></tr></table>";
+    document.getElementById("listDiv").innerHTML = "<table style='width:100%' id='downloadedVotingTable'><tr><th>Name</th><th>Artist</th><th>Duration</th><th>Vote</th></tr><tr><td><input type='text' id='nameSearchInput' onchange='_refreshDownloaded()'></td><td><input type='text' id='artistSearchInput' onchange='_refreshDownloaded()'></td><td><input type='text' id='durationSearchInput' onchange='_refreshDownloaded()' size='8'></td><td></td></tr></table>";
     _refreshDownloaded();
 }
 
@@ -148,9 +176,37 @@ function queue() {
     getJson("/vote",_queue,function(data){document.getElementById("listDiv").innerHTML = "Unable to load queue data!";});
 }
 
-//nop
+//Shows a downloaded-like voting table but only with elements stored in the "favourites" cookie
 function favourites() {
-    document.getElementById("listDiv").innerHTML = "favourites data goes here";
+    document.getElementById("listDiv").innerHTML = "<table style='width:100%' id='favouritesVotingTable'><tr><th>Name</th><th>Artist</th><th>Duration</th><th>Vote</th></tr></table>";
+    var favouritesVotingTable = document.getElementById("favouritesVotingTable");
+    var currCookieData = getCookie("Favourites");
+    if (!(currCookieData === "")) {
+        favArray = currCookieData.split(',');
+        var i = 0;
+        function failure() {
+            i += 1;
+            if (i < favArray.length - 1) {
+                getJson("/db/music?id="+favArray[i],success,failure);
+            }
+        }
+        function success(data) {
+            if (!(typeof data == "string")) {
+                var newRow = favouritesVotingTable.insertRow(-1);
+                var nameCell = newRow.insertCell(0);
+                var artistCell = newRow.insertCell(1);
+                var durationCell = newRow.insertCell(2);
+                var voteCell = newRow.insertCell(3);
+                nameCell.innerHTML = data.name;
+                artistCell.innerHTML = data.artist;
+                durationCell.innerHTML = songLengthFormat(data.duration);
+                var votingForm = createVoteForm(favArray[i]);
+                voteCell.appendChild(votingForm);
+            }
+            failure();
+        }
+        getJson("/db/music?id="+favArray[0],success,failure)
+    }
 }
 
 //nop
