@@ -141,7 +141,7 @@ function _refreshDownloaded() {
         var artistSearchData = document.getElementById("artistSearchInput").value;
         var durationSearchData = document.getElementById("durationSearchInput").value;
         var currSong = allSongsJSONData[i];
-        if (currSong.name.includes(nameSearchData) && currSong.artist.includes(artistSearchData) && songLengthFormat(currSong.duration).includes(durationSearchData)) {
+        if (currSong.name.toLowerCase().includes(nameSearchData.toLowerCase()) && currSong.artist.toLowerCase().includes(artistSearchData.toLowerCase()) && songLengthFormat(currSong.duration).includes(durationSearchData)) {
             var newRow = downloadedVotingTable.insertRow(-1);
             var nameCell = newRow.insertCell(0);
             var artistCell = newRow.insertCell(1);
