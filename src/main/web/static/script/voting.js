@@ -113,6 +113,28 @@ function _refreshDownloaded() {
         downloadedVotingTable.deleteRow(-1);
     }
     console.log(downloadedVotingTable.rows.length);
+    //sort data
+    function stringCompare(str1,str2) {
+        var shorterLength = str1.length;
+        if (str2.length < shorterLength) {shorterLength = str2.length;}
+        for (var i=1; i<shorterLength; i++) {
+            if (str1.slice(0,i) !== str2.slice(0,i)) {
+                if (str1.slice(0,i) < str2.slice(0,i)) {return -1;}
+                else {return 1;}
+            }
+        }
+        if (str1.length == shorterLength) {return -1;}
+        else {return 1;}
+    }
+    function sorter(a,b) {
+        if (a.artist === b.artist) {
+            //sort by name
+            return stringCompare(a.name,b.name);
+        } else {
+            return stringCompare(a.artist,b.artist);
+        }
+    }
+    allSongsJSONData.sort(sorter);
     //fill table with data
     for (var i=0; i<allSongsJSONData.length; i++) {
         var nameSearchData = document.getElementById("nameSearchInput").value;
@@ -128,7 +150,7 @@ function _refreshDownloaded() {
             nameCell.innerHTML = currSong.name;
             artistCell.innerHTML = currSong.artist;
             durationCell.innerHTML = songLengthFormat(currSong.duration);
-            var votingForm = createVoteForm(i);
+            var votingForm = createVoteForm(currSong.songID);
             voteCell.appendChild(votingForm);
         }
     }
@@ -172,6 +194,9 @@ function _queue(data) {
 
 //Calls getJson to fill listDiv with queue data
 function queue() {
+    for (var i=0; i<allSongsJSONData.length;i++) {
+        allSongsJSONData[i]["songID"] = i; 
+    }
     document.getElementById("listDiv").innerHTML = "<table style='width:100%' id='queueVotingTable'><tr><th>Name</th><th>Artist</th><th>Duration</th><th>Votes</th><th>Vote</th></tr></table>"
     getJson("/vote",_queue,function(data){document.getElementById("listDiv").innerHTML = "Unable to load queue data!";});
 }
