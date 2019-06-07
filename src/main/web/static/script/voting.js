@@ -49,12 +49,16 @@ function createVoteForm(songid) {
     upvoteButton.name='vote';
     upvoteButton.value=1;
     upvoteButton.innerHTML="Upvote";
+    upvoteButton.id='upvote';
+    upvoteButton.title="Upvote song"
     form.appendChild(upvoteButton);
     const downvoteButton = document.createElement('button');
     downvoteButton.type='submit';
     downvoteButton.name='vote';
     downvoteButton.value=-1;
     downvoteButton.innerHTML="Downvote";
+    downvoteButton.id='downvote';
+    downvoteButton.title="Downvote song"
     downvoteButton.onclick=function(){voteValue.value=-1;};
     form.appendChild(downvoteButton);
     form.addEventListener("submit",_submitVote);
@@ -73,23 +77,39 @@ function songLengthFormat(secs) {
     }
 }
 
+function _refreshDownloaded() {
+    var downloadedVotingTable = document.getElementById("downloadedVotingTable");
+    //clear all but first two rows
+    const initLength = downloadedVotingTable.rows.length;
+    for (var i=2; i<initLength;i++) {
+        downloadedVotingTable.deleteRow(-1);
+    }
+    console.log(downloadedVotingTable.rows.length);
+    //fill table with data
+    for (var i=0; i<allSongsJSONData.length; i++) {
+        var nameSearchData = document.getElementById("nameSearchInput").value;
+        var artistSearchData = document.getElementById("artistSearchInput").value;
+        var durationSearchData = document.getElementById("durationSearchInput").value;
+        var currSong = allSongsJSONData[i];
+        if (currSong.name.includes(nameSearchData) && currSong.artist.includes(artistSearchData) && songLengthFormat(currSong.duration).includes(durationSearchData)) {
+            var newRow = downloadedVotingTable.insertRow(-1);
+            var nameCell = newRow.insertCell(0);
+            var artistCell = newRow.insertCell(1);
+            var durationCell = newRow.insertCell(2);
+            var voteCell = newRow.insertCell(3);
+            nameCell.innerHTML = currSong.name;
+            artistCell.innerHTML = currSong.artist;
+            durationCell.innerHTML = songLengthFormat(currSong.duration);
+            var votingForm = createVoteForm(i);
+            voteCell.appendChild(votingForm);
+        }
+    }
+}
+
 //Fills the listDiv with the server's downloaded song list
 function downloaded() {
-    document.getElementById("listDiv").innerHTML = "<table style='width:100%' id='downloadedVotingTable'><tr><th>Name</th><th>Artist</th><th>Duration</th><th>Vote</th></tr></table>"
-    var downloadedVotingTable = document.getElementById("downloadedVotingTable");
-    for (var i=0; i<allSongsJSONData.length; i++) {
-        var newRow = downloadedVotingTable.insertRow(-1);
-        var nameCell = newRow.insertCell(0);
-        var artistCell = newRow.insertCell(1);
-        var durationCell = newRow.insertCell(2);
-        var voteCell = newRow.insertCell(3);
-        var currSong = allSongsJSONData[i];
-        nameCell.innerHTML = currSong.name;
-        artistCell.innerHTML = currSong.artist;
-        durationCell.innerHTML = songLengthFormat(currSong.duration);
-        var votingForm = createVoteForm(i);
-        voteCell.appendChild(votingForm);
-    }
+    document.getElementById("listDiv").innerHTML = "<table style='width:100%' id='downloadedVotingTable'><tr><th>Name</th><th>Artist</th><th>Duration</th><th>Vote</th></tr><tr><td><input type='text' id='nameSearchInput' onchange='_refreshDownloaded()'></td><td><input type='text' id='artistSearchInput' onchange='_refreshDownloaded()'></td><td><input type='text' id='durationSearchInput' onchange='_refreshDownloaded()'></td><td></td></tr></table>";
+    _refreshDownloaded();
 }
 
 //Fills the queue table with queue items from the json data 'data'
