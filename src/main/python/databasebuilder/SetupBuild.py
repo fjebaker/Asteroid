@@ -6,7 +6,7 @@ def sqlsafe(string):
 	"""
 	TODO -- look into SQLInjection prevention a bit more
 	"""
-	string = string.replace("'", r"\'").replace('"', r'\"').replace('\\', r'\\').replace('%', r'\%').replace('*', r'\*').replace('_', r'\_')
+	return string.replace("'", r"\'").replace('"', r'\"').replace('\\', r'\\').replace('%', r'\%').replace('*', r'\*').replace('_', r'\_')
 
 def clear(path):
 	"""
