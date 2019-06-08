@@ -45,27 +45,8 @@ class AudioHandler(threading.Thread):
 					self.play()
 
 			else:
-				print("DEBUG", msg)
+				# print("DEBUG", msg)
 				self.__getattribute__(msg[0])(*msg)
-
-	def fetch_playlist_item(self):
-		"""
-		Uses an instance of :class:`src.main.python.flaskserv.model.PLaylist` to fetch the current ``playlist`` table.
-		Determines most voted song, and removes it from ``playlist``.
-
-		:returns: most voted song
-		:rtype: tuple
-		"""
-
-		pl = Playlist(os.environ["PLAYLIST_PATH"])
-		playlist = pl.get_playlist()
-
-		if playlist == ():
-			return None
-
-		most_voted_song = sorted(playlist, key=lambda x: int(x[2]))[-1]		
-		pl.remove(most_voted_song[0])
-		return most_voted_song
 
 	def get_path_from_database(self):
 		"""
@@ -75,7 +56,7 @@ class AudioHandler(threading.Thread):
 		:returns: the path to the most voted song
 		:rtype: str
 		"""
-		n_item = self.fetch_playlist_item()
+		n_item = Playlist(os.environ["PLAYLIST_PATH"]).get_most_voted()
 		if n_item == None:
 			# TODO
 			return None
@@ -98,7 +79,7 @@ class AudioHandler(threading.Thread):
 				return
 			# check file exists
 		if not os.path.isfile(path):
-			print("DEBUG -- file does not exist", path)
+			# print("DEBUG -- file does not exist", path)
 			return
 
 		if self.current_player != None:

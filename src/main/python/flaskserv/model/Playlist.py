@@ -42,13 +42,36 @@ class Playlist(metaclass=DBAccessory):
 		:param vote: vote value to change by (can be positive or negative)
 		:type vote: int
 		"""
-		print("DEBUG -- in update_vote, params are ", s_id, vote)
+		# print("DEBUG -- in update_vote, params are ", s_id, vote)
 		c_vote = self.db_inst.select_rows("playlist", {"s_id":s_id})[0][2]
 		self.db_inst.update_generic("playlist", 
 				{"vote":int(c_vote)+int(vote)},
 				{"s_id":s_id}
 			)
 
+	def get_most_voted(self):
+		"""
+		TODO
+		"""
+		playlist = self.db_inst.select_columns("playlist", "*")		# can't call own functions
+		# print("DEBUG -- get_most_voted :: before return None")
+		if playlist == ():
+			return None
+		most_voted_song = sorted(playlist, key=lambda x: int(x[2]))[-1]		
+		self.db_inst.delete_rows("playlist", {"s_id":most_voted_song[0]})		# can't call own functions
+		# print("DEBUG -- get_most_voted")
+		self.db_inst.insert_entire_row("history", most_voted_song)
+		return most_voted_song
+
+	def get_current_song(self):
+		"""
+		TODO
+		"""
+		history = self.db_inst.get_n_latest_items('history', 1)
+		# print("DEBUG -- get_current_song :: ", history)
+		if history == ():
+			return []
+		return history[-1]
 	
 
 	def remove(self, s_id):

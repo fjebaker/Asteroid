@@ -56,6 +56,7 @@ class DBInstance:
 		:type data: tuple
 		:raises: Exception("Bad row format.")
 		"""
+		# print("DEBUG -- insert_entire_row : ", table_name, data)
 		column_names = self.get_column_info(table_name)
 		if not self._is_row_correct(column_names, data):
 			raise Exception("Bad row format.")
@@ -96,6 +97,13 @@ class DBInstance:
 		# print('''SELECT {} from {}'''.format(cols, table_name))
 		return tuple(self.handle.execute('''SELECT {} FROM {} ORDER BY rowid ASC;'''.format(cols, table_name)).fetchall())
 
+	def get_n_latest_items(self, table_name, n):
+		"""
+		TODO
+		"""
+		return tuple(self.handle.execute('''SELECT * FROM {} ORDER BY rowid DESC LIMIT {}'''.format(table_name, n)))
+
+
 	def update_generic(self, table_name, changes, condition):
 		"""
 		update entries according to condition in the database
@@ -134,7 +142,7 @@ class DBInstance:
 		"""
 		condition = tuple(list(condition.items()))[0]
 		condition_string = str(condition[0]) + " = '" + str(condition[1]) + "'"
-		print("DEBUG -- in delete_rows making query: " + '''DELETE FROM {} WHERE {}'''.format(table_name, condition_string))
+		# print("DEBUG -- in delete_rows making query: " + '''DELETE FROM {} WHERE {}'''.format(table_name, condition_string))
 		self.handle.execute('''DELETE FROM {} WHERE {}'''.format(table_name, condition_string))
 
 	def get_column_info(self, table_name):
