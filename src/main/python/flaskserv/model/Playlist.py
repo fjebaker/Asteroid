@@ -57,10 +57,8 @@ class Playlist(metaclass=DBAccessory):
 		# print("DEBUG -- get_most_voted :: before return None")
 		if playlist == ():
 			return None
-		most_voted_song = sorted(playlist, key=lambda x: int(x[2]))[-1]
-		# if vote == 1, select earliest
-		if most_voted_song[2] == 1:
-			most_voted_song = playlist[0]		
+		most_voted_song = max(playlist, key=lambda x: int(x[2]))
+			
 		self.db_inst.delete_rows("playlist", {"s_id":most_voted_song[0]})		# can't call own functions
 		# print("DEBUG -- get_most_voted")
 		self.db_inst.insert_entire_row("history", most_voted_song)
