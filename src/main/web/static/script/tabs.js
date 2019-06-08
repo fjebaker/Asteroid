@@ -4,8 +4,13 @@ var tabArr = getCookie("tabs").split(',');
 const maxTabSettingIndex = 6;
 //0: Voting 1: Rating 2: Queue 3: Downloaded 4: Favourites 5: Playlists
 
-//Lookup table for index - returns tab identifier for given index 'index'
-//TODO: error codes good
+/*
+ * Used as a lookup table for tab index to value of the "tab" query keys
+ *
+ * @param {number} index - the integer index of the tab
+ *
+ * @returns {string} queryName - the name of the "tab" query string key relating to the index. Returns the empty string "" if the index is out of bounds
+ */
 function getName(index) {
     switch (index) {
         case 0:
@@ -27,21 +32,31 @@ function getName(index) {
             return "Playlists";
             break;
         default:
-            return "ERROR!";
+            return "";
             break;
     }
 }
 
-//Returns whether tab is active for given index 'index'
-function getState(index) {
+/*
+ * Used to determine whether the checkbox for a tab of particular index should be checked by default
+ *
+ * @param {number} index - the integer index of the tab
+ *
+ * @returns {string} checkedString - the string "checked" if the index should be checked, or the empty string "" if it should not, such that the returned value can be directly fed into the HTML script for a checkbox element
+ */
+function _getCheckedState(index) {
     if (index < maxTabSettingIndex) {
         if (tabArr[index].split(':')[1] == "1") {return "checked";}
         else {return "";}
     }
 }
 
-//When a checkbox is checked/unchecked, changes the tab cookies.
-//Checkbox index is 'index', checkbox element is 'box'
+/*
+ * Callback used to change the "tabs" cookie when a checkbox is checked or unchecked
+ *
+ * @param {number} index - the integer index of the tab
+ * @param {Object}
+ */
 function changeCallback(index,box) {
     if (index < maxTabSettingIndex) {
         var adder = box.checked ? 1 : 0;
@@ -59,7 +74,7 @@ for (var i=0; i<maxTabSettingIndex; i++) {
     var nameCell = newRow.insertCell(0);
     var buttonCell = newRow.insertCell(1);
     nameCell.innerHTML = getName(i);
-    buttonCell.innerHTML = "<input type=\'checkbox\' onclick=\'changeCallback(" + i + ",this);\'" + getState(i) + "></input>";
+    buttonCell.innerHTML = "<input type=\'checkbox\' onclick=\'changeCallback(" + i + ",this);\'" + _getCheckedState(i) + "></input>";
 }
 
 current_callback();
