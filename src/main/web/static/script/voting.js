@@ -5,6 +5,12 @@ var allSongsJSONData = "no result";
 //success func should check if string
 getJson("/db/music?=getAllSongs",function(data){allSongsJSONData = data;queue();},function(){document.location.href = document.location.href;});
 
+/**
+ * Used to update the "Favourites" cookie by either adding or removing a song of specified id to the favourites
+ *
+ * @param {number} id - the song unique id, as specified by its original index in the getAllSongs JSON
+ * @param {boolean} removeBool - specifies whether the song should be removed from favourites (removeBool == true) or added to favourites (removeBool == false)
+ */
 function _updateFavouriteCookie(id,removeBool) {
     var currCookieData = getCookie("Favourites");
     if (currCookieData === "") {
@@ -31,7 +37,11 @@ function _updateFavouriteCookie(id,removeBool) {
     }
 }
 
-//Called upon form submission
+/**
+ * Callback used to submit an upvote or downvote on form submission
+ *
+ * @param {Object} event - the event triggered by form submission
+ */
 function _submitVote(event){
     event.preventDefault();
     //add to favourites
@@ -50,15 +60,21 @@ function _submitVote(event){
     postRequest(new FormData(event.target),"/vote",success,failure);
 }
 
-//Generates and returns form for voting buttons with id songid
-function createVoteForm(songid) {
+/**
+ * Used to generate a form element with upvote and downvote buttons for a song of particular ID
+ *
+ * @param {number} id - the song unique id, as specified by its original index in the getAllSongs JSON
+ *
+ * @returns {Object} formElement - the element for the created HTML form
+ */
+function createVoteForm(id) {
     const form = document.createElement('form');
     form.method = 'post';
     form.action = '/register';
     const songName = document.createElement('input');
     songName.type='hidden';
     songName.name='s_id';
-    songName.value=songid;
+    songName.value=id;
     songName.id="songNameFormElement";
     form.appendChild(songName);
     const uidValue = document.createElement('input');
@@ -93,11 +109,17 @@ function createVoteForm(songid) {
     return form;
 }
 
-//Changes a number of seconds 'secs' into a string formatted "minutes:seconds"
+/**
+ * Used for converting a number of seconds into a string formatted "[minutes]:[seconds]" for nice display
+ *
+ * @param {number} secs - the number of seconds to convert
+ *
+ * @returns {string} displayString - the formatted string in "[minutes]:[seconds]" corresponding to the supplied argument
+ */
 function songLengthFormat(secs) {
     var secrem = secs % 60;
     var mins = (secs - secrem)/60;
-    if (secrem < 10) {
+    if (Math.round(secrem) < 10) {
         return mins + ":0" + Math.round(secrem);
     }
     else {
@@ -105,6 +127,9 @@ function songLengthFormat(secs) {
     }
 }
 
+/**
+ * Callback used for refreshing the "downloaded songs" table, for instance, when a new search is made
+ */
 function _refreshDownloaded() {
     var downloadedVotingTable = document.getElementById("downloadedVotingTable");
     //clear all but first two rows
@@ -156,13 +181,19 @@ function _refreshDownloaded() {
     }
 }
 
-//Fills the listDiv with the server's downloaded song list
+/**
+ * Used to construct and populate a table of downloaded songs
+ */
 function downloaded() {
     document.getElementById("listDiv").innerHTML = "<table style='width:100%' id='downloadedVotingTable'><tr><th>Name</th><th>Artist</th><th>Duration</th><th>Vote</th></tr><tr><td><input type='text' id='nameSearchInput' onchange='_refreshDownloaded()'></td><td><input type='text' id='artistSearchInput' onchange='_refreshDownloaded()'></td><td><input type='text' id='durationSearchInput' onchange='_refreshDownloaded()' size='8'></td><td></td></tr></table>";
     _refreshDownloaded();
 }
 
-//Fills the queue table with queue items from the json data 'data'
+/**
+ * Callback used to populate the table of queued songs with the server's song queue
+ *
+ * @param {Object} data - the JSON data returned from the GET request requesting song queue
+ */
 function _queue(data) {
     if (typeof data == "string") {
         console.log("Unable to load user data for uniqueness check: status "+data);
@@ -192,7 +223,9 @@ function _queue(data) {
     }
 }
 
-//Calls getJson to fill listDiv with queue data
+/**
+ * Used to construct and populate a table of queued songs
+ */
 function queue() {
     for (var i=0; i<allSongsJSONData.length;i++) {
         allSongsJSONData[i]["songID"] = i; 
@@ -201,7 +234,9 @@ function queue() {
     getJson("/vote",_queue,function(data){document.getElementById("listDiv").innerHTML = "Unable to load queue data!";});
 }
 
-//Shows a downloaded-like voting table but only with elements stored in the "favourites" cookie
+/**
+ * Used to construct and populate a table of songs from the user's "favourites" cookie
+ */
 function favourites() {
     document.getElementById("listDiv").innerHTML = "<table style='width:100%' id='favouritesVotingTable'><tr><th>Name</th><th>Artist</th><th>Duration</th><th>Vote</th></tr></table>";
     var favouritesVotingTable = document.getElementById("favouritesVotingTable");
@@ -234,12 +269,21 @@ function favourites() {
     }
 }
 
-//nop
+/**
+ * Used to construct and populate the fabled "playlists" menu. Does not yet/will exist after version 0.1.0
+ * @since 0.1.0
+ */
 function playlists() {
     document.getElementById("listDiv").innerHTML = "playlist data goes here";
 }
 
-//Lookup table for stuff
+/**
+ * Used as a lookup table for onclick callbacks for the buttons needed in the 'voting' tab
+ *
+ * @param {string} name - the tab name: should be one of ["Queue","Downloaded","Favourites","Playlists"]
+ *
+ * @returns {string|buttonCallback} callback - the callback relating to the given string, or the empty string "" if the 'name' argument is not one of the expected values
+ */
 function listTabCallback(name) {
     switch(name) {
         case "Queue":
