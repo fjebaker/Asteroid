@@ -88,7 +88,8 @@ class MusicQuery(BaseQuery):
 
 		return Response(
 				json.dumps(all_songs),
-				status=200
+				status=200,
+				mimetype='application/json'
 			)
 
 	def id(self):
@@ -115,7 +116,8 @@ class MusicQuery(BaseQuery):
 			song[key] = value
 		return Response(
 				json.dumps(song),
-				status=200
+				status=200,
+				mimetype='application/json'
 			)
 
 	def defaultCase(self):
@@ -126,7 +128,8 @@ class MusicQuery(BaseQuery):
 		"""
 		return Response(
 				json.dumps({}),
-				status=400
+				status=400,
+				mimetype='application/json'
 			)
 
 class UserQuery(BaseQuery):
@@ -164,7 +167,8 @@ class UserQuery(BaseQuery):
 
 		return Response(
 				json.dumps(all_users),
-				status=200
+				status=200,
+				mimetype='application/json'
 			)
 
 	def id(self):
@@ -191,7 +195,8 @@ class UserQuery(BaseQuery):
 			user[key] = value
 		return Response(
 				json.dumps(user),
-				status=200
+				status=200,
+				mimetype='application/json'
 			)
 
 	def defaultCase(self):
@@ -202,5 +207,6 @@ class UserQuery(BaseQuery):
 		"""
 		return Response(
 				json.dumps({}),
-				status=400
+				status=400,
+				mimetype='application/json'
 			)
