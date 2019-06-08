@@ -6,7 +6,7 @@ def sqlsafe(string):
 	"""
 	TODO -- look into SQLInjection prevention a bit more
 	"""
-	return string.replace("'", '').replace('"', '').replace('\\', '').replace('%', '').replace('*', '').replace('_', '')
+	return string.replace("'", "''").replace('"', '""')
 
 def clear(path):
 	"""
@@ -30,7 +30,7 @@ def get_song_item(song_path):
 		"name":title,
 		"artist":artist,
 		"duration":duration,
-		"file_path":song_path,
+		"file_path":sqlsafe(song_path),
 		"meta_dat":""
 		}
 
