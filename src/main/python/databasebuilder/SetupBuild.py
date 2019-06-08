@@ -24,7 +24,7 @@ def get_song_item(song_path):
 
 	artist = sqlsafe(metadata["RIFF:Artist"])
 	title = sqlsafe(metadata["RIFF:Title"])
-	duration = sqlsafe(metadata["Composite:Duration"])
+	duration = metadata["Composite:Duration"]
 
 	return {
 		"name":title,
