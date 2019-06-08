@@ -198,8 +198,10 @@ function _queue(data) {
     if (typeof data == "string") {
         console.log("Unable to load user data for uniqueness check: status "+data);
     } else {
+        var usernameLookup = {};
         data.sort(function(a,b){return b[2]-a[2];})
         var queueVotingTable = document.getElementById("queueVotingTable");
+        var noValid = data.length;
         for (var i=0; i<data.length; i++) {
             if (data[i][2] > 0) {
                 if (data[i][0] < allSongsJSONData.length) {
@@ -207,20 +209,46 @@ function _queue(data) {
                     var nameCell = newRow.insertCell(0);
                     var artistCell = newRow.insertCell(1);
                     var durationCell = newRow.insertCell(2);
-                    var votesCell = newRow.insertCell(3);
-                    var voteCell = newRow.insertCell(4);
+                    var userCell = newRow.insertCell(3);
+                    var votesCell = newRow.insertCell(4);
+                    var voteCell = newRow.insertCell(5);
                     var currSong = allSongsJSONData[data[i][0]];
                     nameCell.innerHTML = currSong.name;
                     artistCell.innerHTML = currSong.artist;
                     durationCell.innerHTML = songLengthFormat(currSong.duration);
+                    userCell.innerHTML = data[i][1].toString();
+                    userCell.id = "queueVotingIDCellNo"+i;
                     votesCell.innerHTML = data[i][2];
                     var votingForm = createVoteForm(data[i][0]);
                     voteCell.appendChild(votingForm);
                 }
             }
-            else {i = data.length;}
+            else {noValid = i;i = data.length;}
+        } //end of for loop
+        function replaceHTML(data,i,string) {
+            for (var j=0;j<noValid;j++) {
+                if(data[i][1] === data[j][1]) {
+                    element = document.getElementById("queueVotingIDCellNo"+j);
+                    if (element !== null) {
+                        element.innerHTML = string;
+                    }
+                }
+            }
         }
-    }
+        for (var i=0;i<noValid;i++) {
+            if (!usernameLookup.hasOwnProperty(data[i][1].toString())) {
+                const k=i;
+                usernameLookup[data[i][1].toString()] = 1;
+                getJson("/db/users?id="+data[i][1],function(usrdata){
+                    var setStr = "UNKNOWN";
+                    if (typeof usrdata !== "string") {setStr = usrdata.name;}
+                    replaceHTML(data,k,setStr);
+                },function(usrdata){
+                    replaceHTML(data,k,"UNKNOWN");
+                })
+            }
+        }
+    }//end of else
 }
 
 /**
@@ -230,7 +258,23 @@ function queue() {
     for (var i=0; i<allSongsJSONData.length;i++) {
         allSongsJSONData[i]["songID"] = i; 
     }
-    document.getElementById("listDiv").innerHTML = "<table style='width:100%' id='queueVotingTable'><tr><th>Name</th><th>Artist</th><th>Duration</th><th>Votes</th><th>Vote</th></tr></table>"
+    document.getElementById("listDiv").innerHTML = "Current song: <em id='currentSongReading'></em><br><table style='width:100%' id='queueVotingTable'><tr><th>Name</th><th>Artist</th><th>Duration</th><th>Requesting user</th><th>Votes</th><th>Vote</th></tr></table>"
+    getJson("/vote?=currentSong",function(data){
+        if (typeof data == "string") {document.getElementById("currentSongReading").innerHTML="Error finding current song!";}
+        else {
+            getJson("/db/music?id="+data[0],function(songdata){
+                if (typeof songdata == "string") {
+                    document.getElementById("currentSongReading").innerHTML="Song with id "+data[0];
+                } else {
+                    document.getElementById("currentSongReading").innerHTML=songdata.name+" by "+songdata.artist;
+                }
+            },function(songdata){
+                document.getElementById("currentSongReading").innerHTML="Song with id "+data[0];
+            });
+        }
+    },function(data){
+        document.getElementById("currentSongReading").innerHTML="Error finding current song!";
+    });
     getJson("/vote",_queue,function(data){document.getElementById("listDiv").innerHTML = "Unable to load queue data!";});
 }
 
