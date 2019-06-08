@@ -1,4 +1,4 @@
-/*
+/**
  * Used to get the string data stored in a specifically named cookie
  *
  * @param {string} name - the name used as a key to identify the cookie requested
@@ -22,7 +22,7 @@ function getCookie(name) {
     return "" //If no cookie found
 }
 
-/*
+/**
  * Used to set a cookie with particular data
  *
  * @param {string} name - the name used as a key to identify the cookie to be set
@@ -36,7 +36,7 @@ function setCookie(name, data, time) {
     document.cookie = name + "=" + data + ";" + expiry + ";path=/"; //setting cookie
 }
 
-/*
+/**
  * Used to set the expiry time to a single value for all cookies present in the document
  *
  * @param {number} time - the number of milliseconds for which all cookies should be retained before expiring
@@ -55,13 +55,16 @@ function refreshCookies(time) {
     }
 }
 
+/**
+ * Used to ensure that the user has a valid "id" cookie and redirect to the auth page if it does not
+ */
 function checkCookieValidity() {
     if (getCookie("id") == "") {
-        document.location.href = "/auth";
+        document.location.href = "/auth?v="+Math.random();
     }
 }
 
-/*
+/**
  * Used to convert string-formatted values for the "cookieDuration" cookie to number of milliseconds
  *
  * @param {string} timeString - the indicative string ('minute','hour','day','week','month' or 'year') to convert
@@ -93,7 +96,7 @@ function convertNameToDuration(timeString) {
     }
 }
 
-/*
+/**
  * Used to reset the expiry time on the "cookieDuration" cookie, or set the cookie to the default value ('hour') if it does not exist
  */
 function setCookieDuration() {
@@ -106,7 +109,7 @@ function setCookieDuration() {
     }
 }
 
-/*
+/**
  * Convenience function used to get the numerical value represented in the "cookieDuration" cookie
  *
  * @returns {number} timeMilliseconds - the number of milliseconds represented by the string stored in the in the "cookieDuration" cookie
