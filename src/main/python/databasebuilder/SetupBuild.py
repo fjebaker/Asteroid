@@ -2,6 +2,12 @@ import src.main.python.flaskserv.Database as db
 import os, sys
 import exiftool
 
+def sqlsafe(string):
+	"""
+	TODO -- look into SQLInjection prevention a bit more
+	"""
+	string = string.replace("'", r"\'").replace('"', r'\"').replace('\\', r'\\').replace('%', r'\%').replace('*', r'\*').replace('_', r'\_')
+
 def clear(path):
 	"""
 	TODO
@@ -16,9 +22,9 @@ def get_song_item(song_path):
 	with exiftool.ExifTool() as et:
 		metadata = et.get_metadata(song_path)
 
-	artist = metadata["RIFF:Artist"]
-	title = metadata["RIFF:Title"]
-	duration = metadata["Composite:Duration"]
+	artist = sqlsafe(metadata["RIFF:Artist"])
+	title = sqlsafe(metadata["RIFF:Title"])
+	duration = sqlsafe(metadata["Composite:Duration"])
 
 	return {
 		"name":title,
