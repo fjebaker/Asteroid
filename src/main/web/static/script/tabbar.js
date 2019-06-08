@@ -4,6 +4,9 @@
  * @param {Object} div - the element to add a button to
  * @param {string} buttonText - the text to display on the button
  * @param {buttonCallback} callback - the function to call for the 'click' event for the button
+ *
+ * The callback for a button click
+ * @callback buttonCallback
  */
 function generateTabButton(div, buttonText, callback) {
     var button = document.createElement("button");
@@ -11,11 +14,6 @@ function generateTabButton(div, buttonText, callback) {
     div.appendChild(button);
     button.addEventListener("click",callback);
 }
-
-/**
- * The callback for a button click
- * @callback buttonCallback
- */
 
 /**
  * Used to load a particular script based on a valid 'tab' query in the query string
