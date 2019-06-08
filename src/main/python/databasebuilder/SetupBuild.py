@@ -90,3 +90,14 @@ def build_playlist():
 			)
 	except Exception as e:
 			print("[!] trying to create table 'playlist' in {}, raised exception: \n\t\t'{}'".format(os.environ["PLAYLIST_PATH"], str(e)))
+			dbinst = db.DBInstance(os.environ["PLAYLIST_PATH"])
+
+	dbinst = db.DBInstance(os.environ["PLAYLIST_PATH"])
+	try:
+		with dbinst as builder:
+			builder.create_table("history", 
+				("s_id", "u_id", "vote"),
+				("long", "long", "long")
+			)
+	except Exception as e:
+			print("[!] trying to create table 'history' in {}, raised exception: \n\t\t'{}'".format(os.environ["PLAYLIST_PATH"], str(e)))

@@ -41,7 +41,8 @@ def run_player(host="localhost", port="6666"):
 			def setperiodsize(self, *args, **kwargs):
 				pass
 			def write(self, *args, **kwargs):
-				print("DEBUG: MockStream::write() with args='{}', kwargs='{}'".format(args, kwargs))
+				# print("DEBUG: MockStream::write() with args='{}', kwargs='{}'".format(args, kwargs))
+				pass
 		module.PCM = lambda a, b, c: MockStream()
 		module.PCM_PLAYBACK = None
 		module.PCM_NORMAL = None
@@ -129,9 +130,11 @@ if __name__ == '__main__':
 		if len(cmd) == 1:
 			database_usage()
 			exit(0)
-		if cmd[1] == 'fresh':
+		if cmd[1] == 'fresh' and len(cmd) == 2:
 			databases.clear('test.db')
 			databases.build_all()
+		elif cmd[1] == 'fresh' and cmd[2] == 'playlist' and len(cmd) == 3:
+			databases.build_playlist()
 		elif cmd[1] == 'load' and cmd[2] == 'music' and len(cmd) == 4:
 			databases.build_music(cmd[3])
 		else:
