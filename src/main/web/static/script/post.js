@@ -1,4 +1,4 @@
-/*
+/**
  * Used to handle POST requests to the flask server
  *
  * @param {FormData} data - the form data to be posted to the server

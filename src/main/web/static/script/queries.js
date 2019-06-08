@@ -1,4 +1,4 @@
-/*
+/**
  * Used to reload the current page, removing the current query string if applicable and adding a new query string from the queryDict argument
  *
  * @param {Object} queryDict - an object with each required query string key as a property with the required value as its value; i.e such that queryDict[key] = value for each key-value pair required in the query
@@ -18,7 +18,7 @@ function freshQuery(queryDict) {
     }
 }
 
-/*
+/**
  * Used to reload the current page, updating the query string from the queryDict argument
  * Queries already present will have their values overwritten if specified in the queryDict argument; requested queries not previously present will be appended to the query string
  *
@@ -40,7 +40,7 @@ function updateQuery(queryDict) {
     }
 }
 
-/*
+/**
  * Used to ensure that a query string exists for the current page - if one does not, redirects to the current page but with a query string built from the key-value pairs of the 'queryDict' argument
  *
  * @param {Object} queryDict - an object with each required query string key as a property with the required value as its value; i.e such that queryDict[key] = value for each key-value pair required in the query
@@ -51,7 +51,7 @@ function ensureQuery(queryDict) {
     }
 }
 
-/*
+/**
  * Used to ensure that a query exists for a specific key on the current page - if it does not, redirects to the current page but with the key in the query string with value set to the specified default value
  *
  * @param {string} key - the key to check for in the query string and add if missing

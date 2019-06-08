@@ -1,4 +1,4 @@
-/*
+/**
  * Used to add buttons to the end of a particular HTML element
  *
  * @param {Object} div - the element to add a button to
@@ -17,7 +17,7 @@ function generateTabButton(div, buttonText, callback) {
  * @callback buttonCallback
  */
 
-/*
+/**
  * Used to load a particular script based on a valid 'tab' query in the query string
  */
 function includeQueryStringScript() {
@@ -52,7 +52,7 @@ function rating() {updateQuery({"tab":"Rating","v":Math.random()});}
 function tabs() {updateQuery({"tab":"Tabs","v":Math.random()});}
 function account() {updateQuery({"tab":"Account","v":Math.random()});}
 
-/*
+/**
  * Used as a lookup table for values of the "tab" query to javascript functions for button callback
  *
  * @param {string} name - the name of the tab as per the "tab" query: expecting one of ["Voting","Rating","Tabs","Account"]
@@ -78,7 +78,7 @@ function defaultTabCallback(name) {
     }
 }
 
-/*
+/**
  * Used to ensure that a valid "tabs" cookie exists, and set the cookie to the default value if it doesn't exist
  */
 function defaultTabCookies() {
@@ -87,7 +87,7 @@ function defaultTabCookies() {
     }
 }
 
-/*
+/**
  * Used to populate a HTML element with the 'tab' buttons needed depending on the values stored in the "tabs" cookie
  *
  * @param {Object} element - the element to insert buttons into

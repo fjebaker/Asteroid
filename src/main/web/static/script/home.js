@@ -1,4 +1,4 @@
-/*
+/**
  * @requires src/main/web/static/script/cookies.js
  */
 checkCookieValidity();

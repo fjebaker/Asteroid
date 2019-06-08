@@ -4,7 +4,7 @@ var tabArr = getCookie("tabs").split(',');
 const maxTabSettingIndex = 6;
 //0: Voting 1: Rating 2: Queue 3: Downloaded 4: Favourites 5: Playlists
 
-/*
+/**
  * Used as a lookup table for tab index to value of the "tab" query keys
  *
  * @param {number} index - the integer index of the tab
@@ -37,7 +37,7 @@ function getName(index) {
     }
 }
 
-/*
+/**
  * Used to determine whether the checkbox for a tab of particular index should be checked by default
  *
  * @param {number} index - the integer index of the tab
@@ -51,7 +51,7 @@ function _getCheckedState(index) {
     }
 }
 
-/*
+/**
  * Callback used to change the "tabs" cookie when a checkbox is checked or unchecked
  *
  * @param {number} index - the integer index of the tab

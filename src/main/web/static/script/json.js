@@ -1,4 +1,4 @@
-/*
+/**
  * Used to handle GET requests for JSON data distributed by the flask server
  *
  * @param {string} filename - the location to which the GET request should be sent
