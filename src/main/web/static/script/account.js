@@ -13,7 +13,7 @@ function selectCookieDuration(select) {
 }
 
 /**
- *  Used for supplying a select element with the options relevant to setting the "cookieDuration" cookie
+ *  Used for populating a select element with the options relevant to setting the "cookieDuration" cookie
  */
 function putOptions() {
     var cookieDurationSelector = document.getElementById("cookieDurationSelector");

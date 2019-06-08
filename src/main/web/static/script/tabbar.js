@@ -1,4 +1,10 @@
-//Creates a button at the end of element 'div' whose text is 'buttonText' and whose clicking calls the function 'callback'
+/*
+ * Used to add buttons to the end of a particular HTML element
+ *
+ * @param {Object} div - the element to add a button to
+ * @param {string} buttonText - the text to display on the button
+ * @param {buttonCallback} callback - the function to call for the 'click' event for the button
+ */
 function generateTabButton(div, buttonText, callback) {
     var button = document.createElement("button");
     button.innerHTML = buttonText; //Setting text
@@ -6,7 +12,14 @@ function generateTabButton(div, buttonText, callback) {
     button.addEventListener("click",callback);
 }
 
-//Inserts a script specified in the query string, if valid
+/**
+ * The callback for a button click
+ * @callback buttonCallback
+ */
+
+/*
+ * Used to load a particular script based on a valid 'tab' query in the query string
+ */
 function includeQueryStringScript() {
     var urlParams = new URLSearchParams(location.search);
     if(urlParams.has("tab")) { //check if tab query exists
@@ -39,7 +52,13 @@ function rating() {updateQuery({"tab":"Rating","v":Math.random()});}
 function tabs() {updateQuery({"tab":"Tabs","v":Math.random()});}
 function account() {updateQuery({"tab":"Account","v":Math.random()});}
 
-//Gives relevant callback for a key
+/*
+ * Used as a lookup table for values of the "tab" query to javascript functions for button callback
+ *
+ * @param {string} name - the name of the tab as per the "tab" query: expecting one of ["Voting","Rating","Tabs","Account"]
+ *
+ * @returns {string|buttonCallback} callback - the relevant callback function for the 'name' string if it matches one of the expected values, or the string "" if it doesn't.
+ */
 function defaultTabCallback(name) {
     switch(name) {
         case "Voting":
@@ -59,14 +78,21 @@ function defaultTabCallback(name) {
     }
 }
 
-//Checks that valid cookies for tabs exist
+/*
+ * Used to ensure that a valid "tabs" cookie exists, and set the cookie to the default value if it doesn't exist
+ */
 function defaultTabCookies() {
     if (getCookie("tabs") == ""){
         setCookie("tabs","Voting:1,Rating:0,Queue:1,Downloaded:1,Favourites:1,Playlists:0",getCookieDuration());
     }
 }
 
-//puts relevant tabs in the element section.
+/*
+ * Used to populate a HTML element with the 'tab' buttons needed depending on the values stored in the "tabs" cookie
+ *
+ * @param {Object} element - the element to insert buttons into
+ * @param {tableCallback} tableCallback - the lookup table for buttons to use
+ */
 function supplyButtons(element,tabCallback) {
     defaultTabCookies();
     var tabStr = getCookie("tabs")+",Tabs:1,Account:1";
@@ -82,7 +108,9 @@ function supplyButtons(element,tabCallback) {
     }
 }
 
-//Puts buttons in the tabs section
+/**
+ * Convenience function used to populate the "tabsDiv" div element with the default tabs
+ */
 function supplyTabButtons() {
     var tabsDiv = document.getElementById("tabsDiv");
     supplyButtons(tabsDiv,defaultTabCallback);

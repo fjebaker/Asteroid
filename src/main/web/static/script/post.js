@@ -1,8 +1,3 @@
-//Sends a post request with data 'data' to 'address'.
-//On error or timeout, calls failureCallback with the request as arg.
-//On success, calls successCallback with the request as arg.
-//Concern: is it fine to use onload etc. for all?
-
 /*
  * Used to handle POST requests to the flask server
  *
