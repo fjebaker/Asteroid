@@ -43,13 +43,13 @@ def rate():
 @app.route("/db/music")
 def music_db():
 	query_string = request.query_string 
-	print(query_string)
+	# print(query_string)
 	return queryhandle.MusicQuery(query_string)() 
 
 @app.route("/db/users")
 def user_db():
 	query_string = request.query_string 
-	print(query_string)
+	# print(query_string)
 	return queryhandle.UserQuery(query_string)()
 
 # TODO

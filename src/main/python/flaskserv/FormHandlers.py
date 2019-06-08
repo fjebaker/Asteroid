@@ -45,7 +45,7 @@ class UserHandler():
 		else:
 			json_s = {}				# todo, error message of what went wrong
 			http_s = 400
-		return Response(json.dumps(json_s), status=http_s)
+		return Response(json.dumps(json_s), status=http_s, mimetype='application/json')
 
 
 

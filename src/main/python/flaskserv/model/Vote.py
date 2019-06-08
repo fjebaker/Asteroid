@@ -47,26 +47,30 @@ class Vote:
 			pl.update_vote(s_id, vote)
 			return Response(
 					json.dumps({"message":"updated vote"}), 
-					status=200
+					status=200,
+					mimetype='application/json'
 				)
 		else:
 			pl.add(self.form)
 			return Response(
 					json.dumps({"message":"added entry into playlist"}), 
-					status=201
+					status=201,
+					mimetype='application/json'
 				)
 
 	def __call__(self):
 		if self.request.__dict__["environ"]["REQUEST_METHOD"] == 'GET' and self.request.query_string.decode() == '=currentSong':
 			return Response(
 					json.dumps(Playlist(os.environ["PLAYLIST_PATH"]).get_current_song()),
-					status=200
+					status=200,
+					mimetype='application/json'
 				)
 
 		if self.request.__dict__["environ"]["REQUEST_METHOD"] == 'GET' and self.request.query_string.decode() == '':
 			return Response(
 					json.dumps(Playlist(os.environ["PLAYLIST_PATH"]).get_playlist()),
-					status=200
+					status=200,
+					mimetype='application/json'
 				)
 
 		if "s_id" in self.form and "u_id" in self.form and "vote" in self.form and self.request.__dict__["environ"]["REQUEST_METHOD"] == 'POST':
