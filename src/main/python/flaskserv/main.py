@@ -14,6 +14,10 @@ def index():
 def auth():
 	return send_from_directory('../../web/static/html', 'auth.html')
 
+@app.route("/css/<name>.css")
+def styles(name):
+	return send_from_directory('../../web/static/css', name + '.css')
+
 @app.route("/script/<name>.js")
 def scripts(name):
 	return send_from_directory('../../web/static/script', name+'.js')
