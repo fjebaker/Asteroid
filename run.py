@@ -9,7 +9,7 @@ HEADER = r"""               _       _                 _     _
 | |_) | |_| /  _  \__ \ ||  __/ | | (_) | | (_| |
 | .__/ \__, \_/ \_/___/\__\___|_|  \___/|_|\__,_|
 |_|    |___/   				v0.0.0 
-					github.com/Moontemple/Asteroid"""
+		     ?:~j  github.com/Moontemple/Asteroid"""
 
 """
 	TODO

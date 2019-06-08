@@ -95,7 +95,7 @@
 		<span class="n">pl</span> <span class="o">=</span> <span class="n">Playlist</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;PLAYLIST_PATH&quot;</span><span class="p">])</span>
 		<span class="n">playlist</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">get_playlist</span><span class="p">()</span>
 
-		<span class="k">if</span> <span class="n">playlist</span> <span class="o">==</span> <span class="p">[]:</span>
+		<span class="k">if</span> <span class="n">playlist</span> <span class="o">==</span> <span class="p">():</span>
 			<span class="k">return</span> <span class="kc">None</span>
 
 		<span class="n">most_voted_song</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">playlist</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]))[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>		

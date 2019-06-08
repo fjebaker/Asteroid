@@ -35,8 +35,8 @@
   <h1>Source code for src.main.python.player.INETServer</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">socket</span>
 <span class="kn">import</span> <span class="nn">importlib</span><span class="o">,</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">src.main.python.player.ClientThread</span> <span class="k">as</span> <span class="nn">ct_module</span>
-<span class="kn">from</span> <span class="nn">src.main.python.player.AudioHandler</span> <span class="k">import</span> <span class="n">AudioHandler</span>
+<span class="kn">import</span> <span class="nn">src.main.python.player.ClientThread</span> <span class="k">as</span> <span class="nn">ClientThread</span>
+<span class="kn">import</span> <span class="nn">src.main.python.player.AudioHandler</span> <span class="k">as</span> <span class="nn">AudioHandler</span>
 <span class="kn">from</span> <span class="nn">queue</span> <span class="k">import</span> <span class="n">Queue</span>
 
 <div class="viewcode-block" id="Listener"><a class="viewcode-back" href="../../../../../player/INETServer.html#src.main.python.player.INETServer.Listener">[docs]</a><span class="k">class</span> <span class="nc">Listener</span><span class="p">():</span>
@@ -80,7 +80,7 @@
 <span class="sd">		TODO</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;DEBUG -- connection from </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">addr</span><span class="p">))</span>
-		<span class="n">ct</span> <span class="o">=</span> <span class="n">ct_module</span><span class="o">.</span><span class="n">ClientThread</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="p">,</span> <span class="n">csocket</span><span class="p">,</span> <span class="n">addr</span><span class="p">)</span>
+		<span class="n">ct</span> <span class="o">=</span> <span class="n">ClientThread</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="p">,</span> <span class="n">csocket</span><span class="p">,</span> <span class="n">addr</span><span class="p">)</span>
 		<span class="n">ct</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">clients</span><span class="p">[</span><span class="n">addr</span><span class="p">]</span> <span class="o">=</span> <span class="n">ct</span></div>
 </pre></div>

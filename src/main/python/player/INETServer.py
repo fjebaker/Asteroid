@@ -1,7 +1,7 @@
 import socket
 import importlib, os
-import src.main.python.player.ClientThread as ct_module
-from src.main.python.player.AudioHandler import AudioHandler
+import src.main.python.player.ClientThread as ClientThread
+import src.main.python.player.AudioHandler as AudioHandler
 from queue import Queue
 
 class Listener():
@@ -45,6 +45,6 @@ class Listener():
 		TODO
 		"""
 		print("DEBUG -- connection from {}".format(addr))
-		ct = ct_module.ClientThread(self.queue, csocket, addr)
+		ct = ClientThread(self.queue, csocket, addr)
 		ct.start()
 		self.clients[addr] = ct
