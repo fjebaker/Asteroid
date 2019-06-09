@@ -1,6 +1,7 @@
 var bodyDiv = document.getElementById("bodyDiv");
 insert_before(bodyDiv,"../script/post.js");
-bodyDiv.innerHTML = "<div id='listTabsDiv'></div><div id='listDiv'>list data goes here</div>";
+bodyDiv.innerHTML = "<div id='listTabsDiv'></div><div id='listDiv'>Redirecting to relevant tab...</div>";
+queue();
 
 //var allSongsJSONData = "no result";
 //success func should check if string
@@ -16,6 +17,10 @@ function _updateFavouriteCookie(id,removeBool) {
     var currCookieData = getCookie("Favourites");
     if (currCookieData === "") {
         setCookie("Favourites",""+id,getCookieDuration());
+        var updateableElem = document.getElementById("tableFavCell"+id);
+        if (updateableElem !== null) {
+            updateableElem.innerHTML="<button id='unfavourite' title='Remove from favourites' onclick='_updateFavouriteCookie("+id+",true)'>Unfavourite</button>"
+        }
     } else {
         var favArray = currCookieData.split(',');
         var notPresent = true;
@@ -30,10 +35,18 @@ function _updateFavouriteCookie(id,removeBool) {
         if (notPresent && !removeBool) {
             currCookieData += ","+id;
             setCookie("Favourites",currCookieData,getCookieDuration());
+            var updateableElem = document.getElementById("tableFavCell"+id);
+            if (updateableElem !== null) {
+                updateableElem.innerHTML="<button id='unfavourite' title='Remove from favourites' onclick='_updateFavouriteCookie("+id+",true)'>Unfavourite</button>"
+            }
         }
         if (removeBool && !notPresent) {
             favArray.splice(presentId,1);
             setCookie("Favourites",favArray.join(','),getCookieDuration());
+            var updateableElem = document.getElementById("tableFavCell"+id);
+            if (updateableElem !== null) {
+                updateableElem.innerHTML="<button id='favourite' title='Add to favourites' onclick='_updateFavouriteCookie("+id+",false)'>Favourite</button>"
+            }
         }
     }
 }
@@ -179,6 +192,7 @@ function _refreshNoSearch(data) {
         var currentResultsNo = document.getElementById("currentResultsNo");
         currentResultsNo.innerHTML = "Unable to load songs list! Status code: "+data;
     } else {
+        var favArray = getCookie("Favourites").split(",");
         for (var i=0; i<data.length; i++) {
             var currSong = data[i];
             var newRow = downloadedVotingTable.insertRow(-1);
@@ -186,11 +200,19 @@ function _refreshNoSearch(data) {
             var artistCell = newRow.insertCell(1);
             var durationCell = newRow.insertCell(2);
             var voteCell = newRow.insertCell(3);
+            var favCell = newRow.insertCell(4);
             nameCell.innerHTML = currSong.name;
             artistCell.innerHTML = currSong.artist;
+            if(currSong.artist == "Joe Bonamassa") {artistCell.innerHTML = "Jonathan Peepeepoopoo";}
             durationCell.innerHTML = songLengthFormat(currSong.duration);
-            var votingForm = createVoteForm(currSong.songID);
+            var votingForm = createVoteForm(currSong.rowid)
             voteCell.appendChild(votingForm);
+            favCell.id="tableFavCell"+currSong.rowid.toString();
+            if (favArray.includes(currSong.rowid.toString())) {
+                favCell.innerHTML="<button id='unfavourite' title='Remove from favourites' onclick='_updateFavouriteCookie("+currSong.rowid+",true)'>Unfavourite</button>"
+            } else {
+                favCell.innerHTML="<button id='favourite' title='Add to favourites' onclick='_updateFavouriteCookie("+currSong.rowid+",false)'>Favourite</button>";
+            }
         }
     }
 }
@@ -235,7 +257,7 @@ function _refreshDownloaded() {
  * Used to construct and populate a table of downloaded songs
  */
 function downloaded() {
-    document.getElementById("listDiv").innerHTML = "<em id='currentResultsNo'></em><table style='width:100%' id='downloadedVotingTable'><tr><th>Name</th><th>Artist</th><th>Duration</th><th>Vote</th></tr><tr><td><input type='text' id='nameSearchInput' onchange='_refreshDownloaded()'></td><td><input type='text' id='artistSearchInput' onchange='_refreshDownloaded()'></td><td></td><td></td></tr></table>";
+    document.getElementById("listDiv").innerHTML = "<em id='currentResultsNo'></em><table style='width:100%' id='downloadedVotingTable'><tr><th>Name</th><th>Artist</th><th>Duration</th><th>Vote</th><th>Favourite</th></tr><tr><td><input type='text' id='nameSearchInput' onchange='_refreshDownloaded()'></td><td><input type='text' id='artistSearchInput' onchange='_refreshDownloaded()'></td><td></td><td></td><td></td></tr></table>";
     _refreshDownloaded();
 }
 
@@ -255,6 +277,7 @@ function _queue(data) {
             else {
                 var queueVotingTable = document.getElementById("queueVotingTable");
                 var noValid = data.length;
+                var favArray = getCookie("Favourites").split(",");
                 for (var i=0; i<data.length; i++) {
                     if (data[i][2] > 0) {
                         var newRow = queueVotingTable.insertRow(-1);
@@ -264,6 +287,7 @@ function _queue(data) {
                         var userCell = newRow.insertCell(3);
                         var votesCell = newRow.insertCell(4);
                         var voteCell = newRow.insertCell(5);
+                        var favCell = newRow.insertCell(6);
                         var currSong = songsIdData[i];
                         nameCell.innerHTML = currSong.name;
                         artistCell.innerHTML = currSong.artist;
@@ -271,8 +295,14 @@ function _queue(data) {
                         userCell.innerHTML = data[i][1].toString();
                         userCell.id = "queueVotingIDCellNo"+i;
                         votesCell.innerHTML = data[i][2];
-                        var votingForm = createVoteForm(data[i][0]);
+                        var votingForm = createVoteForm(currSong.rowid);
                         voteCell.appendChild(votingForm);
+                        favCell.id="tableFavCell"+currSong.rowid.toString();
+                        if (favArray.includes(currSong.rowid.toString())) {
+                            favCell.innerHTML="<button id='unfavourite' title='Remove from favourites' onclick='_updateFavouriteCookie("+currSong.rowid+",true)'>Unfavourite</button>"
+                        } else {
+                            favCell.innerHTML="<button id='favourite' title='Add to favourites' onclick='_updateFavouriteCookie("+currSong.rowid+",false)'>Favourite</button>";
+                        }
                     }
                     else {noValid = i;i = data.length;}
                 } //end of for loop
@@ -305,7 +335,6 @@ function _queue(data) {
         for (var n=0; n<data.length; n++) {
             ids.push(data[n][0]);
         }
-        console.log(ids);
         getJson("/db/music?id="+ids.join("%20"),queueBuild,function(songsIdData){document.getElementById("currentSongReading").innerHTML = "Unable to load queue data!"});
     }//end of else
 }
@@ -314,14 +343,16 @@ function _queue(data) {
  * Used to construct and populate a table of queued songs
  */
 function queue() {
-    document.getElementById("listDiv").innerHTML = "Current song: <em id='currentSongReading'></em><br><table style='width:100%' id='queueVotingTable'><tr><th>Name</th><th>Artist</th><th>Duration</th><th>Requesting user</th><th>Votes</th><th>Vote</th></tr></table>"
+    document.getElementById("listDiv").innerHTML = "Current song: <em id='currentSongReading'></em><br><table style='width:100%' id='queueVotingTable'><tr><th>Name</th><th>Artist</th><th>Duration</th><th>Requesting user</th><th>Votes</th><th>Vote</th><th>Favourite</th></tr></table>"
     getJson("/vote?=currentSong",function(data){
         if (typeof data == "string") {document.getElementById("currentSongReading").innerHTML="Error finding current song!";}
         else {
+            console.log(data);
             getJson("/db/music?id="+data[0],function(songdata){
                 if (typeof songdata == "string") {
                     document.getElementById("currentSongReading").innerHTML="Song with id "+data[0];
                 } else {
+                    console.log(songdata);
                     document.getElementById("currentSongReading").innerHTML="\""+songdata.name+"\" by "+songdata.artist;
                 }
             },function(songdata){
@@ -338,7 +369,7 @@ function queue() {
  * Used to construct and populate a table of songs from the user's "favourites" cookie
  */
 function favourites() {
-    document.getElementById("listDiv").innerHTML = "<table style='width:100%' id='favouritesVotingTable'><tr><th>Name</th><th>Artist</th><th>Duration</th><th>Vote</th></tr></table>";
+    document.getElementById("listDiv").innerHTML = "<table style='width:100%' id='favouritesVotingTable'><tr><th>Name</th><th>Artist</th><th>Duration</th><th>Vote</th><th>Unfavourite</th></tr></table>";
     var favouritesVotingTable = document.getElementById("favouritesVotingTable");
     var currCookieData = getCookie("Favourites");
     if (!(currCookieData === "")) {
@@ -346,7 +377,7 @@ function favourites() {
         var i = 0;
         function failure() {
             i += 1;
-            if (i < favArray.length - 1) {
+            if (i < favArray.length) {
                 getJson("/db/music?id="+favArray[i],success,failure);
             }
         }
@@ -357,11 +388,14 @@ function favourites() {
                 var artistCell = newRow.insertCell(1);
                 var durationCell = newRow.insertCell(2);
                 var voteCell = newRow.insertCell(3);
+                var favCell = newRow.insertCell(4);
                 nameCell.innerHTML = data.name;
                 artistCell.innerHTML = data.artist;
                 durationCell.innerHTML = songLengthFormat(data.duration);
-                var votingForm = createVoteForm(favArray[i]);
+                var votingForm = createVoteForm(data.rowid);
                 voteCell.appendChild(votingForm);
+                favCell.id="tableFavCell"+data.rowid;
+                favCell.innerHTML="<button id='unfavourite' onclick='_updateFavouriteCookie("+data.rowid+",true)'>Unfavourite</button>"
             }
             failure();
         }
