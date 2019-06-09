@@ -51,6 +51,7 @@
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#P"><strong>P</strong></a>
+ | <a href="#Q"><strong>Q</strong></a>
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
@@ -63,9 +64,17 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="js/auth.html#_dealWithReceivedJson">_dealWithReceivedJson() (built-in function)</a>
 </li>
+      <li><a href="js/voting.html#_queue">_queue() (built-in function)</a>
+</li>
+      <li><a href="js/voting.html#_refreshDownloaded">_refreshDownloaded() (built-in function)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="js/auth.html#_submitClick">_submitClick() (built-in function)</a>
+</li>
+      <li><a href="js/voting.html#_submitVote">_submitVote() (built-in function)</a>
+</li>
+      <li><a href="js/voting.html#_updateFavouriteCookie">_updateFavouriteCookie() (built-in function)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -107,15 +116,17 @@
 </li>
       <li><a href="player/ClientThread.html#src.main.python.player.ClientThread.ClientThread">ClientThread (class in src.main.python.player.ClientThread)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="player/ClientThread.html#src.main.python.player.ClientThread.ClientThread.commands">commands (src.main.python.player.ClientThread.ClientThread attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="player/ConditionObject.html#src.main.python.player.ConditionObject.ConditionObject">ConditionObject (class in src.main.python.player.ConditionObject)</a>
 </li>
       <li><a href="js/cookies.html#convertNameToDuration">convertNameToDuration() (built-in function)</a>
 </li>
       <li><a href="flaskserver/Database.html#src.main.python.flaskserv.Database.DBInstance.create_table">create_table() (src.main.python.flaskserv.Database.DBInstance method)</a>
+</li>
+      <li><a href="js/voting.html#createVoteForm">createVoteForm() (built-in function)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -147,6 +158,8 @@
 </li>
       <li><a href="player/ConditionObject.html#src.main.python.player.ConditionObject.ConditionObject.done">done (src.main.python.player.ConditionObject.ConditionObject attribute)</a>
 </li>
+      <li><a href="js/voting.html#downloaded">downloaded() (built-in function)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -165,10 +178,12 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="player/AudioHandler.html#src.main.python.player.AudioHandler.AudioHandler.fetch_playlist_item">fetch_playlist_item() (src.main.python.player.AudioHandler.AudioHandler method)</a>
+      <li><a href="js/voting.html#favourites">favourites() (built-in function)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="player/AudioHandler.html#src.main.python.player.AudioHandler.AudioHandler.fetch_playlist_item">fetch_playlist_item() (src.main.python.player.AudioHandler.AudioHandler method)</a>
+</li>
       <li><a href="js/queries.html#freshQuery">freshQuery() (built-in function)</a>
 </li>
   </ul></td>
@@ -265,6 +280,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="player/INETServer.html#src.main.python.player.INETServer.Listener">Listener (class in src.main.python.player.INETServer)</a>
 </li>
+      <li><a href="js/voting.html#listTabCallback">listTabCallback() (built-in function)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="player/PlayStream.html#src.main.python.player.PlayStream.PlayStream.loadsong">loadsong() (src.main.python.player.PlayStream.PlayStream method)</a>
@@ -301,11 +318,21 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="flaskserver/model/Playlist.html#src.main.python.flaskserv.model.Playlist.Playlist">Playlist (class in src.main.python.flaskserv.model.Playlist)</a>
 </li>
+      <li><a href="js/voting.html#playlists">playlists() (built-in function)</a>
+</li>
       <li><a href="player/PlayStream.html#src.main.python.player.PlayStream.PlayStream">PlayStream (class in src.main.python.player.PlayStream)</a>
 </li>
       <li><a href="js/post.html#postRequest">postRequest() (built-in function)</a>
 </li>
       <li><a href="js/account.html#putOptions">putOptions() (built-in function)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="Q">Q</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="js/voting.html#queue">queue() (built-in function)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -347,16 +374,18 @@
 </li>
       <li><a href="js/cookies.html#setCookieDuration">setCookieDuration() (built-in function)</a>
 </li>
+      <li><a href="js/voting.html#songLengthFormat">songLengthFormat() (built-in function)</a>
+</li>
       <li><a href="flaskserver/Database.html#module-src.main.python.flaskserv.Database">src.main.python.flaskserv.Database (module)</a>
 </li>
       <li><a href="flaskserver/FormHandlers.html#module-src.main.python.flaskserv.FormHandlers">src.main.python.flaskserv.FormHandlers (module)</a>
 </li>
       <li><a href="flaskserver/model/Playlist.html#module-src.main.python.flaskserv.model.Playlist">src.main.python.flaskserv.model.Playlist (module)</a>
 </li>
-      <li><a href="flaskserver/model/Vote.html#module-src.main.python.flaskserv.model.Vote">src.main.python.flaskserv.model.Vote (module)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="flaskserver/model/Vote.html#module-src.main.python.flaskserv.model.Vote">src.main.python.flaskserv.model.Vote (module)</a>
+</li>
       <li><a href="flaskserver/QueryHandlers.html#module-src.main.python.flaskserv.QueryHandlers">src.main.python.flaskserv.QueryHandlers (module)</a>
 </li>
       <li><a href="player/AudioHandler.html#module-src.main.python.player.AudioHandler">src.main.python.player.AudioHandler (module)</a>
@@ -451,6 +480,7 @@
 <li class="toctree-l1"><a class="reference internal" href="js/post.html"><code class="docutils literal notranslate"><span class="pre">post.js</span></code> Script</a></li>
 <li class="toctree-l1"><a class="reference internal" href="js/tabs.html"><code class="docutils literal notranslate"><span class="pre">tabs.js</span></code> Script</a></li>
 <li class="toctree-l1"><a class="reference internal" href="js/tabbar.html"><code class="docutils literal notranslate"><span class="pre">tabbar.js</span></code> Script</a></li>
+<li class="toctree-l1"><a class="reference internal" href="js/voting.html"><code class="docutils literal notranslate"><span class="pre">voting.js</span></code> Script</a></li>
 </ul>
 
 <div class="relations">

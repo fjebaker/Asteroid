@@ -9,7 +9,9 @@ HEADER = r"""               _       _                 _     _
 | |_) | |_| /  _  \__ \ ||  __/ | | (_) | | (_| |
 | .__/ \__, \_/ \_/___/\__\___|_|  \___/|_|\__,_|
 |_|    |___/   				v0.0.0 
-		     ?:~j  github.com/Moontemple/Asteroid"""
+		     ?:~j  github.com/Moontemple/Asteroid	
+ developed by Fergus Baker, JR Mitchell, Sam Hollow, Ben Shellswell
+"""
 
 """
 	TODO
@@ -28,6 +30,7 @@ def run_player(host="localhost", port="6666"):
 	try:
 		import alsaaudio
 	except:
+		from time import sleep
 		print("[*] No package 'alsaaudio' found, creating a mock...")
 		# mock alsaaudio
 		module = type(sys)('alsaaudio')
@@ -41,8 +44,9 @@ def run_player(host="localhost", port="6666"):
 			def setperiodsize(self, *args, **kwargs):
 				pass
 			def write(self, *args, **kwargs):
-				# print("DEBUG: MockStream::write() with args='{}', kwargs='{}'".format(args, kwargs))
-				pass
+				#print("DEBUG: MockStream::write() with args='{}', kwargs='{}'".format(args, kwargs))
+				print("DEBUG -- mock stream got data")
+				sleep(1)
 		module.PCM = lambda a, b, c: MockStream()
 		module.PCM_PLAYBACK = None
 		module.PCM_NORMAL = None

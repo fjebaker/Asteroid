@@ -34,6 +34,7 @@ Section 1.2 JS Code:
    js/post
    js/tabs
    js/tabbar
+   js/voting
 
 
 Indices and tables

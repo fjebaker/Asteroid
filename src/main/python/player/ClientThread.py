@@ -20,7 +20,8 @@ class ClientThread(threading.Thread):
 		"play":1,
 		"pause":0,
 		"stop":0,
-		"close":0
+		"close":0,
+		"resume":0
 	}	
 
 	def __init__(self, queue, socket, addr):
@@ -66,6 +67,7 @@ class ClientThread(threading.Thread):
 				self(fragments)
 			else:
 				return 1
+		return 0
 
 	def __call__(self, fragments):
 		"""
