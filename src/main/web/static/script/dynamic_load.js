@@ -18,17 +18,24 @@ function insert_before(element,path) {
  * @param {Object} element - document element before which the scripts should be inserted
  * @param {Array} paths - paths to the various .js scripts
  */
-function insert_all_before(element,paths) {
+function insert_all_before(element,paths,finalcallback) {
     //Works by calling a callback for the next stage of loading at the end of each load.
     if (paths.length == 1) {
-        current_callback = function(){};
+        if (finalcallback == null) {
+            current_callback = function(){};
+        } else {
+            current_callback = function(){
+                finalcallback();
+                current_callback = function(){};
+            };
+        }
     } else {
         var new_paths = paths.slice(1);
         current_callback = function(){
-            insert_all_before(element,new_paths);
+            insert_all_before(element,new_paths,finalcallback);
         }
     }
-    insert_before(element,paths[0]);
+    insert_before(element,paths[0],finalcallback);
 }
 
 /**
