@@ -1,15 +1,36 @@
-import pytest
+import pytest, sys
 import unittest.mock as mock
 
-class mocksock():
-	def __init__(self, msgs):
-		self.messages = msgs
+# MOCK DEPENDENCIES
+sys.modules['alsaaudio'] = mock.MagicMock()
 
-	def close(self):
-		pass
-	
-	def recv(self, num):
-		for i in self.messages:
-			yield i.encode()
+import src.main.python.player.ClientThread as ClientThread
 
-	
+
+def test_run():
+	mockSock = mock.MagicMock()
+	mockSock.recv.side_effect = [b'play$ testpath', b'']
+	queue = mock.MagicMock()
+	ct = ClientThread(queue, mockSock, 'testaddr')
+	ct._handle = mock.MagicMock()
+
+	ct.run()
+	assert mockSock.recv.called
+	ct._handle.assert_called_once_with('play$ testpath')
+
+def test_handle():
+	mockSock = mock.MagicMock()
+	mockSock.recv.side_effect = [b'play$ testpath', b'']
+	queue = mock.MagicMock()
+	ct = ClientThread(queue, mockSock, 'testaddr')
+
+	assert ct._handle("test_message") == 0
+	ct._handle("close")
+
+	mockSock.close.assert_called_once()
+
+	ct._handle("play$ test_path")
+	queue.put.assert_called_with(['play', 'test_path'])
+
+	assert ct._handle("pause$ too many arguments")
+	queue.put.assert_called_with(['play', 'test_path'])
