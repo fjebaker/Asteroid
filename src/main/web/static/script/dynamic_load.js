@@ -30,3 +30,13 @@ function insert_all_before(element,paths) {
     }
     insert_before(element,paths[0]);
 }
+
+/**
+ * Used for inserting a CSS stylesheet into the header
+ *
+ * @param {string} path - the path to the stylesheet location
+ */
+function insert_css(path) {
+    var head = document.getElementsByTagName('head')[0];
+    head.innerHTML = "<link rel='stylesheet' href='" + path + "?v=" + Math.random() + "'>" + head.innerHTML;
+}
