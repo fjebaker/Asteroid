@@ -64,6 +64,39 @@ class MusicQuery(BaseQuery):
 	def __init__(self, query):
 		BaseQuery.__init__(self, query)
 
+	def name(self):
+		"""
+		TODO
+		"""
+		try:
+			songName = str(self.s_arg)
+		except Exception as e:
+			return defaultCase()
+
+		db_result = MusicDB(os.environ["MUSIC_DB_PATH"]).get_songs_by_name(songName)
+		return Response(
+				json.dumps(db_result),
+				status = 200,
+				mimetype='application/json'
+			)
+	
+		
+	def artist(self):
+		"""
+		TODO
+		"""
+		try:
+			artistName = str(self.s_arg)
+		except Exception as e:
+			return self.defaultCase()
+
+		db_result = MusicDB(os.environ["MUSIC_DB_PATH"]).get_songs_by_artist(artistName)
+		return Response(
+				json.dumps(db_result),
+				status = 200,
+				mimetype='application/json'
+			)
+
 	def getAllSongs(self):
 		"""
 		Fetch from database the whole songs table. Looks in environment variable ``MUSIC_DB_PATH`` for the database path.
