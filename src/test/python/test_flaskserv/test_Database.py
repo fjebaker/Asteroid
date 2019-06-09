@@ -163,7 +163,7 @@ class TestMusicDB():
 		self.mdb.add_song({"name":"Fishing For Fishies", "artist":"King Gizzard and the Lizard Wizard", "duration":298, "file_path":"", "meta_dat":""})
 
 	def test_song_fetch_all(self):
-		desire = (('You Too Must Die', 'GOLD', 333.0, '', ''), ('Plastic Boogie', 'King Gizzard and the Lizard Wizard', 181.0, '', ''), ('Fishing For Fishies', 'King Gizzard and the Lizard Wizard', 298.0, '', ''))
+		desire = ((1, 'You Too Must Die', 'GOLD', 333.0, '', ''), (2, 'Plastic Boogie', 'King Gizzard and the Lizard Wizard', 181.0, '', ''), (3, 'Fishing For Fishies', 'King Gizzard and the Lizard Wizard', 298.0, '', ''))
 		out = self.mdb.get_all_songs()
 		for i, j in zip(out, desire):
 			for x, y in zip(i, j):
