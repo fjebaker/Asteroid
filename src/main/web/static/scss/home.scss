@@ -71,7 +71,7 @@ button:hover {
 #favourite {
   font-size: 0px;
   background-color: #000;
-  background: transparent url(/resources/images/heart.png) no-repeat;
+  background: transparent url(/resources/images/empty_heart.png) no-repeat;
   background-size: 100% 100%;
   width: 35px;
   height: 35px;
@@ -86,7 +86,7 @@ button:hover {
 #unfavourite {
   font-size: 0px;
   background-color: #000;
-  background: transparent url(/resources/images/empty_heart.png) no-repeat;
+  background: transparent url(/resources/images/heart.png) no-repeat;
   background-size: 100% 100%;
   width: 35px;
   height: 35px;
@@ -100,6 +100,7 @@ button:hover {
 /* Table Formatting*/
 
 table,td,{
+    border-collapse: collapse;
     border-style: solid;
     color: $light-blue;
     border: $light-blue;
