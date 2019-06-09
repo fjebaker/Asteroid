@@ -1,6 +1,3 @@
-var bodyDiv = document.getElementById("bodyDiv"); //This is standard throughout all HTML
-bodyDiv.innerHTML = "Expiration time for basic client-side stored cookies: <select onchange='selectCookieDuration(this)' id='cookieDurationSelector'></select>"
-
 /**
  * Callback used for modifying the "cookieDuration" cookie via a 'select' element on the 'change' event and reloading the page with new expiry times on all cookies.
  *
@@ -27,6 +24,17 @@ function putOptions() {
         if (keys[i] == defaultKey) {option.selected = true;}
         cookieDurationSelector.add(option);
     }
+}
+
+/**
+ * Used for populating a div element with the accounts HTML
+ *
+ * @param {string} divname - the id for the div element
+ */
+function populateDivAccount(divname) {
+    var bodyDiv = document.getElementById(divname);
+    bodyDiv.innerHTML = "Expiration time for basic client-side stored cookies: <select onchange='selectCookieDuration(this)' id='cookieDurationSelector'></select>"
+    putOptions();
 }
 
 putOptions();

@@ -16,9 +16,16 @@
 <script language="JavaScript">
 insert_css("css/home.css");
 var current_callback = function(){}
-var dependencies = ["../script/cookies.js","../script/json.js","../script/queries.js","../script/tabbar.js","../script/home.js"]
+function final_callback() {
+    checkCookieValidity();
+    ensureKeyQuery('v',Math.random());
+    supplyTabButtons("tabsDiv");
+    includeQueryStringScript();
+    console.log("Done!");
+}
+var dependencies = ["../script/cookies.js","../script/json.js","../script/queries.js","../script/tabbar.js"]
 var scriptFiller = document.getElementById("scriptFiller");
-insert_all_before(scriptFiller,dependencies);
+insert_all_before(scriptFiller,dependencies,final_callback);
 </script>
 </body>
 </html>
