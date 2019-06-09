@@ -180,7 +180,7 @@ class MusicQuery(BaseQuery):
 				continue
 			else:
 				print("DEBUG -- pass")
-				s = MusicDB(os.environ["MUSIC_DB_PATH"]).get_by_rowid(i+1)
+				s = MusicDB(os.environ["MUSIC_DB_PATH"]).get_by_rowid(i)
 				if s == ():
 					continue
 				else:
