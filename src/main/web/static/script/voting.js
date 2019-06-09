@@ -1,9 +1,10 @@
 var bodyDiv = document.getElementById("bodyDiv");
 insert_before(bodyDiv,"../script/post.js");
 bodyDiv.innerHTML = "<div id='listTabsDiv'></div><div id='listDiv'>list data goes here</div>";
-var allSongsJSONData = "no result";
+
+//var allSongsJSONData = "no result";
 //success func should check if string
-getJson("/db/music?=getAllSongs",function(data){allSongsJSONData = data;queue();},function(){document.location.href = document.location.href;});
+//getJson("/db/music?=getAllSongs",function(data){allSongsJSONData = data;queue();},function(){document.location.href = document.location.href;});
 
 /**
  * Used to update the "Favourites" cookie by either adding or removing a song of specified id to the favourites
@@ -128,45 +129,58 @@ function songLengthFormat(secs) {
 }
 
 /**
- * Callback used for refreshing the "downloaded songs" table, for instance, when a new search is made
+ * Used to check if string1 is alphabetically before string2 to sort songs alphabetically
  */
-function _refreshDownloaded() {
+function _stringCompare(str1,str2) {
+    var shorterLength = str1.length;
+    if (str2.length < shorterLength) {shorterLength = str2.length;}
+    for (var i=1; i<shorterLength; i++) {
+        if (str1.slice(0,i) !== str2.slice(0,i)) {
+            if (str1.slice(0,i) < str2.slice(0,i)) {return -1;}
+            else {return 1;}
+        }
+    }
+    if (str1.length == shorterLength) {return -1;}
+    else {return 1;}
+}
+
+/**
+ * Used to sort songs
+ */
+function _sorter(a,b) {
+    if (a.artist === b.artist) {
+        //sort by name
+        return _stringCompare(a.name,b.name);
+    } else {
+        return _stringCompare(a.artist,b.artist);
+    }
+}
+
+/**
+ * Callback used for refreshing the "downloaded songs" table after a search
+ */
+function _refreshSearch(data) {
+    var currentResultsNo = document.getElementById("currentResultsNo");
+    if (typeof data == "string") {
+        currentResultsNo.innerHTML = "Unable to load songs list! Status code: "+data;
+    } else {
+        currentResultsNo.innerHTML = "Loaded "+data.length+" songs.";
+        data.sort(_sorter);
+        _refreshNoSearch(data);
+    }
+}
+
+/**
+ * Callback used for refreshing the "downloaded songs" table after no search
+ */
+function _refreshNoSearch(data) {
     var downloadedVotingTable = document.getElementById("downloadedVotingTable");
-    //clear all but first two rows
-    const initLength = downloadedVotingTable.rows.length;
-    for (var i=2; i<initLength;i++) {
-        downloadedVotingTable.deleteRow(-1);
-    }
-    console.log(downloadedVotingTable.rows.length);
-    //sort data
-    function stringCompare(str1,str2) {
-        var shorterLength = str1.length;
-        if (str2.length < shorterLength) {shorterLength = str2.length;}
-        for (var i=1; i<shorterLength; i++) {
-            if (str1.slice(0,i) !== str2.slice(0,i)) {
-                if (str1.slice(0,i) < str2.slice(0,i)) {return -1;}
-                else {return 1;}
-            }
-        }
-        if (str1.length == shorterLength) {return -1;}
-        else {return 1;}
-    }
-    function sorter(a,b) {
-        if (a.artist === b.artist) {
-            //sort by name
-            return stringCompare(a.name,b.name);
-        } else {
-            return stringCompare(a.artist,b.artist);
-        }
-    }
-    allSongsJSONData.sort(sorter);
-    //fill table with data
-    for (var i=0; i<allSongsJSONData.length; i++) {
-        var nameSearchData = document.getElementById("nameSearchInput").value;
-        var artistSearchData = document.getElementById("artistSearchInput").value;
-        var durationSearchData = document.getElementById("durationSearchInput").value;
-        var currSong = allSongsJSONData[i];
-        if (currSong.name.toLowerCase().includes(nameSearchData.toLowerCase()) && currSong.artist.toLowerCase().includes(artistSearchData.toLowerCase()) && songLengthFormat(currSong.duration).includes(durationSearchData)) {
+    if (typeof data == "string") {
+        var currentResultsNo = document.getElementById("currentResultsNo");
+        currentResultsNo.innerHTML = "Unable to load songs list! Status code: "+data;
+    } else {
+        for (var i=0; i<data.length; i++) {
+            var currSong = data[i];
             var newRow = downloadedVotingTable.insertRow(-1);
             var nameCell = newRow.insertCell(0);
             var artistCell = newRow.insertCell(1);
@@ -182,10 +196,46 @@ function _refreshDownloaded() {
 }
 
 /**
+ * Callback used for refreshing the "downloaded songs" table, for instance, when a new search is made
+ */
+function _refreshDownloaded() {
+    var downloadedVotingTable = document.getElementById("downloadedVotingTable");
+    //clear all but first two rows
+    const initLength = downloadedVotingTable.rows.length;
+    for (var i=2; i<initLength;i++) {
+        downloadedVotingTable.deleteRow(-1);
+    }
+    //console.log(downloadedVotingTable.rows.length);
+    //check whether search strings are needed
+    var nameSearchData = document.getElementById("nameSearchInput").value;
+    var artistSearchData = document.getElementById("artistSearchInput").value;
+    function failure(data) {document.getElementById("currentResultsNo").innerHTML = "Unable to load songs list!"}
+    if (nameSearchData === "") {
+        if (artistSearchData === "") {
+            //Get data using /db/music?page={}
+            getJson("/db/music?page=1",_refreshNoSearch,failure);
+            //getJson("/db/music?page="+document.getElementById("pageLoadNumber").value,_refreshNoSearch,failure);
+            //document.getElementById("pageLoadNumber").value += 1;
+        } else {
+            //Get data using /db/music?artist={}
+            getJson("/db/music?artist="+artistSearchData,_refreshSearch,failure);
+        }
+    } else {
+        if (artistSearchData === "") {
+            //Get data using /db/music?song={}
+            getJson("/db/music?song="+nameSearchData,_refreshSearch,failure);
+        } else {
+            //Get data using /db/music?artist={}&song={}
+            getJson("/db/music?artist="+artistSearchData+"&song="+nameSearchData,_refreshSearch,failure);
+        }
+    }
+}
+
+/**
  * Used to construct and populate a table of downloaded songs
  */
 function downloaded() {
-    document.getElementById("listDiv").innerHTML = "<table style='width:100%' id='downloadedVotingTable'><tr><th>Name</th><th>Artist</th><th>Duration</th><th>Vote</th></tr><tr><td><input type='text' id='nameSearchInput' onchange='_refreshDownloaded()'></td><td><input type='text' id='artistSearchInput' onchange='_refreshDownloaded()'></td><td><input type='text' id='durationSearchInput' onchange='_refreshDownloaded()' size='8'></td><td></td></tr></table>";
+    document.getElementById("listDiv").innerHTML = "<em id='currentResultsNo'></em><table style='width:100%' id='downloadedVotingTable'><tr><th>Name</th><th>Artist</th><th>Duration</th><th>Vote</th></tr><tr><td><input type='text' id='nameSearchInput' onchange='_refreshDownloaded()'></td><td><input type='text' id='artistSearchInput' onchange='_refreshDownloaded()'></td><td></td><td></td></tr></table>";
     _refreshDownloaded();
 }
 
@@ -200,54 +250,62 @@ function _queue(data) {
     } else {
         var usernameLookup = {};
         data.sort(function(a,b){return b[2]-a[2];})
-        var queueVotingTable = document.getElementById("queueVotingTable");
-        var noValid = data.length;
-        for (var i=0; i<data.length; i++) {
-            if (data[i][2] > 0) {
-                if (data[i][0] < allSongsJSONData.length) {
-                    var newRow = queueVotingTable.insertRow(-1);
-                    var nameCell = newRow.insertCell(0);
-                    var artistCell = newRow.insertCell(1);
-                    var durationCell = newRow.insertCell(2);
-                    var userCell = newRow.insertCell(3);
-                    var votesCell = newRow.insertCell(4);
-                    var voteCell = newRow.insertCell(5);
-                    var currSong = allSongsJSONData[data[i][0]];
-                    nameCell.innerHTML = currSong.name;
-                    artistCell.innerHTML = currSong.artist;
-                    durationCell.innerHTML = songLengthFormat(currSong.duration);
-                    userCell.innerHTML = data[i][1].toString();
-                    userCell.id = "queueVotingIDCellNo"+i;
-                    votesCell.innerHTML = data[i][2];
-                    var votingForm = createVoteForm(data[i][0]);
-                    voteCell.appendChild(votingForm);
+        function queueBuild(songsIdData) {
+            if (typeof songsIdData == "string") {console.log("Unable to do the multi-id call");}
+            else {
+                var queueVotingTable = document.getElementById("queueVotingTable");
+                var noValid = data.length;
+                for (var i=0; i<data.length; i++) {
+                    if (data[i][2] > 0) {
+                        var newRow = queueVotingTable.insertRow(-1);
+                        var nameCell = newRow.insertCell(0);
+                        var artistCell = newRow.insertCell(1);
+                        var durationCell = newRow.insertCell(2);
+                        var userCell = newRow.insertCell(3);
+                        var votesCell = newRow.insertCell(4);
+                        var voteCell = newRow.insertCell(5);
+                        var currSong = songsIdData[i];
+                        nameCell.innerHTML = currSong.name;
+                        artistCell.innerHTML = currSong.artist;
+                        durationCell.innerHTML = songLengthFormat(currSong.duration);
+                        userCell.innerHTML = data[i][1].toString();
+                        userCell.id = "queueVotingIDCellNo"+i;
+                        votesCell.innerHTML = data[i][2];
+                        var votingForm = createVoteForm(data[i][0]);
+                        voteCell.appendChild(votingForm);
+                    }
+                    else {noValid = i;i = data.length;}
+                } //end of for loop
+                function replaceHTML(data,i,string) {
+                    for (var j=0;j<noValid;j++) {
+                        if(data[i][1] === data[j][1]) {
+                            element = document.getElementById("queueVotingIDCellNo"+j);
+                            if (element !== null) {
+                                element.innerHTML = string;
+                            }
+                        }
+                    }
                 }
-            }
-            else {noValid = i;i = data.length;}
-        } //end of for loop
-        function replaceHTML(data,i,string) {
-            for (var j=0;j<noValid;j++) {
-                if(data[i][1] === data[j][1]) {
-                    element = document.getElementById("queueVotingIDCellNo"+j);
-                    if (element !== null) {
-                        element.innerHTML = string;
+                for (var i=0;i<noValid;i++) {
+                    if (!usernameLookup.hasOwnProperty(data[i][1].toString())) {
+                        const k=i;
+                        usernameLookup[data[i][1].toString()] = 1;
+                        getJson("/db/users?id="+data[i][1],function(usrdata){
+                            var setStr = "UNKNOWN";
+                            if (typeof usrdata !== "string") {setStr = usrdata.name;}
+                            replaceHTML(data,k,setStr);
+                        },function(usrdata){
+                            replaceHTML(data,k,"UNKNOWN");
+                        })
                     }
                 }
             }
+        } //end of function
+        var ids = [];
+        for (var item in data) {
+            ids.push(item[0]);
         }
-        for (var i=0;i<noValid;i++) {
-            if (!usernameLookup.hasOwnProperty(data[i][1].toString())) {
-                const k=i;
-                usernameLookup[data[i][1].toString()] = 1;
-                getJson("/db/users?id="+data[i][1],function(usrdata){
-                    var setStr = "UNKNOWN";
-                    if (typeof usrdata !== "string") {setStr = usrdata.name;}
-                    replaceHTML(data,k,setStr);
-                },function(usrdata){
-                    replaceHTML(data,k,"UNKNOWN");
-                })
-            }
-        }
+        getJson("/db/music?id="+ids.join("%20"),queueBuild,function(songsIdData){document.getElementById("currentSongReading").innerHTML = "Unable to load queue data!"});
     }//end of else
 }
 
@@ -255,9 +313,6 @@ function _queue(data) {
  * Used to construct and populate a table of queued songs
  */
 function queue() {
-    for (var i=0; i<allSongsJSONData.length;i++) {
-        allSongsJSONData[i]["songID"] = i; 
-    }
     document.getElementById("listDiv").innerHTML = "Current song: <em id='currentSongReading'></em><br><table style='width:100%' id='queueVotingTable'><tr><th>Name</th><th>Artist</th><th>Duration</th><th>Requesting user</th><th>Votes</th><th>Vote</th></tr></table>"
     getJson("/vote?=currentSong",function(data){
         if (typeof data == "string") {document.getElementById("currentSongReading").innerHTML="Error finding current song!";}
@@ -266,7 +321,7 @@ function queue() {
                 if (typeof songdata == "string") {
                     document.getElementById("currentSongReading").innerHTML="Song with id "+data[0];
                 } else {
-                    document.getElementById("currentSongReading").innerHTML=songdata.name+" by "+songdata.artist;
+                    document.getElementById("currentSongReading").innerHTML="\""+songdata.name+"\" by "+songdata.artist;
                 }
             },function(songdata){
                 document.getElementById("currentSongReading").innerHTML="Song with id "+data[0];
