@@ -104,7 +104,7 @@ class TestServerMusic():
 			}]
 
 	def test_get_song_by_id(self, test_client):
-		response = test_client.get("/db/music", query_string={'id':0})
+		response = test_client.get("/db/music", query_string={'id':1})
 		assert response.status_code == 200
 		assert json.loads(response.data.decode()) == {
 				"rowid":1,
@@ -113,7 +113,7 @@ class TestServerMusic():
 				"duration":666.0,
 				"meta_dat":""
 			}
-		response = test_client.get("/db/music", query_string={'id':1})
+		response = test_client.get("/db/music", query_string={'id':2})
 		assert response.status_code == 400
 
 class TestPlaylist():
