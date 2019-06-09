@@ -96,6 +96,7 @@ class TestServerMusic():
 		response = test_client.get("/db/music", query_string={'':'getAllSongs'})
 		assert response.status_code == 200
 		assert json.loads(response.data.decode()) == [{
+				"rowid":1,
 				"name":"test song",
 				"artist":"test users",
 				"duration":666.0,
@@ -106,6 +107,7 @@ class TestServerMusic():
 		response = test_client.get("/db/music", query_string={'id':0})
 		assert response.status_code == 200
 		assert json.loads(response.data.decode()) == {
+				"rowid":1,
 				"name":"test song",
 				"artist":"test users",
 				"duration":666.0,

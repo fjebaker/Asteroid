@@ -292,7 +292,7 @@ class MusicDB(metaclass=DBAccessory):
 		"""
 		TODO
 		"""
-		return self.db_inst.select_rows("songs", {"artist":artist}, substring=True)
+		return self.db_inst.select_rows("songs", {"artist":artist}, substring=True, rowid=True)
 
 	def get_all_songs(self):
 		"""
