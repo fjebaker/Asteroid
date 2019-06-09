@@ -136,3 +136,10 @@ hr {
   border-width: 1px;
   border-color: $light-blue;
 }
+
+/* Search Bar Formatting */
+
+input.search-query {
+    background-color:#f47443;
+    color:white;
+}

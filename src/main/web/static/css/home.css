@@ -126,4 +126,10 @@ hr {
   border-color: #0dbcf9;
 }
 
+/* Search Bar Formatting */
+input.search-query {
+  background-color: #f47443;
+  color: white;
+}
+
 /*# sourceMappingURL=home.css.map */
