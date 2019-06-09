@@ -110,10 +110,12 @@ function supplyButtons(element,tabCallback) {
 }
 
 /**
- * Convenience function used to populate the "tabsDiv" div element with the default tabs
+ * Convenience function used to populate the specified div element with the default tabs
+ *
+ * @param {string} elementname - the id specifying the element to insert tabs into
  */
-function supplyTabButtons() {
-    var tabsDiv = document.getElementById("tabsDiv");
+function supplyTabButtons(elementname) {
+    var tabsDiv = document.getElementById(elementname);
     supplyButtons(tabsDiv,defaultTabCallback);
 }
 
