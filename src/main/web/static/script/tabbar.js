@@ -1,3 +1,5 @@
+function tab_callback(){}
+
 /**
  * Used to add buttons to the end of a particular HTML element
  *
@@ -30,14 +32,22 @@ function includeQueryStringScript() {
             case "Voting":
                 scriptName = "voting.js";
                 break;
-            case "Tabs":
-                scriptName = "tabs.js";
-                break;
+//            case "Tabs":
+//                scriptName = "tabs.js";
+//                break;
             case "Rating":
                 scriptName = "rating.js"
                 break;
-            case "Account":
-                scriptName = "account.js"
+//            case "Account":
+//                scriptName = "account.js"
+//                break;
+            case "Settings":
+                tab_callback=function(){
+                    populateDivAccount("bodyDiv");
+                    tab_callback=function(){};
+                    console.log("Loaded in settings menu");
+                };
+                scriptName = "settings.js"
                 break;
             default:
                 var message = "No known tab with the name: "+tabName;
@@ -50,8 +60,9 @@ function includeQueryStringScript() {
 
 function voting() {updateQuery({"tab":"Voting","v":Math.random()});}
 function rating() {updateQuery({"tab":"Rating","v":Math.random()});}
-function tabs() {updateQuery({"tab":"Tabs","v":Math.random()});}
-function account() {updateQuery({"tab":"Account","v":Math.random()});}
+function settings() {updateQuery({"tab":"Settings","v":Math.random()});}
+//function tabs() {updateQuery({"tab":"Tabs","v":Math.random()});}
+//function account() {updateQuery({"tab":"Account","v":Math.random()});}
 
 /**
  * Used as a lookup table for values of the "tab" query to javascript functions for button callback
@@ -68,11 +79,14 @@ function defaultTabCallback(name) {
         case "Rating":
             return rating;
             break;
-        case "Tabs":
-            return tabs;
-            break;
-        case "Account":
-            return account;
+//        case "Tabs":
+//            return tabs;
+//            break;
+//        case "Account":
+//            return account;
+//            break;
+        case "Settings":
+            return settings;
             break;
         default:
             return "";
@@ -96,7 +110,7 @@ function defaultTabCookies() {
  */
 function supplyButtons(element,tabCallback) {
     defaultTabCookies();
-    var tabStr = getCookie("tabs")+",Tabs:1,Account:1";
+    var tabStr = getCookie("tabs")+",Settings:1";
     var tabArray = tabStr.split(','); //Which tabs the user wishes to be shown
     for(var i=0; i<tabArray.length; i++) {
         var namNum = tabArray[i].split(':');
