@@ -65,6 +65,7 @@ class Vote:
 					status=200,
 					mimetype='application/json'
 				)
+		
 
 		if self.request.__dict__["environ"]["REQUEST_METHOD"] == 'GET' and self.request.query_string.decode() == '':
 			return Response(

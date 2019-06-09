@@ -74,8 +74,35 @@ class MusicQuery(BaseQuery):
 			return defaultCase()
 
 		db_result = MusicDB(os.environ["MUSIC_DB_PATH"]).get_songs_by_name(songName)
+
+		songs = []
+		for s in db_result:
+			songs.append(self._arrange_dict(s))
+
+
 		return Response(
-				json.dumps(db_result),
+				json.dumps(songs),
+				status = 200,
+				mimetype='application/json'
+			)
+
+	def page(self):
+		"""
+		TODO
+		"""
+		try:
+			page_id = int(self.s_arg)
+		except Exception as e:
+			return self.defaultCase()
+
+		db_result = MusicDB(os.environ["MUSIC_DB_PATH"]).get_page(page_id)
+
+		songs = []
+		for s in db_result:
+			songs.append(self._arrange_dict(s))
+
+		return Response(
+				json.dumps(songs),
 				status = 200,
 				mimetype='application/json'
 			)
@@ -91,8 +118,14 @@ class MusicQuery(BaseQuery):
 			return self.defaultCase()
 
 		db_result = MusicDB(os.environ["MUSIC_DB_PATH"]).get_songs_by_artist(artistName)
+
+		songs = []
+		for s in db_result:
+			songs.append(self._arrange_dict(s))
+
+
 		return Response(
-				json.dumps(db_result),
+				json.dumps(songs),
 				status = 200,
 				mimetype='application/json'
 			)
@@ -142,16 +175,22 @@ class MusicQuery(BaseQuery):
 		db_result = MusicDB(os.environ["MUSIC_DB_PATH"]).get_by_rowid(song_id+1)
 		if len(db_result) == 0:
 			return self.defaultCase()
-		song = {}
-		for key, value in zip(self.keys, db_result[0]):
-			if key == "file_path":
-				continue
-			song[key] = value
+
+		song = self._arrange_dict(db_result[0])
+
 		return Response(
 				json.dumps(song),
 				status=200,
 				mimetype='application/json'
 			)
+
+	def _arrange_dict(self, songitem):
+		song = {}
+		for key, value in zip(self.keys, songitem):
+			if key == "file_path":
+				continue
+			song[key] = value
+		return song
 
 	def defaultCase(self):
 		"""
