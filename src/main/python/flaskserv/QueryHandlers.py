@@ -180,11 +180,17 @@ class MusicQuery(BaseQuery):
 				continue
 			else:
 				print("DEBUG -- pass")
-				s = MusicDB(os.environ["MUSIC_DB_PATH"]).get_by_rowid(i+1)[0]
+				s = MusicDB(os.environ["MUSIC_DB_PATH"]).get_by_rowid(i+1)
+				if s == ():
+					continue
+				else:
+					s = s[0]
 				db_results.append(self._arrange_dict(s))
 
 		if len(db_results) == 0:
 			return self.defaultCase()
+		elif len(db_results) == 1:
+			db_results = db_results[0]
 
 		return Response(
 				json.dumps(db_results),
