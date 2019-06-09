@@ -61,8 +61,13 @@ class AudioHandler(threading.Thread):
 			# TODO
 			return None
 
-		song = MusicDB(os.environ["MUSIC_DB_PATH"]).get_by_rowid(n_item[0]+1)[0]
-		return song[3]
+		try:
+			song = MusicDB(os.environ["MUSIC_DB_PATH"]).get_by_rowid(n_item[0]+1)[0]
+		except Exception as e:
+			print("DEBUG -- get_path_from_database :: Exception = " + str(e))
+			return None
+		else:
+			return song[3]
 
 	def play(self, *args):
 		"""
