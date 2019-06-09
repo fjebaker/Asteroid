@@ -9,6 +9,9 @@ Music Server for parties and social gatherings.
 - [git](https://git-scm.com/)
 - [python3](https://www.python.org/2)
 - [pip](https://pypi.org/project/pip/)
+- [exiftool](https://www.sno.phy.queensu.ca/~phil/exiftool/)
+- [alsaaudio](https://www.alsa-project.org/wiki/Main_Page)
+- [jsdoc](https://github.com/jsdoc/jsdoc)
 
 ### Installation
 

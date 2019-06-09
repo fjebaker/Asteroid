@@ -3,7 +3,7 @@ from src.main.python.player.ConditionObject import ConditionObject
 from src.main.python.flaskserv.model.Playlist import Playlist
 from src.main.python.flaskserv.Database import MusicDB
 from queue import Queue
-import threading, os
+import threading, os, time
 
 class AudioHandler(threading.Thread):
 	"""
@@ -35,7 +35,8 @@ class AudioHandler(threading.Thread):
 		'''
 		while True:
 			try:
-				msg = self.queue.get(timeout=0.1)
+				# print("WAITING FOR MESSAGE")
+				msg = self.queue.get(timeout=0.5)
 			except:
 				play = False
 				with self.condObj.lock:
@@ -43,9 +44,8 @@ class AudioHandler(threading.Thread):
 						play = True
 				if play:
 					self.play()
-
 			else:
-				# print("DEBUG", msg)
+				print("DEBUG -- got message : ", msg)
 				self.__getattribute__(msg[0])(*msg)
 
 	def get_path_from_database(self):
@@ -96,11 +96,18 @@ class AudioHandler(threading.Thread):
 		self.current_player = player
 		self.first = False
 
+	def resume(self, *args):
+		"""
+		TODO
+		"""
+		self.first = True
+
 	def pause(self, *args):
 		"""
 		Pause the playback -- calls :meth:`src.main.python.player.ConditionObject.toggle_pause` on own instance.
 		"""
-		self.condObj.toggle_pause()
+		with self.condObj.lock:
+			self.condObj.toggle_pause()
 
 	def stop(self, *args):
 		"""
