@@ -59,7 +59,7 @@ class MusicQuery(BaseQuery):
 	:returns: :class:`flask.Response` containing query result
 	"""
 
-	keys = ("name", "artist", "duration", "file_path", "meta_dat") #: json keys for parsing database
+	keys = ("rowid", "name", "artist", "duration", "file_path", "meta_dat") #: json keys for parsing database
 
 	def __init__(self, query):
 		BaseQuery.__init__(self, query)
