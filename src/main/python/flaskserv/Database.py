@@ -114,10 +114,12 @@ class DBInstance:
 		# print('''SELECT {} from {}'''.format(cols, table_name))
 		return tuple(self.handle.execute('''SELECT %s FROM %s ORDER BY rowid ASC;''' % (cols, table_name)).fetchall())
 
-	def get_n_latest_items(self, table_name, n):
+	def get_n_latest_items(self, table_name, n, startingrowid=None):
 		"""
 		TODO
 		"""
+		if startingrowid != None:
+			table_name += " WHERE rowid >= " + str(startingrowid)
 		return tuple(self.handle.execute('''SELECT * FROM %s ORDER BY rowid DESC LIMIT %s''' % (table_name, n)))
 
 
@@ -173,6 +175,12 @@ class DBInstance:
 		cursor = self.handle.execute('''PRAGMA table_info(%s);''' % (table_name,))
 		cols = sorted(cursor.fetchall(), key=lambda x: int(x[0]))
 		return tuple([i[1] for i in cols])
+
+	def get_count_of(self, table_name):
+		"""
+		TODO
+		"""
+		return self.handle.execute('''SELECT COUNT(*) FROM %s''' % table_name)
 
 	def _save(self):
 		"""
@@ -270,6 +278,12 @@ class MusicDB(metaclass=DBAccessory):
 		:rtype: length 1 tuple of tuple
 		"""
 		return self.db_inst.select_rows("songs", {"rowid":rowid})
+
+	def get_page(self, starting):
+		"""
+		TODO
+		"""
+		return self.db_inst.get_n_latest_items("songs", 50)
 
 	@sanatise_string
 	def get_songs_by_artist(self, artist):
