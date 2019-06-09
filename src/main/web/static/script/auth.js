@@ -64,26 +64,26 @@ function _submitClick(event) {
     }
 }
 
-ensureKeyQuery("v",Math.random())
-
-if (getCookie("id") == "") {
-    bodyDiv.innerHTML = "<p>Enter Username:</p>";
-    const form = document.createElement('form');
-    form.method = 'post';
-    form.action = '/register';
-    const usernameInput = document.createElement('input');
-    usernameInput.type='text';
-    usernameInput.name='name';
-    usernameInput.id='usernameInput'
-    form.appendChild(usernameInput);
-    const sendButton = document.createElement('input');
-    sendButton.type='submit';
-    sendButton.value='submit';
-    form.appendChild(sendButton);
-    form.addEventListener("submit",_submitClick);
-    bodyDiv.appendChild(form);
-} else {
-    document.location.href = "/?v="+Math.random();
+function createAuth() {
+    if (getCookie("id") == "") {
+        bodyDiv.innerHTML = "<p>Enter Username:</p>";
+        const form = document.createElement('form');
+        form.method = 'post';
+        form.action = '/register';
+        const usernameInput = document.createElement('input');
+        usernameInput.type='text';
+        usernameInput.name='name';
+        usernameInput.id='usernameInput'
+        form.appendChild(usernameInput);
+        const sendButton = document.createElement('input');
+        sendButton.type='submit';
+        sendButton.value='submit';
+        form.appendChild(sendButton);
+        form.addEventListener("submit",_submitClick);
+        bodyDiv.appendChild(form);
+    } else {
+        document.location.href = "/?v="+Math.random();
+    }
 }
 
 current_callback();
