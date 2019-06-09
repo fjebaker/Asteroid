@@ -6,12 +6,12 @@ $dark-green: #4f9e52;
 $dark-grey: #888;
 $light-grey: #ddd;
 
+
 /* Background Formatting */
 
 body {
   text-align: left;
   background-color: $black;
-  text-decoration: underline;
   color: $light-blue;
 }
 
@@ -31,6 +31,7 @@ button {
   text-align: left;
   -webkit-transition-duration: 0.4s;
   transition-duration: 0.2s;
+  float: left;
 }
 
 button:hover {
@@ -65,6 +66,56 @@ button:hover {
 #downvote:hover {
   border: 1px solid $dark-grey;
   background-color: $light-grey;
+}
+
+#favourite {
+  font-size: 0px;
+  background-color: #000;
+  background: transparent url(/resources/images/heart.png) no-repeat;
+  background-size: 100% 100%;
+  width: 35px;
+  height: 35px;
+  transition: all ease-in-out 0.2s;
+}
+
+#favourite:hover {
+  border: 1px solid #888;
+  background-color: #ddd;
+}
+
+#unfavourite {
+  font-size: 0px;
+  background-color: #000;
+  background: transparent url(/resources/images/empty_heart.png) no-repeat;
+  background-size: 100% 100%;
+  width: 35px;
+  height: 35px;
+  transition: all ease-in-out 0.2s;
+}
+
+#unfavourite:hover {
+  border: 1px solid #888;
+  background-color: #ddd;
+}
+/* Table Formatting*/
+
+table,td,{
+    border-style: solid;
+    color: $light-blue;
+    border: $light-blue;
+    font-family: verdana;
+}
+
+tr:nth-child(even) {
+    background-color: #111111;
+    color: $light-blue;
+    font-family: verdana;
+}
+
+th {
+  background-color: #555555;
+  color: white;
+  font-family: verdana;
 }
 
 /* Header Formatting */
