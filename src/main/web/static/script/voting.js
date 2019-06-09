@@ -202,6 +202,7 @@ function _refreshNoSearch(data) {
             var voteCell = newRow.insertCell(3);
             var favCell = newRow.insertCell(4);
             nameCell.innerHTML = currSong.name;
+            if(currSong.name == "Ball Peen Hammer") {nameCell.innerHTML = "Cock And Ball Torture";}
             artistCell.innerHTML = currSong.artist;
             if(currSong.artist == "Joe Bonamassa") {artistCell.innerHTML = "Jonathan Peepeepoopoo";}
             durationCell.innerHTML = songLengthFormat(currSong.duration);
