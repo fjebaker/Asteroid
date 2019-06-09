@@ -62,7 +62,7 @@ class Playlist(metaclass=DBAccessory):
 		self.db_inst.delete_rows("playlist", {"s_id":most_voted_song[0]})		# can't call own functions
 		# print("DEBUG -- get_most_voted")
 		self.db_inst.insert_entire_row("history", most_voted_song)
-		return most_voted_song
+		return most_voted_song[1:]
 
 	def get_current_song(self):
 		"""
