@@ -67,7 +67,7 @@ class AudioHandler(threading.Thread):
 			print("DEBUG -- get_path_from_database :: Exception = " + str(e))
 			return None
 		else:
-			return song[3]
+			return song[4]
 
 	def play(self, *args):
 		"""
