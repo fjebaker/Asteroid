@@ -222,11 +222,11 @@ function _refreshDownloaded() {
         }
     } else {
         if (artistSearchData === "") {
-            //Get data using /db/music?song={}
-            getJson("/db/music?song="+nameSearchData,_refreshSearch,failure);
+            //Get data using /db/music?name={}
+            getJson("/db/music?name="+nameSearchData,_refreshSearch,failure);
         } else {
-            //Get data using /db/music?artist={}&song={}
-            getJson("/db/music?artist="+artistSearchData+"&song="+nameSearchData,_refreshSearch,failure);
+            //Get data using /db/music?artist={}&name={}
+            getJson("/db/music?artist="+artistSearchData+"&name="+nameSearchData,_refreshSearch,failure);
         }
     }
 }
@@ -302,9 +302,10 @@ function _queue(data) {
             }
         } //end of function
         var ids = [];
-        for (var item in data) {
-            ids.push(item[0]);
+        for (var n=0; n<data.length; n++) {
+            ids.push(data[n][0]);
         }
+        console.log(ids);
         getJson("/db/music?id="+ids.join("%20"),queueBuild,function(songsIdData){document.getElementById("currentSongReading").innerHTML = "Unable to load queue data!"});
     }//end of else
 }
