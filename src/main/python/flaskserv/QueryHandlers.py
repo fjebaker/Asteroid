@@ -168,18 +168,18 @@ class MusicQuery(BaseQuery):
 		"""
 
 		# todo could probably merge these two
-		print("DEBUG -- sargs", self.s_arg)
+		# print("DEBUG -- sargs", self.s_arg)
 		s_arg = self.s_arg.split("%20")
 		db_results = []
 		for i in s_arg:
 			try:
-				print("DEBUG -- attempt to convert", i)
+				# print("DEBUG -- attempt to convert", i)
 				i = int(i)
 			except:
-				print("DEBUG -- failed")
+				# print("DEBUG -- failed")
 				continue
 			else:
-				print("DEBUG -- pass")
+				# print("DEBUG -- pass")
 				s = MusicDB(os.environ["MUSIC_DB_PATH"]).get_by_rowid(i)
 				if s == ():
 					continue
