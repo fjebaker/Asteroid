@@ -449,4 +449,4 @@ function listTabCallback(name) {
 
 supplyButtons(document.getElementById("listTabsDiv"),listTabCallback);
 
-current_callback();
+tab_callback();
