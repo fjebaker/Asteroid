@@ -1,0 +1,86 @@
+/* Descriptive color variables */
+
+$black: #000;
+$light-blue: #0dbcf9;
+$dark-green: #4f9e52;
+$dark-grey: #888;
+$light-grey: #ddd;
+
+/* Background Formatting */
+
+body {
+  text-align: left;
+  background-color: $black;
+  text-decoration: underline;
+  color: $light-blue;
+}
+
+/* Button Formatting */
+
+button {
+  background-color: $black;
+  color: $dark-green;
+  font-family: verdana;
+  font-size: 15px;
+  padding: 10px 5px;
+  margin: 4px 1px;
+  border: $light-blue;
+  cursor: pointer;
+  width: 75%;
+  border-radius: 5px;
+  text-align: left;
+  -webkit-transition-duration: 0.4s;
+  transition-duration: 0.2s;
+}
+
+button:hover {
+  background-color: $light-blue;
+  color: $black;
+}
+
+#upvote {
+  font-size: 0px;
+  background-color: $black;
+  background: transparent url(/resources/images/up_arrow.png) no-repeat;
+  background-size: 100% 100%;
+  width: 35px;
+  height: 35px;
+  transition: all ease-in-out 0.2s;
+}
+
+#upvote:hover {
+  border: 1px solid $dark-grey;
+  background-color: $light-grey;
+}
+
+#downvote {
+  font-size: 0px;
+  background-color: $black;
+  background: transparent url(/resources/images/down_arrow.png) no-repeat;
+  background-size: 100% 100%;
+  width: 35px;
+  height: 35px;
+}
+
+#downvote:hover {
+  border: 1px solid $dark-grey;
+  background-color: $light-grey;
+}
+
+/* Header Formatting */
+
+h1 {
+  color: $light-blue;
+}
+
+hr {
+  display: block;
+  margin-before: 0.5em;
+  margin-after: 0.5em;
+  margin-start: auto;
+  margin-end: auto;
+  overflow: hidden;
+  border-style: inset;
+  border-width: 1px;
+  border-color: $light-blue;
+}
