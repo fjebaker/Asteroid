@@ -78,7 +78,7 @@ class DBInstance:
 		data_repr = "('" + "', '".join(data) + "')"
 		self.handle.execute('''INSERT INTO %s VALUES %s;''' % (table_name, data_repr))
 
-	def select_rows(self, table_name, condition, substring=False):
+	def select_rows(self, table_name, condition, substring=False, rowid=False):
 		"""
 		select rows from table which meat condition
 
@@ -93,7 +93,12 @@ class DBInstance:
 		else:
 			condition_string = str(condition[0]) + " LIKE '%" + str(condition[1]) + "%'"
 
-		return tuple(self.handle.execute('''SELECT * FROM %s WHERE %s ORDER BY rowid ASC;''' % (table_name, condition_string)).fetchall())
+		if rowid:
+			get_rowid = "rowid,"
+		else:
+			get_rowid = ""
+
+		return tuple(self.handle.execute('''SELECT %s * FROM %s WHERE %s ORDER BY rowid ASC;''' % (get_rowid, table_name, condition_string)).fetchall())
 	
 
 	def select_columns(self, table_name, column_list):
@@ -118,7 +123,7 @@ class DBInstance:
 		"""
 		if startingrowid != None:
 			table_name += " WHERE rowid >= " + str(startingrowid)
-		return tuple(self.handle.execute('''SELECT * FROM %s ORDER BY rowid DESC LIMIT %s''' % (table_name, n)))
+		return tuple(self.handle.execute('''SELECT rowid, * FROM %s ORDER BY rowid DESC LIMIT %s''' % (table_name, n)))
 
 	def update_generic(self, table_name, changes, condition):
 		"""
@@ -264,7 +269,7 @@ class MusicDB(metaclass=DBAccessory):
 		"""
 		TODO
 		"""
-		return self.db_inst.select_rows("songs", {"name":name}, substring=True)
+		return self.db_inst.select_rows("songs", {"name":name}, substring=True, rowid=True)
 
 	def get_by_rowid(self, rowid):
 		"""
@@ -274,7 +279,7 @@ class MusicDB(metaclass=DBAccessory):
 		:returns: song with ``rowid``
 		:rtype: length 1 tuple of tuple
 		"""
-		return self.db_inst.select_rows("songs", {"rowid":rowid})
+		return self.db_inst.select_rows("songs", {"rowid":rowid}, rowid=True)
 
 	def get_page(self, starting):
 		"""
@@ -297,7 +302,7 @@ class MusicDB(metaclass=DBAccessory):
 		:rtype: tuple of tuples
 		"""
 		return self.db_inst.select_columns("songs",
-			("name", "artist", "duration", "file_path", "meta_dat"))
+			("rowid", "name", "artist", "duration", "file_path", "meta_dat"))
 
 
 class UserDB(metaclass=DBAccessory):
