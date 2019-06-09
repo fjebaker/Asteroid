@@ -71,6 +71,7 @@ function _submitVote(event){
     function failure(request) {
         console.log("Error sending POST request");
     }
+    console.log(event.target.elements.namedItem("songNameFormElement").value);
     postRequest(new FormData(event.target),"/vote",success,failure);
 }
 
@@ -341,10 +342,9 @@ function _queue(data) {
 }
 
 /**
- * Used to construct and populate a table of queued songs
+ *
  */
-function queue() {
-    document.getElementById("listDiv").innerHTML = "Current song: <em id='currentSongReading'></em><br><table style='width:100%' id='queueVotingTable'><tr><th>Name</th><th>Artist</th><th>Duration</th><th>Requesting user</th><th>Votes</th><th>Vote</th><th>Favourite</th></tr></table>"
+function _updateCurrentSongReading() {
     getJson("/vote?=currentSong",function(data){
         if (typeof data == "string") {document.getElementById("currentSongReading").innerHTML="Error finding current song!";}
         else {
@@ -353,8 +353,8 @@ function queue() {
                 if (typeof songdata == "string") {
                     document.getElementById("currentSongReading").innerHTML="Song with id "+data[0];
                 } else {
-                    console.log(songdata);
                     document.getElementById("currentSongReading").innerHTML="\""+songdata.name+"\" by "+songdata.artist;
+                    setTimeout(_updateCurrentSongReading,1000*songdata.duration); //Can I work out a better way of doing this?
                 }
             },function(songdata){
                 document.getElementById("currentSongReading").innerHTML="Song with id "+data[0];
@@ -363,6 +363,14 @@ function queue() {
     },function(data){
         document.getElementById("currentSongReading").innerHTML="Error finding current song!";
     });
+}
+
+/**
+ * Used to construct and populate a table of queued songs
+ */
+function queue() {
+    document.getElementById("listDiv").innerHTML = "Current song: <em id='currentSongReading'></em><br><table style='width:100%' id='queueVotingTable'><tr><th>Name</th><th>Artist</th><th>Duration</th><th>Requesting user</th><th>Votes</th><th>Vote</th><th>Favourite</th></tr></table>"
+    _updateCurrentSongReading();
     getJson("/vote",_queue,function(data){document.getElementById("listDiv").innerHTML = "Unable to load queue data!";});
 }
 
