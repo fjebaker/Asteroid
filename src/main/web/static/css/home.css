@@ -1,79 +1,78 @@
+/* Descriptive color variables */
 /* Background Formatting */
-
-body  {
+body {
   text-align: left;
-  background-color: #000000;
+  background-color: #000;
   text-decoration: underline;
-  color: #0DBCF9;
+  color: #0dbcf9;
 }
 
 /* Button Formatting */
-
 button {
-    background-color: #111111;
-    color: #4f9e52;
-    font-family: verdana;
-    font-size: 15px;
-    padding: 10px 5px;
-    margin: 4px 1px;
-    border: #0DBCF9;
-    cursor: pointer;
-    width: 75%;
-    border-radius: 5px;
-    text-align: left;
-    -webkit-transition-duration: 0.4s; 
-    transition-duration: 0.2s
+  background-color: #000;
+  color: #4f9e52;
+  font-family: verdana;
+  font-size: 15px;
+  padding: 10px 5px;
+  margin: 4px 1px;
+  border: #0dbcf9;
+  cursor: pointer;
+  width: 75%;
+  border-radius: 5px;
+  text-align: left;
+  -webkit-transition-duration: 0.4s;
+  transition-duration: 0.2s;
 }
 
 button:hover {
-  background-color: #0DBCF9; /* Green */
-  color: #000000;
+  background-color: #0dbcf9;
+  color: #000;
 }
 
 #upvote {
-    font-size: 0px;
-    background-color: #225473;
-    background: transparent url(/resources/images/up_arrow.png) no-repeat;
-    background-size: 100% 100% ;
-    width: 35px;
-    height: 35px;
-    transition: all ease-in-out 0.2s;
+  font-size: 0px;
+  background-color: #000;
+  background: transparent url(/resources/images/up_arrow.png) no-repeat;
+  background-size: 100% 100%;
+  width: 35px;
+  height: 35px;
+  -webkit-transition: all ease-in-out 0.2s;
+  transition: all ease-in-out 0.2s;
 }
 
 #upvote:hover {
-    border: 1px solid #888;
-    background-color: #ddd;
+  border: 1px solid #888;
+  background-color: #ddd;
 }
-    
 
-#downvote{
-    font-size: 0px;
-    background-color: #225473;
-    background: transparent url(/resources/images/down_arrow.png) no-repeat;
-    background-size: 100% 100% ;
-    width: 35px;
-    height: 35px;
+#downvote {
+  font-size: 0px;
+  background-color: #000;
+  background: transparent url(/resources/images/down_arrow.png) no-repeat;
+  background-size: 100% 100%;
+  width: 35px;
+  height: 35px;
 }
 
 #downvote:hover {
-    border: 1px solid #888;
-    background-color: #ddd;
+  border: 1px solid #888;
+  background-color: #ddd;
 }
 
 /* Header Formatting */
-
 h1 {
-  color:#0DBCF9;
+  color: #0dbcf9;
 }
 
-hr { 
-    display: block;
-    margin-before: 0.5em;
-    margin-after: 0.5em;
-    margin-start: auto;
-    margin-end: auto;
-    overflow: hidden;
-    border-style: inset;
-    border-width: 1px;
-    border-color: #0DBCF9;
+hr {
+  display: block;
+  margin-before: 0.5em;
+  margin-after: 0.5em;
+  margin-start: auto;
+  margin-end: auto;
+  overflow: hidden;
+  border-style: inset;
+  border-width: 1px;
+  border-color: #0dbcf9;
 }
+/*# sourceMappingURL=home.css.map */
