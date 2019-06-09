@@ -71,7 +71,7 @@ function _submitVote(event){
     function failure(request) {
         console.log("Error sending POST request");
     }
-    console.log(event.target.elements.namedItem("songNameFormElement").value);
+    //console.log(event.target.elements.namedItem("songNameFormElement").value);
     postRequest(new FormData(event.target),"/vote",success,failure);
 }
 
@@ -348,7 +348,7 @@ function _updateCurrentSongReading() {
     getJson("/vote?=currentSong",function(data){
         if (typeof data == "string") {document.getElementById("currentSongReading").innerHTML="Error finding current song!";}
         else {
-            console.log(data);
+            //console.log(data);
             getJson("/db/music?id="+data[0],function(songdata){
                 if (typeof songdata == "string") {
                     document.getElementById("currentSongReading").innerHTML="Song with id "+data[0];
