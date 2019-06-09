@@ -4,7 +4,7 @@ body  {
   text-align: left;
   background-color: #000000;
   text-decoration: underline;
-  color: #4f9e52;
+  color: #0DBCF9;
 }
 
 /* Button Formatting */
@@ -16,7 +16,7 @@ button {
     font-size: 15px;
     padding: 10px 5px;
     margin: 4px 1px;
-    border: #4f9e52;
+    border: #0DBCF9;
     cursor: pointer;
     width: 75%;
     border-radius: 5px;
@@ -26,7 +26,7 @@ button {
 }
 
 button:hover {
-  background-color: #4CAF50; /* Green */
+  background-color: #0DBCF9; /* Green */
   color: #000000;
 }
 
@@ -63,6 +63,6 @@ button:hover {
 /* Header Formatting */
 
 h1 {
-  color: green;
+  color:#0DBCF9;
 }
 
