@@ -70,6 +70,7 @@ class MusicQuery(BaseQuery):
 		"""
 		try:
 			songName = str(self.s_arg)
+			songName = " ".join(songName.split("%20"))
 		except Exception as e:
 			return defaultCase()
 
@@ -114,6 +115,7 @@ class MusicQuery(BaseQuery):
 		"""
 		try:
 			artistName = str(self.s_arg)
+			artistName = " ".join(artistName.split("%20"))
 		except Exception as e:
 			return self.defaultCase()
 
@@ -166,20 +168,26 @@ class MusicQuery(BaseQuery):
 		"""
 
 		# todo could probably merge these two
+		print("DEBUG -- sargs", self.s_arg)
+		s_arg = self.s_arg.split("%20")
+		db_results = []
+		for i in s_arg:
+			try:
+				print("DEBUG -- attempt to convert", i)
+				i = int(i)
+			except:
+				print("DEBUG -- failed")
+				continue
+			else:
+				print("DEBUG -- pass")
+				s = MusicDB(os.environ["MUSIC_DB_PATH"]).get_by_rowid(i+1)[0]
+				db_results.append(self._arrange_dict(s))
 
-		try:
-			song_id = int(self.s_arg)
-		except Exception as e:
+		if len(db_results) == 0:
 			return self.defaultCase()
-		
-		db_result = MusicDB(os.environ["MUSIC_DB_PATH"]).get_by_rowid(song_id+1)
-		if len(db_result) == 0:
-			return self.defaultCase()
-
-		song = self._arrange_dict(db_result[0])
 
 		return Response(
-				json.dumps(song),
+				json.dumps(db_results),
 				status=200,
 				mimetype='application/json'
 			)
