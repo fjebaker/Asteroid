@@ -88,6 +88,36 @@ button:hover {
   background-color: #ddd;
 }
 
+#favourite_gold {
+  font-size: 0px;
+  background-color: #000;
+  background: transparent url(/resources/images/empty_heart_gold.png) no-repeat;
+  background-size: 100% 100%;
+  width: 35px;
+  height: 35px;
+  transition: all ease-in-out 0.2s;
+}
+
+#favourite_gold:hover {
+  border: 1px solid #888;
+  background-color: #ddd;
+}
+
+#unfavourite_gold {
+  font-size: 0px;
+  background-color: #000;
+  background: transparent url(/resources/images/heart_gold.png) no-repeat;
+  background-size: 100% 100%;
+  width: 35px;
+  height: 35px;
+  transition: all ease-in-out 0.2s;
+}
+
+#unfavourite_gold:hover {
+  border: 1px solid #888;
+  background-color: #ddd;
+}
+
 /* Table Formatting*/
 table, td {
   border-collapse: collapse;
