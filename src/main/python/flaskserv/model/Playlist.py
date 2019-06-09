@@ -72,7 +72,7 @@ class Playlist(metaclass=DBAccessory):
 		# print("DEBUG -- get_current_song :: ", history)
 		if history == ():
 			return []
-		return history[-1]
+		return history[-1][1:]
 	
 
 	def remove(self, s_id):
