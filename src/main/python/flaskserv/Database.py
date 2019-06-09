@@ -18,7 +18,6 @@ def sanatise_dict(keys):
 		return _sanatise
 	return _wrapper
 
-
 class DBInstance:
 	"""
 	Provides a specified wrapper for sqlite3 queries
@@ -44,7 +43,6 @@ class DBInstance:
 		self._save()
 		self.handle.close()
 			
-
 	def create_table(self, table_name, keys, types):
 		"""
 		TODO
@@ -121,7 +119,6 @@ class DBInstance:
 		if startingrowid != None:
 			table_name += " WHERE rowid >= " + str(startingrowid)
 		return tuple(self.handle.execute('''SELECT * FROM %s ORDER BY rowid DESC LIMIT %s''' % (table_name, n)))
-
 
 	def update_generic(self, table_name, changes, condition):
 		"""
