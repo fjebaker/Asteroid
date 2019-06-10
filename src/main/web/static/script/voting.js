@@ -20,7 +20,6 @@ function includeQueryStringVoteFunc() {
     } else {updateQuery({votetab:"Queue",v:Math.random()});}
 }
 
-
 /**
  * Used to update the "Favourites" cookie by either adding or removing a song of specified id to the favourites
  *
@@ -72,7 +71,14 @@ function _updateFavouriteCookie(id,removeBool) {
 function _submitVote(event){
     event.preventDefault();
     //add to favourites
-    _updateFavouriteCookie(event.target.elements.namedItem("songNameFormElement").value,(event.target.elements.namedItem("voteValueFormElement").value) < 0);
+    var elements = event.target.elements;
+    var isDownvote = (elements.namedItem("voteValueFormElement").value < 0);
+    var voteFavCookie = getCookie("vote_favourite_settings");
+    if (voteFavCookie == "") {voteFavCookie = "1,1"; setCookie("vote_favourite_settings",voteFavCookie,getCookieDuration());}
+    var voteFavArray = voteFavCookie.split(',');
+    if(((!isDownvote) && voteFavArray[0]==1)||(isDownvote && voteFavArray[1]==1)) {
+        _updateFavouriteCookie(elements.namedItem("songNameFormElement").value,isDownvote);
+    }
     function success(request) {
         if (request.status == 404) {
             console.log("404: POST response not found");
