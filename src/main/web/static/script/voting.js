@@ -252,7 +252,11 @@ function _queue(data) {
     } else {
         var usernameLookup = {};
         data.sort(function(a,b){return b[2]-a[2];})
-        data = data.slice(0,data.findIndex(function (song){return song[2] <= 0;}));
+        console.log(data);
+        var last_index = data.findIndex(function(song){return song[2] <= 0;});
+        last_index = (last_index > 0) ? last_index + 1 : data.length;
+        data = data.slice(0,last_index);
+        console.log(data);
         function queueBuild(songsIdData) {
             if (typeof songsIdData == "string") {console.log("Unable to do the multi-id call");}
             else {
