@@ -1,11 +1,25 @@
 var bodyDiv = document.getElementById("bodyDiv");
 insert_before(bodyDiv,"../script/post.js");
 bodyDiv.innerHTML = "<div id='listTabsDiv'></div><div id='listDiv'>Redirecting to relevant tab...</div>";
-queue();
 
 //var allSongsJSONData = "no result";
 //success func should check if string
 //getJson("/db/music?=getAllSongs",function(data){allSongsJSONData = data;queue();},function(){document.location.href = document.location.href;});
+
+/**
+ * Used to run a particular function based on a valid 'votetab' query in the query string
+ */
+function includeQueryStringVoteFunc() {
+    var urlParams = new URLSearchParams(location.search);
+    if(urlParams.has("votetab")) { //check if tab query exists
+        var tabName = urlParams.get("votetab");
+        var callback = listTabCallback(tabName);
+        if (typeof callback == "string") {
+            updateQuery({votetab:"Queue",v:Math.random()});
+        } else {callback();}
+    } else {updateQuery({votetab:"Queue",v:Math.random()});}
+}
+
 
 /**
  * Used to update the "Favourites" cookie by either adding or removing a song of specified id to the favourites
@@ -64,7 +78,7 @@ function _submitVote(event){
             console.log("404: POST response not found");
         }
         if (request.status == 201||request.status == 200) {
-            updateQuery({v:Math.random()});
+            updateQuery({v:Math.random(),votetab:"Queue"});
         }
     }
     function failure(request) {
@@ -216,6 +230,7 @@ function _refreshDownloaded() {
  * Used to construct and populate a table of downloaded songs
  */
 function downloaded() {
+    updateQueryWithoutReload({votetab:"Downloaded",v:Math.random()});
     document.getElementById("listDiv").innerHTML = "<em id='currentResultsNo'></em><table style='width:100%' id='downloadedVotingTable'><tr><th>Name</th><th>Artist</th><th>Duration</th><th>Vote</th><th>Favourite</th></tr><tr><td><input type='text' id='nameSearchInput' onchange='_refreshDownloaded()'></td><td><input type='text' id='artistSearchInput' onchange='_refreshDownloaded()'></td><td></td><td></td><td></td></tr></table>";
     _refreshDownloaded();
 }
@@ -302,6 +317,7 @@ function _updateCurrentSongReading() {
  * Used to construct and populate a table of queued songs
  */
 function queue() {
+    updateQueryWithoutReload({votetab:"Queue",v:Math.random()});
     document.getElementById("listDiv").innerHTML = "Current song: <em id='currentSongReading'></em><br><table style='width:100%' id='queueVotingTable'><tr><th>Name</th><th>Artist</th><th>Duration</th><th>Requesting user</th><th>Votes</th><th>Vote</th><th>Favourite</th></tr></table>"
     _updateCurrentSongReading();
     getJson("/vote",_queue,function(data){document.getElementById("listDiv").innerHTML = "Unable to load queue data!";});
@@ -320,6 +336,7 @@ function _favourites(data) {
  * Used to construct and populate a table of songs from the user's "favourites" cookie
  */
 function favourites() {
+    updateQueryWithoutReload({votetab:"Favourites",v:Math.random()});
     document.getElementById("listDiv").innerHTML = "<table style='width:100%' id='favouritesVotingTable'><tr><th>Name</th><th>Artist</th><th>Duration</th><th>Vote</th><th>Unfavourite</th></tr></table>";
     var favouritesVotingTable = document.getElementById("favouritesVotingTable");
     var currCookieData = getCookie("Favourites");

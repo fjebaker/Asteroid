@@ -41,6 +41,27 @@ function updateQuery(queryDict) {
 }
 
 /**
+ * Used to update the query string from the queryDict argument without reloading the page
+ *
+ * @param {Object} queryDict - an object with each required query string key as a property with the required value as its value; i.e such that queryDict[key] = value for each key-value pair required in the query
+ */
+function updateQueryWithoutReload(queryDict) {
+    if (location.search === "") {
+        freshQuery(queryDict);
+    }
+    else {
+        var pathname = document.location.pathname;
+        var urlParams = new URLSearchParams(location.search);
+        for (var key in queryDict) {
+            if (queryDict.hasOwnProperty(key)) {
+                urlParams.set(key,queryDict[key]);
+            }
+        }
+        window.history.pushState({},null,pathname + "?" + urlParams.toString());
+    }
+}
+
+/**
  * Used to ensure that a query string exists for the current page - if one does not, redirects to the current page but with a query string built from the key-value pairs of the 'queryDict' argument
  *
  * @param {Object} queryDict - an object with each required query string key as a property with the required value as its value; i.e such that queryDict[key] = value for each key-value pair required in the query
