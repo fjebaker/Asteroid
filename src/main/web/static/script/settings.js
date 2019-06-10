@@ -101,6 +101,11 @@ function populateTabSettingTable() {
     }
 }
 
+function _toggleVoteFav(index,box) {
+    var voteFavArray = getCookie("vote_favourite_settings").split(',');
+    voteFavArray[index] = box.checked ? 1 : 0;
+    setCookie("vote_favourite_settings",voteFavArray.join(','),getCookieDuration());
+}
 
 /**
  * Used for populating a div element with the accounts HTML
@@ -110,6 +115,12 @@ function populateTabSettingTable() {
 function populateDivAccount(divname) {
     var bodyDiv = document.getElementById(divname);
     bodyDiv.innerHTML = "Expiration time for basic client-side stored cookies: <select onchange='selectCookieDuration(this)' id='cookieDurationSelector'></select>"
+    var voteFavCookie = getCookie("vote_favourite_settings");
+    if (voteFavCookie == "") {voteFavCookie = "1,1"; setCookie("vote_favourite_settings",voteFavCookie,getCookieDuration());}
+    var voteFavArray = voteFavCookie.split(',');
+    voteFavArray[0] = (voteFavArray[0] == "1" ? "checked" : "");
+    voteFavArray[1] = (voteFavArray[1] == "1" ? "checked" : "");
+    bodyDiv.innerHTML += "<br>Automatically favourite upvoted songs: <input type='checkbox' onclick='_toggleVoteFav(0,this);' "+voteFavArray[0]+"><br>Automatically unfavourite downvoted songs: <input type='checkbox' onclick='_toggleVoteFav(1,this);' "+voteFavArray[1]+">";
     bodyDiv.innerHTML += "<table style='width:100%' id='tabSettingTable'><tr><th>Tab</th><th>Active</th></tr></table>";
     putOptions();
     populateTabSettingTable();
