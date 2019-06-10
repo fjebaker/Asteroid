@@ -30,17 +30,15 @@ function includeQueryStringScript() {
         var scriptName = "" //The location of the script to load in
         switch(tabName) {
             case "Voting":
+                tab_callback=function() {
+                    includeQueryStringVoteFunc();
+                    tab_callback=function(){};
+                };
                 scriptName = "voting.js";
                 break;
-//            case "Tabs":
-//                scriptName = "tabs.js";
-//                break;
             case "Rating":
                 scriptName = "rating.js"
                 break;
-//            case "Account":
-//                scriptName = "account.js"
-//                break;
             case "Settings":
                 tab_callback=function(){
                     populateDivAccount("bodyDiv");
