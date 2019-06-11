@@ -25,17 +25,15 @@ Section 1.2 JS Code:
    :caption: JS Contents:
 
    js/dynamic_load
-   js/account
    js/home
    js/json
    js/auth
    js/cookies
    js/queries
    js/post
-   js/tabs
    js/tabbar
    js/voting
-
+   js/settings
 
 Indices and tables
 ==================

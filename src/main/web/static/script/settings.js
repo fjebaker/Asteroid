@@ -90,6 +90,9 @@ function changeCallback(index,box) {
     }
 }
 
+/**
+ * Used to populate the tab setting table with tab checkboxes
+ */
 function populateTabSettingTable() {
     var tabSettingTable = document.getElementById("tabSettingTable");
     for (var i=0; i<6; i++) {
@@ -101,6 +104,12 @@ function populateTabSettingTable() {
     }
 }
 
+/**
+ * Used to toggle the vote favourite settings for a particular checkbox
+ *
+ * @param {number} index - '0' if the setting for auto-favouriting upvoted songs, '1' if the setting for auto-unfavouriting downvoted songs
+ * @param {Object} box - the checkbox object that triggered the toggle event
+ */
 function _toggleVoteFav(index,box) {
     var voteFavArray = getCookie("vote_favourite_settings").split(',');
     voteFavArray[index] = box.checked ? 1 : 0;
