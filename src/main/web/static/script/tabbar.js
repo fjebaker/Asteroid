@@ -7,12 +7,14 @@ function tab_callback(){}
  * @param {string} buttonText - the text to display on the button
  * @param {buttonCallback} callback - the function to call for the 'click' event for the button
  *
+ * @returns {Object} button - the DOM object of the button
  */
 function generateTabButton(div, buttonText, callback) {
     var button = document.createElement("button");
     button.innerHTML = buttonText; //Setting text
     div.appendChild(button);
     button.addEventListener("click",callback);
+    return button;
 }
 
 /*
@@ -120,6 +122,7 @@ function supplyButtons(element,tabCallback) {
         }
     }
 }
+
 
 /**
  * Convenience function used to populate the specified div element with the default tabs
