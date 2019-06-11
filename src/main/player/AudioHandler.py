@@ -1,9 +1,10 @@
-from src.main.python.player.PlayStream import PlayStream 
-from src.main.python.player.ConditionObject import ConditionObject 
-from src.main.python.flaskserv.model.Playlist import Playlist
-from src.main.python.flaskserv.Database import MusicDB
+from src.main.player.PlayStream import PlayStream
+from src.main.player.ConditionObject import ConditionObject
+from src.main.web.flaskserv import Playlist
+from src.main.web.flaskserv import MusicDB
 from queue import Queue
-import threading, os, time
+import threading, os
+
 
 class AudioHandler(threading.Thread):
 	"""

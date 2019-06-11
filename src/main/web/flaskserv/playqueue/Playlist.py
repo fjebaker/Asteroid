@@ -1,5 +1,5 @@
-from src.main.python.flaskserv.Database import DBAccessory
-import os
+from src.main.web.flaskserv.Database import DBAccessory
+
 
 class Playlist(metaclass=DBAccessory):
 	"""
@@ -26,12 +26,7 @@ class Playlist(metaclass=DBAccessory):
 		:param item: song item, in format {s_id, u_id, vote}
 		:type item: dict
 		"""
-		self.db_inst.insert_entire_row("playlist",
-			[
-				item["s_id"],
-				item["u_id"],
-				item["vote"],
-			])
+		self.db_inst.insert_entire_row("playlist", item)
 
 	def update_vote(self, s_id, vote):
 		"""
@@ -53,15 +48,12 @@ class Playlist(metaclass=DBAccessory):
 		"""
 		TODO
 		"""
-		playlist = self.db_inst.select_columns("playlist", "*")		# can't call own functions
+		# playlist = self.db_inst.select_columns("playlist", "*")		# can't call own functions
+		playlist = self.get_playlist()
 		# print("DEBUG -- get_most_voted :: before return None")
 		if playlist == ():
 			return None
 		most_voted_song = max(playlist, key=lambda x: int(x[2]))
-
-		self.db_inst.delete_rows("playlist", {"s_id":most_voted_song[0]})		# can't call own functions
-		# print("DEBUG -- get_most_voted")
-		self.db_inst.insert_entire_row("history", most_voted_song)
 		return most_voted_song
 
 	def get_current_song(self):

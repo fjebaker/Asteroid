@@ -1,4 +1,4 @@
-from src.main.python.flaskserv.Database import MusicDB, UserDB
+from src.main.web.flaskserv.Database import UserDB
 from flask import Response
 import os, json
 

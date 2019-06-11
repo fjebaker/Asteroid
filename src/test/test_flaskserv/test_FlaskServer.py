@@ -1,8 +1,6 @@
-import pytest, requests, sys, os, json
-sys.path.append("src/main/python/flaskserv")
-sys.path.append(".")
-from main import app as flask_app
-import Database
+import pytest, sys, os, json
+from src.main.web.flaskserv.main import app as flask_app
+from src.main.web.flaskserv import Database
 
 @pytest.fixture(scope='module')
 def temp_db(tmpdir_factory):
@@ -10,7 +8,7 @@ def temp_db(tmpdir_factory):
 
 	with Database.DBInstance(fn) as db:
 		db.create_table("songs", 
-				("name", "artist", "duration", "meta_dat", "file_path", "UNIQUE"), 
+				("name", "artist", "duration", "file_path", "meta_dat", "UNIQUE"),
 				("text", "text", "real", "text", "text", "name, artist, file_path")
 			)
 		db.create_table("users", 

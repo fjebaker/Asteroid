@@ -1,5 +1,5 @@
-import src.main.python.flaskserv.Database as db
-import os, sys
+import src.main.web.flaskserv.Database as db
+import os
 import exiftool
 
 def sqlsafe(string):
@@ -50,8 +50,8 @@ def build_music(folder_location):
 	try:
 		with dbinst as builder:
 			builder.create_table("songs", 
-				("name", "artist", "duration", "meta_dat", "file_path", "UNIQUE"), 
-				("text", "text", "real", "text", "text", "name, artist, file_path")
+				("name", "artist", "duration", "file_path", "meta_dat", "UNIQUE"),
+				("text", "text", "real", "text", "text", "file_path")
 			)
 	except Exception as e:
 		print("[!] trying to create table 'playlist' in {}, raised exception: \n\t\t'{}'".format(os.environ["MUSIC_DB_PATH"], str(e)))
@@ -60,6 +60,7 @@ def build_music(folder_location):
 		return
 
 	for file in list_wav(folder_location):
+		# print("NOW ON FILE -- ", file)
 		try:
 			song = get_song_item(file)
 			db.MusicDB(os.environ["MUSIC_DB_PATH"]).add_song(song)
