@@ -1,17 +1,16 @@
 import pytest, sys, os
-from queue import Queue
 import unittest.mock as mock
 
 os.environ['LISTENER_HOST'] = "localhost"
 os.environ['LISTENER_PORT'] = "9999"
 
 sys.modules['alsaaudio'] = mock.MagicMock()
-import src.main.python.player.INETServer as Listener
+import src.main.player.INETServer as Listener
 
 def patchall(func):
-	@mock.patch('src.main.python.player.INETServer.socket')
-	@mock.patch('src.main.python.player.INETServer.AudioHandler')
-	@mock.patch('src.main.python.player.INETServer.ClientThread')
+	@mock.patch('src.main.player.INETServer.socket')
+	@mock.patch('src.main.player.INETServer.AudioHandler')
+	@mock.patch('src.main.player.INETServer.ClientThread')
 	def wrap(c, a, s):
 		s.socket.return_value = s.socket
 		s.socket.accept.return_value = (s.socket, "testclient")

@@ -65,22 +65,31 @@ class DBInstance:
 		:param table_name: name of table
 		:type table_name: str
 		:param data: items are data values
-		:type data: tuple
+		:type data: dict
 		:raises: Exception("Bad row format.")
 		"""
+
 		# print("DEBUG -- insert_entire_row : ", table_name, data)
 		column_names = self.get_column_info(table_name)
 		if not self._is_row_correct(column_names, data):
 			raise Exception("Bad row format.")
 
-		column_repr = ", ".join(column_names)
-		data = [str(i) for i in data]
-		data_repr = "('" + "', '".join(data) + "')"
-		self.handle.execute('''INSERT INTO %s VALUES %s;''' % (table_name, data_repr))
+		col_repr = []
+		data_repr = []
 
-	def select_rows(self, table_name, condition, substring=False, rowid=False):
+		for i, j in data.items():
+			# print("DEBUG I J", i, j)
+			col_repr.append(str(i))
+			data_repr.append(str(j))
+
+		col_repr = "(" + ", ".join(col_repr) + ")"
+		data_repr = "('" + "', '".join(data_repr) + "')"
+
+		self.cursor.execute('''INSERT INTO %s %s VALUES %s;''' % (table_name, col_repr, data_repr))
+
+	def select_rows(self, table_name, condition, substring=False, rowid=False, vlist=False):
 		"""
-		select rows from table which meat condition
+		select rows from table which meet condition
 
 		:param table_name: name of table
 		:type table_name: str
@@ -88,17 +97,20 @@ class DBInstance:
 		:type condition: dict
 		"""
 		condition = list(condition.items())[0]
-		if not substring:
+		if not substring and not vlist:
 			condition_string = str(condition[0]) + " = '" + str(condition[1]) + "'"
-		else:
+		elif not vlist and substring:
 			condition_string = str(condition[0]) + " LIKE '%" + str(condition[1]) + "%'"
+		else:
+			condition_string = str(condition[0]) + " IN (%s)" % str(condition[1])
 
 		if rowid:
 			get_rowid = "rowid,"
 		else:
 			get_rowid = ""
 
-		return tuple(self.handle.execute('''SELECT %s * FROM %s WHERE %s ORDER BY rowid ASC;''' % (get_rowid, table_name, condition_string)).fetchall())
+		print("DEBUG -- ", '''SELECT %s * FROM %s WHERE %s ORDER BY rowid ASC;''' % (get_rowid, table_name, condition_string))
+		return tuple(self.cursor.execute('''SELECT %s * FROM %s WHERE %s ORDER BY rowid ASC;''' % (get_rowid, table_name, condition_string)).fetchall())
 	
 
 	def select_columns(self, table_name, column_list):
@@ -115,7 +127,7 @@ class DBInstance:
 			column_list = (column_list,)
 		cols = ", ".join(column_list)
 		# print('''SELECT {} from {}'''.format(cols, table_name))
-		return tuple(self.handle.execute('''SELECT %s FROM %s ORDER BY rowid ASC;''' % (cols, table_name)).fetchall())
+		return tuple(self.cursor.execute('''SELECT %s FROM %s ORDER BY rowid ASC;''' % (cols, table_name)).fetchall())
 
 	def get_n_latest_items(self, table_name, n, startingrowid=None):
 		"""
@@ -123,7 +135,7 @@ class DBInstance:
 		"""
 		if startingrowid != None:
 			table_name += " WHERE rowid >= " + str(startingrowid)
-		return tuple(self.handle.execute('''SELECT rowid, * FROM %s ORDER BY rowid DESC LIMIT %s''' % (table_name, n)))
+		return tuple(self.cursor.execute('''SELECT rowid, * FROM %s ORDER BY rowid DESC LIMIT %s''' % (table_name, n)))
 
 	def update_generic(self, table_name, changes, condition):
 		"""
@@ -149,8 +161,8 @@ class DBInstance:
 		condition = list(condition.items())[0]
 		condition_string = str(condition[0]) + " = '" + str(condition[1]) + "'"
 
-		print('''UPDATE %s SET %s WHERE %s''' % (table_name, changes_string, condition_string))
-		self.handle.execute('''UPDATE %s SET %s WHERE %s''' % (table_name, changes_string, condition_string))
+		# print('''UPDATE %s SET %s WHERE %s''' % (table_name, changes_string, condition_string))
+		self.cursor.execute('''UPDATE %s SET %s WHERE %s''' % (table_name, changes_string, condition_string))
 
 	def delete_rows(self, table_name, condition):
 		"""
@@ -164,7 +176,7 @@ class DBInstance:
 		condition = tuple(list(condition.items()))[0]
 		condition_string = str(condition[0]) + " = '" + str(condition[1]) + "'"
 		# print("DEBUG -- in delete_rows making query: " + '''DELETE FROM {} WHERE {}'''.format(table_name, condition_string))
-		self.handle.execute('''DELETE FROM %s WHERE %s''' % (table_name, condition_string))
+		self.cursor.execute('''DELETE FROM %s WHERE %s''' % (table_name, condition_string))
 
 	def get_column_info(self, table_name):
 		"""
@@ -174,7 +186,7 @@ class DBInstance:
 		:type table_name: str
 		:return: tuple of column names
 		"""
-		cursor = self.handle.execute('''PRAGMA table_info(%s);''' % (table_name,))
+		cursor = self.cursor.execute('''PRAGMA table_info(%s);''' % (table_name,))
 		cols = sorted(cursor.fetchall(), key=lambda x: int(x[0]))
 		return tuple([i[1] for i in cols])
 
@@ -182,7 +194,7 @@ class DBInstance:
 		"""
 		TODO
 		"""
-		return self.handle.execute('''SELECT COUNT(*) FROM %s''' % table_name)
+		return self.cursor.execute('''SELECT COUNT(*) FROM %s''' % table_name)
 
 	def _save(self):
 		"""
@@ -254,15 +266,8 @@ class MusicDB(metaclass=DBAccessory):
 		self.db_handle = db_handle
 
 	def add_song(self, song_dict):
-		# {name:, artist:, duration:, meta_dat:}
-		self.db_inst.insert_entire_row("songs", 
-			[
-				song_dict["name"],
-				song_dict["artist"],
-				song_dict["duration"],
-				song_dict["file_path"],
-				song_dict["meta_dat"]
-			])
+		# print("DEBUG -- add_song :: ", song_dict)
+		self.db_inst.insert_entire_row("songs", song_dict)
 
 	@sanatise_string
 	def get_songs_by_name(self, name):
@@ -271,15 +276,17 @@ class MusicDB(metaclass=DBAccessory):
 		"""
 		return self.db_inst.select_rows("songs", {"name":name}, substring=True, rowid=True)
 
-	def get_by_rowid(self, rowid):
+	def get_by_rowid(self, rowids):
 		"""
 		Get song by id.
 
-		:param int rowid: database table ``rowid`` to return whole row from.
+		:param str rowids: database table ``rowid`` to return whole row from.
 		:returns: song with ``rowid``
 		:rtype: length 1 tuple of tuple
 		"""
-		return self.db_inst.select_rows("songs", {"rowid":rowid}, rowid=True)
+		if type(rowids) is int:
+			rowids = str(rowids)
+		return self.db_inst.select_rows("songs", {"rowid":rowids}, rowid=True, vlist=len(rowids.split(",")) > 1)
 
 	def get_page(self, starting):
 		"""
@@ -325,13 +332,7 @@ class UserDB(metaclass=DBAccessory):
 	@sanatise_dict(['name'])
 	def add_user(self, user_dict):
 		# {id, name, hash_pw, meta_dat}
-		self.db_inst.insert_entire_row("users", 
-			[
-				user_dict["id"],
-				user_dict["name"],
-				user_dict["hash_pw"],
-				user_dict["meta_dat"],
-			])
+		self.db_inst.insert_entire_row("users", user_dict)
 
 	def get_user_by_id(self, id_n):
 		"""

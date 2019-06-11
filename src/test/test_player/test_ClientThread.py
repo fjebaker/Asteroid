@@ -1,10 +1,10 @@
-import pytest, sys
+import sys
 import unittest.mock as mock
 
 # MOCK DEPENDENCIES
 sys.modules['alsaaudio'] = mock.MagicMock()
 
-import src.main.python.player.ClientThread as ClientThread
+from src.main.player import ClientThread
 
 
 def test_run():

@@ -1,5 +1,5 @@
 from flask import Response
-from src.main.python.flaskserv.model.Playlist import Playlist
+from src.main.web.flaskserv.playqueue.Playlist import Playlist
 import os, json
 
 class Vote:
@@ -24,8 +24,8 @@ class Vote:
 		"""
 		Handles the vote. Manipulates the ``playlist`` table, which it finds in the database
 		given by the environment variable ``PLAYLIST_PATH``. Checks if ``s_id`` already in ``playlist`` in which case
-		it updates the vote by calling :meth:``src.main.python.flaskserv.model.Playlist.update_vote``.
-		If not already in ``playlist``, adds by calling :meth:``src.main.python.flaskserv.model.Playlist.add``
+		it updates the vote by calling :meth:``src.main.python.flaskserv.playqueue.Playlist.update_vote``.
+		If not already in ``playlist``, adds by calling :meth:``src.main.python.flaskserv.playqueue.Playlist.add``
 
 		:param int s_id: the song ``rowid``
 		:param int u_id: user ``id``
