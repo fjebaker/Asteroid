@@ -112,6 +112,18 @@ Will wrap all non-special functions with a decorator, providing a scoped instanc
 </dd></dl>
 
 <dl class="method">
+<dt id="src.main.python.flaskserv.Database.DBInstance.get_count_of">
+<code class="descname">get_count_of</code><span class="sig-paren">(</span><em>table_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#DBInstance.get_count_of"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.DBInstance.get_count_of" title="Permalink to this definition">¶</a></dt>
+<dd><p>TODO</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="src.main.python.flaskserv.Database.DBInstance.get_n_latest_items">
+<code class="descname">get_n_latest_items</code><span class="sig-paren">(</span><em>table_name</em>, <em>n</em>, <em>startingrowid=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#DBInstance.get_n_latest_items"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.DBInstance.get_n_latest_items" title="Permalink to this definition">¶</a></dt>
+<dd><p>TODO</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="src.main.python.flaskserv.Database.DBInstance.insert_entire_row">
 <code class="descname">insert_entire_row</code><span class="sig-paren">(</span><em>table_name</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#DBInstance.insert_entire_row"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.DBInstance.insert_entire_row" title="Permalink to this definition">¶</a></dt>
 <dd><p>insert a row of values into a given table</p>
@@ -155,7 +167,7 @@ Will wrap all non-special functions with a decorator, providing a scoped instanc
 
 <dl class="method">
 <dt id="src.main.python.flaskserv.Database.DBInstance.select_rows">
-<code class="descname">select_rows</code><span class="sig-paren">(</span><em>table_name</em>, <em>condition</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#DBInstance.select_rows"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.DBInstance.select_rows" title="Permalink to this definition">¶</a></dt>
+<code class="descname">select_rows</code><span class="sig-paren">(</span><em>table_name</em>, <em>condition</em>, <em>substring=False</em>, <em>rowid=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#DBInstance.select_rows"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.DBInstance.select_rows" title="Permalink to this definition">¶</a></dt>
 <dd><p>select rows from table which meat condition</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -228,13 +240,18 @@ Encapsulates <a class="reference internal" href="#src.main.python.flaskserv.Data
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="src.main.python.flaskserv.Database.MusicDB.get_song_by_artist">
-<code class="descname">get_song_by_artist</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#MusicDB.get_song_by_artist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.MusicDB.get_song_by_artist" title="Permalink to this definition">¶</a></dt>
+<dt id="src.main.python.flaskserv.Database.MusicDB.get_page">
+<code class="descname">get_page</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#MusicDB.get_page"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.MusicDB.get_page" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="src.main.python.flaskserv.Database.MusicDB.get_song_by_name">
-<code class="descname">get_song_by_name</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#MusicDB.get_song_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.MusicDB.get_song_by_name" title="Permalink to this definition">¶</a></dt>
+<dt id="src.main.python.flaskserv.Database.MusicDB.get_songs_by_artist">
+<code class="descname">get_songs_by_artist</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#MusicDB.get_songs_by_artist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.MusicDB.get_songs_by_artist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="src.main.python.flaskserv.Database.MusicDB.get_songs_by_name">
+<code class="descname">get_songs_by_name</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#MusicDB.get_songs_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.MusicDB.get_songs_by_name" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -286,8 +303,13 @@ Encapsulates <a class="reference internal" href="#src.main.python.flaskserv.Data
 </dd></dl>
 
 <dl class="function">
-<dt id="src.main.python.flaskserv.Database.sanitise">
-<code class="descclassname">src.main.python.flaskserv.Database.</code><code class="descname">sanitise</code><span class="sig-paren">(</span><em>func</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#sanitise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.sanitise" title="Permalink to this definition">¶</a></dt>
+<dt id="src.main.python.flaskserv.Database.sanatise_dict">
+<code class="descclassname">src.main.python.flaskserv.Database.</code><code class="descname">sanatise_dict</code><span class="sig-paren">(</span><em>keys</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#sanatise_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.sanatise_dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="src.main.python.flaskserv.Database.sanatise_string">
+<code class="descclassname">src.main.python.flaskserv.Database.</code><code class="descname">sanatise_string</code><span class="sig-paren">(</span><em>func</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/Database.html#sanatise_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.Database.sanatise_string" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>

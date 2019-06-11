@@ -50,6 +50,7 @@
  | <a href="#K"><strong>K</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
+ | <a href="#N"><strong>N</strong></a>
  | <a href="#P"><strong>P</strong></a>
  | <a href="#Q"><strong>Q</strong></a>
  | <a href="#R"><strong>R</strong></a>
@@ -86,14 +87,16 @@
 </li>
       <li><a href="flaskserver/Database.html#src.main.python.flaskserv.Database.MusicDB.add_song">add_song() (src.main.python.flaskserv.Database.MusicDB method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="flaskserver/Database.html#src.main.python.flaskserv.Database.UserDB.add_user">add_user() (src.main.python.flaskserv.Database.UserDB method)</a>
 
       <ul>
         <li><a href="flaskserver/FormHandlers.html#src.main.python.flaskserv.FormHandlers.UserHandler.add_user">(src.main.python.flaskserv.FormHandlers.UserHandler method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="flaskserver/QueryHandlers.html#src.main.python.flaskserv.QueryHandlers.MusicQuery.artist">artist() (src.main.python.flaskserv.QueryHandlers.MusicQuery method)</a>
+</li>
       <li><a href="player/AudioHandler.html#src.main.python.player.AudioHandler.AudioHandler">AudioHandler (class in src.main.python.player.AudioHandler)</a>
 </li>
   </ul></td>
@@ -182,8 +185,6 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="player/AudioHandler.html#src.main.python.player.AudioHandler.AudioHandler.fetch_playlist_item">fetch_playlist_item() (src.main.python.player.AudioHandler.AudioHandler method)</a>
-</li>
       <li><a href="js/queries.html#freshQuery">freshQuery() (built-in function)</a>
 </li>
   </ul></td>
@@ -204,15 +205,25 @@
 </li>
       <li><a href="flaskserver/Database.html#src.main.python.flaskserv.Database.DBInstance.get_column_info">get_column_info() (src.main.python.flaskserv.Database.DBInstance method)</a>
 </li>
+      <li><a href="flaskserver/Database.html#src.main.python.flaskserv.Database.DBInstance.get_count_of">get_count_of() (src.main.python.flaskserv.Database.DBInstance method)</a>
+</li>
+      <li><a href="flaskserver/model/Playlist.html#src.main.python.flaskserv.model.Playlist.Playlist.get_current_song">get_current_song() (src.main.python.flaskserv.model.Playlist.Playlist method)</a>
+</li>
+      <li><a href="flaskserver/model/Playlist.html#src.main.python.flaskserv.model.Playlist.Playlist.get_most_voted">get_most_voted() (src.main.python.flaskserv.model.Playlist.Playlist method)</a>
+</li>
+      <li><a href="flaskserver/Database.html#src.main.python.flaskserv.Database.DBInstance.get_n_latest_items">get_n_latest_items() (src.main.python.flaskserv.Database.DBInstance method)</a>
+</li>
+      <li><a href="flaskserver/Database.html#src.main.python.flaskserv.Database.MusicDB.get_page">get_page() (src.main.python.flaskserv.Database.MusicDB method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="player/AudioHandler.html#src.main.python.player.AudioHandler.AudioHandler.get_path_from_database">get_path_from_database() (src.main.python.player.AudioHandler.AudioHandler method)</a>
 </li>
       <li><a href="flaskserver/model/Playlist.html#src.main.python.flaskserv.model.Playlist.Playlist.get_playlist">get_playlist() (src.main.python.flaskserv.model.Playlist.Playlist method)</a>
 </li>
-      <li><a href="flaskserver/Database.html#src.main.python.flaskserv.Database.MusicDB.get_song_by_artist">get_song_by_artist() (src.main.python.flaskserv.Database.MusicDB method)</a>
+      <li><a href="flaskserver/Database.html#src.main.python.flaskserv.Database.MusicDB.get_songs_by_artist">get_songs_by_artist() (src.main.python.flaskserv.Database.MusicDB method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="flaskserver/Database.html#src.main.python.flaskserv.Database.MusicDB.get_song_by_name">get_song_by_name() (src.main.python.flaskserv.Database.MusicDB method)</a>
+      <li><a href="flaskserver/Database.html#src.main.python.flaskserv.Database.MusicDB.get_songs_by_name">get_songs_by_name() (src.main.python.flaskserv.Database.MusicDB method)</a>
 </li>
       <li><a href="flaskserver/Database.html#src.main.python.flaskserv.Database.UserDB.get_user_by_id">get_user_by_id() (src.main.python.flaskserv.Database.UserDB method)</a>
 </li>
@@ -303,9 +314,19 @@
   </ul></td>
 </tr></table>
 
+<h2 id="N">N</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="flaskserver/QueryHandlers.html#src.main.python.flaskserv.QueryHandlers.MusicQuery.name">name() (src.main.python.flaskserv.QueryHandlers.MusicQuery method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="flaskserver/QueryHandlers.html#src.main.python.flaskserv.QueryHandlers.MusicQuery.page">page() (src.main.python.flaskserv.QueryHandlers.MusicQuery method)</a>
+</li>
       <li><a href="player/ConditionObject.html#src.main.python.player.ConditionObject.ConditionObject.pause">pause (src.main.python.player.ConditionObject.ConditionObject attribute)</a>
 </li>
       <li><a href="player/AudioHandler.html#src.main.python.player.AudioHandler.AudioHandler.pause">pause() (src.main.python.player.AudioHandler.AudioHandler method)</a>
@@ -348,6 +369,8 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="player/AudioHandler.html#src.main.python.player.AudioHandler.AudioHandler.resume">resume() (src.main.python.player.AudioHandler.AudioHandler method)</a>
+</li>
       <li><a href="player/AudioHandler.html#src.main.python.player.AudioHandler.AudioHandler.run">run() (src.main.python.player.AudioHandler.AudioHandler method)</a>
 
       <ul>
@@ -362,7 +385,9 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="flaskserver/Database.html#src.main.python.flaskserv.Database.sanitise">sanitise() (in module src.main.python.flaskserv.Database)</a>
+      <li><a href="flaskserver/Database.html#src.main.python.flaskserv.Database.sanatise_dict">sanatise_dict() (in module src.main.python.flaskserv.Database)</a>
+</li>
+      <li><a href="flaskserver/Database.html#src.main.python.flaskserv.Database.sanatise_string">sanatise_string() (in module src.main.python.flaskserv.Database)</a>
 </li>
       <li><a href="flaskserver/Database.html#src.main.python.flaskserv.Database.DBInstance.select_columns">select_columns() (src.main.python.flaskserv.Database.DBInstance method)</a>
 </li>

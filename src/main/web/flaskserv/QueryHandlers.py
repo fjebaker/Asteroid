@@ -1,4 +1,4 @@
-from src.main.python.flaskserv.Database import MusicDB, UserDB
+from src.main.web.flaskserv.Database import MusicDB, UserDB
 from flask import Response
 import abc, json, os
 
@@ -72,7 +72,7 @@ class MusicQuery(BaseQuery):
 			songName = str(self.s_arg)
 			songName = " ".join(songName.split("%20"))
 		except Exception as e:
-			return defaultCase()
+			return self.defaultCase()
 
 		db_result = MusicDB(os.environ["MUSIC_DB_PATH"]).get_songs_by_name(songName)
 
@@ -143,16 +143,7 @@ class MusicQuery(BaseQuery):
 
 		all_songs = []
 		for song_tup in db_result:
-			song = {}
-			song_gen = iter(song_tup)		
-
-			for key in self.keys:
-				if key == "file_path":
-					continue
-				else:
-					value = next(song_gen)
-				song[key] = value
-			all_songs.append(song)
+			all_songs.append(self._arrange_dict(song_tup))
 
 		return Response(
 				json.dumps(all_songs),
@@ -171,21 +162,21 @@ class MusicQuery(BaseQuery):
 		# print("DEBUG -- sargs", self.s_arg)
 		s_arg = self.s_arg.split("%20")
 		db_results = []
+		rowids = ""
 		for i in s_arg:
 			try:
-				# print("DEBUG -- attempt to convert", i)
 				i = int(i)
 			except:
-				# print("DEBUG -- failed")
 				continue
 			else:
-				# print("DEBUG -- pass")
-				s = MusicDB(os.environ["MUSIC_DB_PATH"]).get_by_rowid(i)
-				if s == ():
-					continue
-				else:
-					s = s[0]
-				db_results.append(self._arrange_dict(s))
+				rowids += str(i) + ", "
+		if rowids == "":
+			return self.defaultCase()
+
+		s = MusicDB(os.environ["MUSIC_DB_PATH"]).get_by_rowid(rowids[:-2])
+		# print("DEBUG -- DB RESULTS", s)
+		for i in s:
+			db_results.append(self._arrange_dict(i))
 
 		if len(db_results) == 0:
 			return self.defaultCase()
@@ -200,7 +191,9 @@ class MusicQuery(BaseQuery):
 
 	def _arrange_dict(self, songitem):
 		song = {}
-		for key, value in zip(self.keys, songitem):
+		song_gen = iter(songitem)
+		for key in self.keys:
+			value = next(song_gen)
 			if key == "file_path":
 				continue
 			song[key] = value

@@ -1,5 +1,4 @@
-import threading, sys
-from queue import Queue
+import threading
 
 class ClientThread(threading.Thread):
 	"""
