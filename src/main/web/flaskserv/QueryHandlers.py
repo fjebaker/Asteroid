@@ -59,8 +59,6 @@ class MusicQuery(BaseQuery):
 	:returns: :class:`flask.Response` containing query result
 	"""
 
-	keys = ("rowid", "name", "artist", "duration", "file_path", "meta_dat") #: json keys for parsing database
-
 	def __init__(self, query):
 		BaseQuery.__init__(self, query)
 
@@ -70,19 +68,15 @@ class MusicQuery(BaseQuery):
 		"""
 		try:
 			songName = str(self.s_arg)
-			songName = " ".join(songName.split("%20"))
+			songName = songName.replace("%20", " ").replace("'", "''")
 		except Exception as e:
 			return self.defaultCase()
 
-		db_result = MusicDB(os.environ["MUSIC_DB_PATH"]).get_songs_by_name(songName)
-
-		songs = []
-		for s in db_result:
-			songs.append(self._arrange_dict(s))
-
-
+		db_result = MusicDB(os.environ["MUSIC_DB_PATH"]).get_by_name(songName)
+		if db_result != ():
+			db_result = self._remove_path(db_result)
 		return Response(
-				json.dumps(songs),
+				json.dumps(db_result),
 				status = 200,
 				mimetype='application/json'
 			)
@@ -96,14 +90,11 @@ class MusicQuery(BaseQuery):
 		except Exception as e:
 			return self.defaultCase()
 
-		db_result = MusicDB(os.environ["MUSIC_DB_PATH"]).get_page(page_id)
-
-		songs = []
-		for s in db_result:
-			songs.append(self._arrange_dict(s))
-
+		db_result = MusicDB(os.environ["MUSIC_DB_PATH"]).get_page()
+		if db_result != ():
+			db_result = self._remove_path(db_result)
 		return Response(
-				json.dumps(songs),
+				json.dumps(db_result),
 				status = 200,
 				mimetype='application/json'
 			)
@@ -115,19 +106,15 @@ class MusicQuery(BaseQuery):
 		"""
 		try:
 			artistName = str(self.s_arg)
-			artistName = " ".join(artistName.split("%20"))
+			artistName = artistName.replace("%20", " ").replace("'", "''")
 		except Exception as e:
 			return self.defaultCase()
 
-		db_result = MusicDB(os.environ["MUSIC_DB_PATH"]).get_songs_by_artist(artistName)
-
-		songs = []
-		for s in db_result:
-			songs.append(self._arrange_dict(s))
-
-
+		db_result = MusicDB(os.environ["MUSIC_DB_PATH"]).get_by_artist(artistName)
+		if db_result != ():
+			db_result = self._remove_path(db_result)
 		return Response(
-				json.dumps(songs),
+				json.dumps(db_result),
 				status = 200,
 				mimetype='application/json'
 			)
@@ -140,13 +127,10 @@ class MusicQuery(BaseQuery):
 		:returns: :class:`flask.Response` with json of dictionary containing all songs, and ``status==200``.
 		"""
 		db_result = MusicDB(os.environ["MUSIC_DB_PATH"]).get_all_songs()
-
-		all_songs = []
-		for song_tup in db_result:
-			all_songs.append(self._arrange_dict(song_tup))
-
+		if db_result != ():
+			db_result = self._remove_path(db_result)
 		return Response(
-				json.dumps(all_songs),
+				json.dumps(db_result),
 				status=200,
 				mimetype='application/json'
 			)
@@ -161,43 +145,37 @@ class MusicQuery(BaseQuery):
 		# todo could probably merge these two
 		# print("DEBUG -- sargs", self.s_arg)
 		s_arg = self.s_arg.split("%20")
-		db_results = []
-		rowids = ""
+		rowids = []
 		for i in s_arg:
 			try:
 				i = int(i)
 			except:
 				continue
 			else:
-				rowids += str(i) + ", "
-		if rowids == "":
+				rowids.append(i)
+		if rowids == []:
 			return self.defaultCase()
 
-		s = MusicDB(os.environ["MUSIC_DB_PATH"]).get_by_rowid(rowids[:-2])
-		# print("DEBUG -- DB RESULTS", s)
-		for i in s:
-			db_results.append(self._arrange_dict(i))
-
-		if len(db_results) == 0:
+		db_result = MusicDB(os.environ["MUSIC_DB_PATH"]).get_by_rowid(*rowids)
+		db_result = self._remove_path(db_result)
+		if len(db_result) == 0:
 			return self.defaultCase()
-		elif len(db_results) == 1:
-			db_results = db_results[0]
 
 		return Response(
-				json.dumps(db_results),
+				json.dumps(db_result),
 				status=200,
 				mimetype='application/json'
 			)
 
-	def _arrange_dict(self, songitem):
-		song = {}
-		song_gen = iter(songitem)
-		for key in self.keys:
-			value = next(song_gen)
-			if key == "file_path":
-				continue
-			song[key] = value
-		return song
+	def _remove_path(self, db_result):
+		"""
+		TODO
+		:param db_result:
+		:return:
+		"""
+		for item in db_result:
+			del item["file_path"]
+		return db_result
 
 	def defaultCase(self):
 		"""
@@ -235,17 +213,11 @@ class UserQuery(BaseQuery):
 		:returns: :class:`flask.Response` with json of dictionary containing all users, and ``status==200``.
 		"""
 		db_result = UserDB(os.environ["USER_DB_PATH"]).get_all_users()
-
-		keys = ("id", "name", "meta_dat")	# bad key filtering :: TODO
-		all_users = []
-		for user_tup in db_result:
-			user = {}
-			for key, value in zip(keys, user_tup):
-				user[key] = value
-			all_users.append(user)
+		if db_result != ():
+			db_result = self._remove_pw(db_result)
 
 		return Response(
-				json.dumps(all_users),
+				json.dumps(db_result),
 				status=200,
 				mimetype='application/json'
 			)
@@ -260,23 +232,24 @@ class UserQuery(BaseQuery):
 		# todo could probably merge these two
 
 		try:
-			song_id = int(self.s_arg)
+			u_id = int(self.s_arg)
 		except Exception as e:
 			return self.defaultCase()
 		
-		db_result = UserDB(os.environ["USER_DB_PATH"]).get_user_by_id(song_id)
+		db_result = UserDB(os.environ["USER_DB_PATH"]).get_user_by_id(u_id)
+		db_result = self._remove_pw(db_result)
 		if len(db_result) == 0:
 			return self.defaultCase()
-		user = {}
-		for key, value in zip(self.keys, db_result[0]):
-			if key == "hash_pw":
-				continue
-			user[key] = value
+
 		return Response(
-				json.dumps(user),
+				json.dumps(db_result),
 				status=200,
 				mimetype='application/json'
 			)
+
+	def _remove_pw(self, db_result):
+		for item in db_result:
+			del item["hash_pw"]
 
 	def defaultCase(self):
 		"""

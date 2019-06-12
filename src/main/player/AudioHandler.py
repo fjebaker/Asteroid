@@ -1,6 +1,6 @@
 from src.main.player.PlayStream import PlayStream
 from src.main.player.ConditionObject import ConditionObject
-from src.main.web.flaskserv import Playlist
+from src.main.web.flaskserv import Playlist, History
 from src.main.web.flaskserv import MusicDB
 from queue import Queue
 import threading, os
@@ -57,18 +57,24 @@ class AudioHandler(threading.Thread):
 		:returns: the path to the most voted song
 		:rtype: str
 		"""
-		n_item = Playlist(os.environ["PLAYLIST_PATH"]).get_most_voted()
-		if n_item == None:
+		pl = Playlist(os.environ["PLAYLIST_PATH"])
+		n_item = pl.get_most_voted()
+		if n_item == ():
 			# TODO
 			return None
 
+		n_item = n_item[0]
+		s_id = n_item["s_id"]
+		pl.remove(s_id)
+		History(os.environ["PLAYLIST_PATH"]).add((n_item["s_id"], n_item["u_id"], n_item["vote"]))
+
 		try:
-			song = MusicDB(os.environ["MUSIC_DB_PATH"]).get_by_rowid(n_item[0])[0]
+			song = MusicDB(os.environ["MUSIC_DB_PATH"]).get_by_rowid(s_id)[0]
 		except Exception as e:
 			print("DEBUG -- get_path_from_database :: Exception = " + str(e))
 			return None
 		else:
-			return song[4]
+			return song["file_path"]
 
 	def play(self, *args):
 		"""

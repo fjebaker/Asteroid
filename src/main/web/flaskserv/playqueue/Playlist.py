@@ -16,15 +16,24 @@ class Playlist(metaclass=DBAccessory):
 	:type db_handle: str
 	"""
 
+	keys = ("s_id", "u_id", "vote")
+	k_type = ("long", "long", "long")
+
 	def __init__(self, db_handle):
 		self.db_handle = db_handle
 
+	def create_table(self):
+		"""
+		TODO
+		"""
+		self.db_inst.create_table("playlist", self.k_type)
+
 	def add(self, item):
 		"""
-		add a new entry to the playlist table
+		TODO
 
-		:param item: song item, in format {s_id, u_id, vote}
-		:type item: dict
+		:param item:
+		:return:
 		"""
 		self.db_inst.insert_entire_row("playlist", item)
 
@@ -38,33 +47,18 @@ class Playlist(metaclass=DBAccessory):
 		:type vote: int
 		"""
 		# print("DEBUG -- in update_vote, params are ", s_id, vote)
-		c_vote = self.db_inst.select_rows("playlist", {"s_id":s_id})[0][2]
+		c_vote = self.db_inst.select_rows("playlist", {1:s_id})[0]["vote"]
 		self.db_inst.update_generic("playlist", 
-				{"vote":int(c_vote)+int(vote)},
-				{"s_id":s_id}
+				{3:int(c_vote)+int(vote)},
+				{1:s_id}
 			)
 
 	def get_most_voted(self):
 		"""
 		TODO
 		"""
-		# playlist = self.db_inst.select_columns("playlist", "*")		# can't call own functions
-		playlist = self.get_playlist()
-		# print("DEBUG -- get_most_voted :: before return None")
-		if playlist == ():
-			return None
-		most_voted_song = max(playlist, key=lambda x: int(x[2]))
+		most_voted_song = self.db_inst.select_rows("playlist", ("*",), {0:""}, like=True, orderlimit="ORDER BY vote DESC LIMIT 1")
 		return most_voted_song
-
-	def get_current_song(self):
-		"""
-		TODO
-		"""
-		history = self.db_inst.get_n_latest_items('history', 1)
-		# print("DEBUG -- get_current_song :: ", history)
-		if history == ():
-			return []
-		return history[-1][1:]
 	
 
 	def remove(self, s_id):
@@ -74,7 +68,7 @@ class Playlist(metaclass=DBAccessory):
 		:param s_id: song id to remove from playlist
 		:type s_id: int
 		"""
-		self.db_inst.delete_rows("playlist", {"s_id":s_id})
+		self.db_inst.delete_rows("playlist", {1:s_id})
 
 	def get_playlist(self):
 		"""
@@ -85,4 +79,10 @@ class Playlist(metaclass=DBAccessory):
 		
 		:returns: list[int, int, int]
 		"""
-		return self.db_inst.select_columns("playlist", "*")
+		db_result = self.db_inst.get_all_rows("playlist")
+		return self._remove_rowid(db_result)
+
+	def _remove_rowid(self, db_result):
+		for item in db_result:
+			del item["rowid"]
+		return db_result
