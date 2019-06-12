@@ -40,4 +40,9 @@ class History(metaclass=DBAccessory):
 		"""
 		TODO
 		"""
-		return self.db_inst.get_n_latest_rows("history", 1)
+		return self._remove_rowid(self.db_inst.get_n_latest_rows("history", 1))
+
+	def _remove_rowid(self, db_result):
+		for item in db_result:
+			del item["rowid"]
+		return db_result

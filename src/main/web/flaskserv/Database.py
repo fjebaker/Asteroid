@@ -137,7 +137,7 @@ class DBInstance:
         keys = ("rowid",) + self.keys
         where_s = ", ".join([cond % (keys[i], str(j)) for i, j in where.items()])
         what_s = ", ".join(what)
-        print('''SELECT %s FROM %s WHERE %s %s''' % (what_s, table_name, where_s, orderlimit))
+        # print('''SELECT %s FROM %s WHERE %s %s''' % (what_s, table_name, where_s, orderlimit))
         ret = self.cursor.execute('''SELECT %s FROM %s WHERE %s %s;''' % (what_s, table_name, where_s, orderlimit))
         return self._sort(ret, what)
 
