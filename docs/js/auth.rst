@@ -3,3 +3,4 @@
 
 .. js:autofunction:: _dealWithReceivedJson
 .. js:autofunction:: _submitClick
+.. js:autofunction:: createAuth
