@@ -34,46 +34,8 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="module-src.main.python.player.ClientThread">
-<span id="clientthread-class"></span><h1><code class="docutils literal notranslate"><span class="pre">ClientThread</span></code> Class<a class="headerlink" href="#module-src.main.python.player.ClientThread" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="src.main.python.player.ClientThread.ClientThread">
-<em class="property">class </em><code class="descclassname">src.main.python.player.ClientThread.</code><code class="descname">ClientThread</code><span class="sig-paren">(</span><em>queue</em>, <em>socket</em>, <em>addr</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/player/ClientThread.html#ClientThread"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.player.ClientThread.ClientThread" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/threading.html#threading.Thread" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">threading.Thread</span></code></a></p>
-<p>Client thread, inheriting from <a class="reference external" href="https://docs.python.org/3/library/threading.html#threading.Thread" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">threading.Thread</span></code></a>, spawned by <a class="reference internal" href="INETServer.html#src.main.python.player.INETServer.Listener" title="src.main.python.player.INETServer.Listener"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.main.python.player.INETServer.Listener</span></code></a>.
-Has <code class="docutils literal notranslate"><span class="pre">self.daemon</span> <span class="pre">=</span> <span class="pre">True</span></code>.
-Will listen for incomming messages forever or until an <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a> is raised.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><p class="first"><a class="reference internal" href="#src.main.python.player.ClientThread.ClientThread.commands" title="src.main.python.player.ClientThread.ClientThread.commands"><strong>commands</strong></a> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – defined playback commands: “name”:number of arguments (int)</p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>queue</strong> (<a class="reference external" href="https://docs.python.org/3/library/queue.html#queue.Queue" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">queue.Queue</span></code></a>) – FIFO queue to put parsed incomming messages in (puts <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> objects).</li>
-<li><strong>socket</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">socket.Socket</span></code>) – the connection’s object</li>
-<li><strong>addr</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – the connection’s address</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="attribute">
-<dt id="src.main.python.player.ClientThread.ClientThread.commands">
-<code class="descname">commands</code><em class="property"> = {'close': 0, 'pause': 0, 'play': 1, 'resume': 0, 'stop': 0}</em><a class="headerlink" href="#src.main.python.player.ClientThread.ClientThread.commands" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="src.main.python.player.ClientThread.ClientThread.run">
-<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/player/ClientThread.html#ClientThread.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.player.ClientThread.ClientThread.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Inherited and overwritten <a class="reference external" href="https://docs.python.org/3/library/threading.html#threading.Thread.run" title="(in Python v3.7)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">threading.Thread.run()</span></code></a>; called when <code class="xref py py-attr docutils literal notranslate"><span class="pre">self.start()</span></code> method is invoked.
-Begins listening for incomming message from client peer. Catches any <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a> thrown during this process,
-and cleans up by closing connection to <code class="xref py py-attr docutils literal notranslate"><span class="pre">self.socket</span></code>.</p>
-</dd></dl>
-
-</dd></dl>
-
+  <div class="section" id="clientthread-class">
+<h1><code class="docutils literal notranslate"><span class="pre">ClientThread</span></code> Class<a class="headerlink" href="#clientthread-class" title="Permalink to this headline">¶</a></h1>
 </div>
 
 

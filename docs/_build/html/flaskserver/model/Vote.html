@@ -34,54 +34,8 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="module-src.main.python.flaskserv.model.Vote">
-<span id="vote-class"></span><h1><code class="docutils literal notranslate"><span class="pre">Vote</span></code> Class<a class="headerlink" href="#module-src.main.python.flaskserv.model.Vote" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="src.main.python.flaskserv.model.Vote.Vote">
-<em class="property">class </em><code class="descclassname">src.main.python.flaskserv.model.Vote.</code><code class="descname">Vote</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/main/python/flaskserv/model/Vote.html#Vote"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.model.Vote.Vote" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<p>Vote handling class. Handles both <code class="docutils literal notranslate"><span class="pre">POST</span></code> and <code class="docutils literal notranslate"><span class="pre">GET</span></code> requests.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>request</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">flask.Request</span></code> object containing the request information.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">flask.Response</span></code> with result of operation.</td>
-</tr>
-</tbody>
-</table>
-<ul class="simple">
-<li>if <code class="docutils literal notranslate"><span class="pre">POST</span></code>: returns json with a <code class="docutils literal notranslate"><span class="pre">message</span></code> index, and <code class="docutils literal notranslate"><span class="pre">status==200</span></code> if vote updated and <code class="docutils literal notranslate"><span class="pre">status==201</span></code> if new song item created in <code class="docutils literal notranslate"><span class="pre">playlist</span></code> table.</li>
-<li>if <code class="docutils literal notranslate"><span class="pre">GET</span></code>: returns the whole <code class="docutils literal notranslate"><span class="pre">playlist</span></code> table.</li>
-</ul>
-<dl class="method">
-<dt id="src.main.python.flaskserv.model.Vote.Vote.handle_vote">
-<code class="descname">handle_vote</code><span class="sig-paren">(</span><em>s_id</em>, <em>u_id</em>, <em>vote</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/src/main/python/flaskserv/model/Vote.html#Vote.handle_vote"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.model.Vote.Vote.handle_vote" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handles the vote. Manipulates the <code class="docutils literal notranslate"><span class="pre">playlist</span></code> table, which it finds in the database
-given by the environment variable <code class="docutils literal notranslate"><span class="pre">PLAYLIST_PATH</span></code>. Checks if <code class="docutils literal notranslate"><span class="pre">s_id</span></code> already in <code class="docutils literal notranslate"><span class="pre">playlist</span></code> in which case
-it updates the vote by calling :meth:<code class="docutils literal notranslate"><span class="pre">src.main.python.flaskserv.model.Playlist.update_vote</span></code>.
-If not already in <code class="docutils literal notranslate"><span class="pre">playlist</span></code>, adds by calling :meth:<code class="docutils literal notranslate"><span class="pre">src.main.python.flaskserv.model.Playlist.add</span></code></p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>s_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the song <code class="docutils literal notranslate"><span class="pre">rowid</span></code></li>
-<li><strong>u_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – user <code class="docutils literal notranslate"><span class="pre">id</span></code></li>
-<li><strong>vote</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the value to adjust vote by if song already in <code class="docutils literal notranslate"><span class="pre">playlist</span></code>, else to set to.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">:class:<code class="docutils literal notranslate"><span class="pre">flask.Response</span></code></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
+  <div class="section" id="vote-class">
+<h1><code class="docutils literal notranslate"><span class="pre">Vote</span></code> Class<a class="headerlink" href="#vote-class" title="Permalink to this headline">¶</a></h1>
 </div>
 
 

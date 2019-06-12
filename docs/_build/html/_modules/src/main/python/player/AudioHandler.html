@@ -38,7 +38,7 @@
 <span class="kn">from</span> <span class="nn">src.main.python.flaskserv.model.Playlist</span> <span class="k">import</span> <span class="n">Playlist</span>
 <span class="kn">from</span> <span class="nn">src.main.python.flaskserv.Database</span> <span class="k">import</span> <span class="n">MusicDB</span>
 <span class="kn">from</span> <span class="nn">queue</span> <span class="k">import</span> <span class="n">Queue</span>
-<span class="kn">import</span> <span class="nn">threading</span><span class="o">,</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">threading</span><span class="o">,</span> <span class="nn">os</span>
 
 <div class="viewcode-block" id="AudioHandler"><a class="viewcode-back" href="../../../../../player/AudioHandler.html#src.main.python.player.AudioHandler.AudioHandler">[docs]</a><span class="k">class</span> <span class="nc">AudioHandler</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;</span>
@@ -70,8 +70,7 @@
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
 			<span class="k">try</span><span class="p">:</span>
-				<span class="c1"># print(&quot;WAITING FOR MESSAGE&quot;)</span>
-				<span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+				<span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
 			<span class="k">except</span><span class="p">:</span>
 				<span class="n">play</span> <span class="o">=</span> <span class="kc">False</span>
 				<span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">condObj</span><span class="o">.</span><span class="n">lock</span><span class="p">:</span>
@@ -79,9 +78,29 @@
 						<span class="n">play</span> <span class="o">=</span> <span class="kc">True</span>
 				<span class="k">if</span> <span class="n">play</span><span class="p">:</span>
 					<span class="bp">self</span><span class="o">.</span><span class="n">play</span><span class="p">()</span>
+
 			<span class="k">else</span><span class="p">:</span>
-				<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;DEBUG -- got message : &quot;</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+				<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;DEBUG&quot;</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
 				<span class="bp">self</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">msg</span><span class="p">[</span><span class="mi">0</span><span class="p">])(</span><span class="o">*</span><span class="n">msg</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AudioHandler.fetch_playlist_item"><a class="viewcode-back" href="../../../../../player/AudioHandler.html#src.main.python.player.AudioHandler.AudioHandler.fetch_playlist_item">[docs]</a>	<span class="k">def</span> <span class="nf">fetch_playlist_item</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Uses an instance of :class:`src.main.python.flaskserv.model.PLaylist` to fetch the current ``playlist`` table.</span>
+<span class="sd">		Determines most voted song, and removes it from ``playlist``.</span>
+
+<span class="sd">		:returns: most voted song</span>
+<span class="sd">		:rtype: tuple</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="n">pl</span> <span class="o">=</span> <span class="n">Playlist</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;PLAYLIST_PATH&quot;</span><span class="p">])</span>
+		<span class="n">playlist</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">get_playlist</span><span class="p">()</span>
+
+		<span class="k">if</span> <span class="n">playlist</span> <span class="o">==</span> <span class="p">():</span>
+			<span class="k">return</span> <span class="kc">None</span>
+
+		<span class="n">most_voted_song</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">playlist</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]))[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>		
+		<span class="n">pl</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">most_voted_song</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+		<span class="k">return</span> <span class="n">most_voted_song</span></div>
 
 <div class="viewcode-block" id="AudioHandler.get_path_from_database"><a class="viewcode-back" href="../../../../../player/AudioHandler.html#src.main.python.player.AudioHandler.AudioHandler.get_path_from_database">[docs]</a>	<span class="k">def</span> <span class="nf">get_path_from_database</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
@@ -91,18 +110,13 @@
 <span class="sd">		:returns: the path to the most voted song</span>
 <span class="sd">		:rtype: str</span>
 <span class="sd">		&quot;&quot;&quot;</span>
-		<span class="n">n_item</span> <span class="o">=</span> <span class="n">Playlist</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;PLAYLIST_PATH&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">get_most_voted</span><span class="p">()</span>
+		<span class="n">n_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch_playlist_item</span><span class="p">()</span>
 		<span class="k">if</span> <span class="n">n_item</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
 			<span class="c1"># TODO</span>
 			<span class="k">return</span> <span class="kc">None</span>
 
-		<span class="k">try</span><span class="p">:</span>
-			<span class="n">song</span> <span class="o">=</span> <span class="n">MusicDB</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;MUSIC_DB_PATH&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">get_by_rowid</span><span class="p">(</span><span class="n">n_item</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
-		<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-			<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;DEBUG -- get_path_from_database :: Exception = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
-			<span class="k">return</span> <span class="kc">None</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="k">return</span> <span class="n">song</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span></div>
+		<span class="n">song</span> <span class="o">=</span> <span class="n">MusicDB</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;MUSIC_DB_PATH&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">get_by_rowid</span><span class="p">(</span><span class="n">n_item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="k">return</span> <span class="n">song</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="AudioHandler.play"><a class="viewcode-back" href="../../../../../player/AudioHandler.html#src.main.python.player.AudioHandler.AudioHandler.play">[docs]</a>	<span class="k">def</span> <span class="nf">play</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
@@ -119,7 +133,7 @@
 				<span class="k">return</span>
 			<span class="c1"># check file exists</span>
 		<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-			<span class="c1"># print(&quot;DEBUG -- file does not exist&quot;, path)</span>
+			<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;DEBUG -- file does not exist&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
 			<span class="k">return</span>
 
 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_player</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
@@ -131,18 +145,11 @@
 		<span class="bp">self</span><span class="o">.</span><span class="n">current_player</span> <span class="o">=</span> <span class="n">player</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">first</span> <span class="o">=</span> <span class="kc">False</span></div>
 
-<div class="viewcode-block" id="AudioHandler.resume"><a class="viewcode-back" href="../../../../../player/AudioHandler.html#src.main.python.player.AudioHandler.AudioHandler.resume">[docs]</a>	<span class="k">def</span> <span class="nf">resume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">		TODO</span>
-<span class="sd">		&quot;&quot;&quot;</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">first</span> <span class="o">=</span> <span class="kc">True</span></div>
-
 <div class="viewcode-block" id="AudioHandler.pause"><a class="viewcode-back" href="../../../../../player/AudioHandler.html#src.main.python.player.AudioHandler.AudioHandler.pause">[docs]</a>	<span class="k">def</span> <span class="nf">pause</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">		Pause the playback -- calls :meth:`src.main.python.player.ConditionObject.toggle_pause` on own instance.</span>
 <span class="sd">		&quot;&quot;&quot;</span>
-		<span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">condObj</span><span class="o">.</span><span class="n">lock</span><span class="p">:</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">condObj</span><span class="o">.</span><span class="n">toggle_pause</span><span class="p">()</span></div>
+		<span class="bp">self</span><span class="o">.</span><span class="n">condObj</span><span class="o">.</span><span class="n">toggle_pause</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="AudioHandler.stop"><a class="viewcode-back" href="../../../../../player/AudioHandler.html#src.main.python.player.AudioHandler.AudioHandler.stop">[docs]</a>	<span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>

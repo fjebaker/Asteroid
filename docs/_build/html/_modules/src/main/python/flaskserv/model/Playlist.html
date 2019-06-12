@@ -77,37 +77,13 @@
 <span class="sd">		:param vote: vote value to change by (can be positive or negative)</span>
 <span class="sd">		:type vote: int</span>
 <span class="sd">		&quot;&quot;&quot;</span>
-		<span class="c1"># print(&quot;DEBUG -- in update_vote, params are &quot;, s_id, vote)</span>
+		<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;DEBUG -- in update_vote, params are &quot;</span><span class="p">,</span> <span class="n">s_id</span><span class="p">,</span> <span class="n">vote</span><span class="p">)</span>
 		<span class="n">c_vote</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_inst</span><span class="o">.</span><span class="n">select_rows</span><span class="p">(</span><span class="s2">&quot;playlist&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;s_id&quot;</span><span class="p">:</span><span class="n">s_id</span><span class="p">})[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">db_inst</span><span class="o">.</span><span class="n">update_generic</span><span class="p">(</span><span class="s2">&quot;playlist&quot;</span><span class="p">,</span> 
 				<span class="p">{</span><span class="s2">&quot;vote&quot;</span><span class="p">:</span><span class="nb">int</span><span class="p">(</span><span class="n">c_vote</span><span class="p">)</span><span class="o">+</span><span class="nb">int</span><span class="p">(</span><span class="n">vote</span><span class="p">)},</span>
 				<span class="p">{</span><span class="s2">&quot;s_id&quot;</span><span class="p">:</span><span class="n">s_id</span><span class="p">}</span>
 			<span class="p">)</span>
 
-	<span class="k">def</span> <span class="nf">get_most_voted</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">		TODO</span>
-<span class="sd">		&quot;&quot;&quot;</span>
-		<span class="n">playlist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_inst</span><span class="o">.</span><span class="n">select_columns</span><span class="p">(</span><span class="s2">&quot;playlist&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">)</span>		<span class="c1"># can&#39;t call own functions</span>
-		<span class="c1"># print(&quot;DEBUG -- get_most_voted :: before return None&quot;)</span>
-		<span class="k">if</span> <span class="n">playlist</span> <span class="o">==</span> <span class="p">():</span>
-			<span class="k">return</span> <span class="kc">None</span>
-		<span class="n">most_voted_song</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">playlist</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
-
-		<span class="bp">self</span><span class="o">.</span><span class="n">db_inst</span><span class="o">.</span><span class="n">delete_rows</span><span class="p">(</span><span class="s2">&quot;playlist&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;s_id&quot;</span><span class="p">:</span><span class="n">most_voted_song</span><span class="p">[</span><span class="mi">0</span><span class="p">]})</span>		<span class="c1"># can&#39;t call own functions</span>
-		<span class="c1"># print(&quot;DEBUG -- get_most_voted&quot;)</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">db_inst</span><span class="o">.</span><span class="n">insert_entire_row</span><span class="p">(</span><span class="s2">&quot;history&quot;</span><span class="p">,</span> <span class="n">most_voted_song</span><span class="p">)</span>
-		<span class="k">return</span> <span class="n">most_voted_song</span>
-
-	<span class="k">def</span> <span class="nf">get_current_song</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">		TODO</span>
-<span class="sd">		&quot;&quot;&quot;</span>
-		<span class="n">history</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_inst</span><span class="o">.</span><span class="n">get_n_latest_items</span><span class="p">(</span><span class="s1">&#39;history&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-		<span class="c1"># print(&quot;DEBUG -- get_current_song :: &quot;, history)</span>
-		<span class="k">if</span> <span class="n">history</span> <span class="o">==</span> <span class="p">():</span>
-			<span class="k">return</span> <span class="p">[]</span>
-		<span class="k">return</span> <span class="n">history</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
 	
 
 	<span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s_id</span><span class="p">):</span>

@@ -34,42 +34,8 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="module-src.main.python.flaskserv.FormHandlers">
-<span id="formhandlers-classes"></span><h1><code class="docutils literal notranslate"><span class="pre">FormHandlers</span></code> Classes<a class="headerlink" href="#module-src.main.python.flaskserv.FormHandlers" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="src.main.python.flaskserv.FormHandlers.UserHandler">
-<em class="property">class </em><code class="descclassname">src.main.python.flaskserv.FormHandlers.</code><code class="descname">UserHandler</code><span class="sig-paren">(</span><em>request</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/FormHandlers.html#UserHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.FormHandlers.UserHandler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<p>Handles different requests related to user database.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>request</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">flask:Request</span></code> instance containing the registration <code class="docutils literal notranslate"><span class="pre">POST</span></code>.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">flask:Response</span></code> with json string and status</td>
-</tr>
-</tbody>
-</table>
-<p><code class="docutils literal notranslate"><span class="pre">status</span> <span class="pre">404</span></code> - error, with error message in json</p>
-<p><code class="docutils literal notranslate"><span class="pre">status</span> <span class="pre">201</span></code> - success, with saved username in json</p>
-<dl class="method">
-<dt id="src.main.python.flaskserv.FormHandlers.UserHandler.add_user">
-<code class="descname">add_user</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/flaskserv/FormHandlers.html#UserHandler.add_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.flaskserv.FormHandlers.UserHandler.add_user" title="Permalink to this definition">¶</a></dt>
-<dd><p>add user method, which adds the new user to the database. Encapsulates <a class="reference internal" href="Database.html#src.main.python.flaskserv.Database.UserDB" title="src.main.python.flaskserv.Database.UserDB"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.main.python.flaskserv.Database.UserDB</span></code></a> to add new user with max(id) + 1 as id.
-Starting id is 1.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – name of new user to add to database</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
+  <div class="section" id="formhandlers-classes">
+<h1><code class="docutils literal notranslate"><span class="pre">FormHandlers</span></code> Classes<a class="headerlink" href="#formhandlers-classes" title="Permalink to this headline">¶</a></h1>
 </div>
 
 

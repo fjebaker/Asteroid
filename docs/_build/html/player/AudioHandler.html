@@ -34,81 +34,8 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="module-src.main.python.player.AudioHandler">
-<span id="audiohandler-class"></span><h1><code class="docutils literal notranslate"><span class="pre">AudioHandler</span></code> Class<a class="headerlink" href="#module-src.main.python.player.AudioHandler" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="src.main.python.player.AudioHandler.AudioHandler">
-<em class="property">class </em><code class="descclassname">src.main.python.player.AudioHandler.</code><code class="descname">AudioHandler</code><span class="sig-paren">(</span><em>queue</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/player/AudioHandler.html#AudioHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.player.AudioHandler.AudioHandler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/threading.html#threading.Thread" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">threading.Thread</span></code></a></p>
-<p>Controlls how the music is being played. Will spawn instances of <a class="reference internal" href="PlayStream.html#module-src.main.python.player.PlayStream" title="src.main.python.player.PlayStream"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.main.python.player.PlayStream</span></code></a> for each song.
-Handles the <a class="reference internal" href="ConditionObject.html#module-src.main.python.player.ConditionObject" title="src.main.python.player.ConditionObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.main.python.player.ConditionObject</span></code></a> in response to INET server commands.
-Determines playback from the music database also handles by the HTTP server.
-Has <code class="docutils literal notranslate"><span class="pre">self.daemon</span> <span class="pre">=</span> <span class="pre">True</span></code>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>queue</strong> (<a class="reference external" href="https://docs.python.org/3/library/queue.html#queue.Queue" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">queue.Queue</span></code></a>) – queue to get new INET server commands.</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="src.main.python.player.AudioHandler.AudioHandler.get_path_from_database">
-<code class="descname">get_path_from_database</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/player/AudioHandler.html#AudioHandler.get_path_from_database"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.player.AudioHandler.AudioHandler.get_path_from_database" title="Permalink to this definition">¶</a></dt>
-<dd><p>Queries the <code class="docutils literal notranslate"><span class="pre">songs</span></code> table with <a class="reference internal" href="../flaskserver/Database.html#src.main.python.flaskserv.Database.MusicDB" title="src.main.python.flaskserv.Database.MusicDB"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.main.python.flaskserv.Database.MusicDB</span></code></a> to determine
-information on the next song to play given the song id from <code class="xref py py-meth docutils literal notranslate"><span class="pre">self.fetch_playlist_item()</span></code>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the path to the most voted song</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="src.main.python.player.AudioHandler.AudioHandler.pause">
-<code class="descname">pause</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/player/AudioHandler.html#AudioHandler.pause"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.player.AudioHandler.AudioHandler.pause" title="Permalink to this definition">¶</a></dt>
-<dd><p>Pause the playback – calls <code class="xref py py-meth docutils literal notranslate"><span class="pre">src.main.python.player.ConditionObject.toggle_pause()</span></code> on own instance.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="src.main.python.player.AudioHandler.AudioHandler.play">
-<code class="descname">play</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/player/AudioHandler.html#AudioHandler.play"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.player.AudioHandler.AudioHandler.play" title="Permalink to this definition">¶</a></dt>
-<dd><p>Begin the playback – first checks if <code class="docutils literal notranslate"><span class="pre">*args</span></code> contains a path, else calls <code class="xref py py-meth docutils literal notranslate"><span class="pre">self.get_path_from_database()</span></code>
-to fetch a song path. Then checks if the file exists, returns <code class="docutils literal notranslate"><span class="pre">None</span></code> if false. Stops the current playback if a player
-exists by calling <code class="xref py py-meth docutils literal notranslate"><span class="pre">self.stop()</span></code>. Creates a new <a class="reference internal" href="PlayStream.html#module-src.main.python.player.PlayStream" title="src.main.python.player.PlayStream"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.main.python.player.PlayStream</span></code></a> instance, loads the song
-and starts the playback. Finally, sets <code class="xref py py-attr docutils literal notranslate"><span class="pre">self.curret_player</span></code> to new instance.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="src.main.python.player.AudioHandler.AudioHandler.resume">
-<code class="descname">resume</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/player/AudioHandler.html#AudioHandler.resume"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.player.AudioHandler.AudioHandler.resume" title="Permalink to this definition">¶</a></dt>
-<dd><p>TODO</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="src.main.python.player.AudioHandler.AudioHandler.run">
-<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/player/AudioHandler.html#AudioHandler.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.player.AudioHandler.AudioHandler.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Inherited and overwritten <a class="reference external" href="https://docs.python.org/3/library/threading.html#threading.Thread.run" title="(in Python v3.7)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">threading.Thread.run()</span></code></a>; called when <code class="xref py py-attr docutils literal notranslate"><span class="pre">self.start()</span></code> method is invoked.
-Checks if a new message has been received in <code class="xref py py-attr docutils literal notranslate"><span class="pre">self.queue</span></code>, and if so, acts upon it.
-Else, checks if current playback has finished, i.e. <code class="docutils literal notranslate"><span class="pre">ConditionObject.done</span> <span class="pre">==</span> <span class="pre">True</span></code>,
-in which case tries to fetch a new item from the <code class="docutils literal notranslate"><span class="pre">playlist</span></code> table in the database, and if one exists,
-will play most voted song.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="src.main.python.player.AudioHandler.AudioHandler.stop">
-<code class="descname">stop</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/player/AudioHandler.html#AudioHandler.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.player.AudioHandler.AudioHandler.stop" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the current instace of <code class="xref py py-attr docutils literal notranslate"><span class="pre">src.main.python.player.ConditionObject.play</span></code> to <code class="docutils literal notranslate"><span class="pre">False</span></code>, then spawns fresh instance
-and sets <code class="xref py py-attr docutils literal notranslate"><span class="pre">self.current_player</span></code> to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
-</dd></dl>
-
-</dd></dl>
-
+  <div class="section" id="audiohandler-class">
+<h1><code class="docutils literal notranslate"><span class="pre">AudioHandler</span></code> Class<a class="headerlink" href="#audiohandler-class" title="Permalink to this headline">¶</a></h1>
 </div>
 
 

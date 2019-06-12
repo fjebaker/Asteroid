@@ -34,65 +34,8 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="module-src.main.python.player.PlayStream">
-<span id="playstream-class"></span><h1><code class="docutils literal notranslate"><span class="pre">PlayStream</span></code> Class<a class="headerlink" href="#module-src.main.python.player.PlayStream" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="src.main.python.player.PlayStream.PlayStream">
-<em class="property">class </em><code class="descclassname">src.main.python.player.PlayStream.</code><code class="descname">PlayStream</code><span class="sig-paren">(</span><em>condition_object</em>, <em>queue</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/player/PlayStream.html#PlayStream"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.player.PlayStream.PlayStream" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/threading.html#threading.Thread" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">threading.Thread</span></code></a></p>
-<p>Player class specialised for alsaaudio.
-Designed to be lightweight threadable and to be non-recycleable after play.
-Has <code class="docutils literal notranslate"><span class="pre">self.daemon</span> <span class="pre">=</span> <span class="pre">True</span></code>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>condition_object</strong> (<a class="reference internal" href="ConditionObject.html#module-src.main.python.player.ConditionObject" title="src.main.python.player.ConditionObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.main.python.player.ConditionObject</span></code></a>) – instance shared with the audio handler.</li>
-<li><strong>queue</strong> (<a class="reference external" href="https://docs.python.org/3/library/queue.html#queue.Queue" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">queue.Queue</span></code></a> instance) – to dump short type representation of audio</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="src.main.python.player.PlayStream.PlayStream.loadsong">
-<code class="descname">loadsong</code><span class="sig-paren">(</span><em>song</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/player/PlayStream.html#PlayStream.loadsong"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.player.PlayStream.PlayStream.loadsong" title="Permalink to this definition">¶</a></dt>
-<dd><p>Opens a file handle on the .wav file</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>song</strong> (<em>string</em>) – path to song to be played</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="src.main.python.player.PlayStream.PlayStream.run">
-<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/player/PlayStream.html#PlayStream.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.player.PlayStream.PlayStream.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Inherited and overwritten <a class="reference external" href="https://docs.python.org/3/library/threading.html#threading.Thread.run" title="(in Python v3.7)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">threading.Thread.run()</span></code></a>; called when <code class="xref py py-attr docutils literal notranslate"><span class="pre">self.start()</span></code> method is invoked.
-Begins audio playback, and when interrupted or completed performs cleanup.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="src.main.python.player.PlayStream.restrict_call">
-<code class="descclassname">src.main.python.player.PlayStream.</code><code class="descname">restrict_call</code><span class="sig-paren">(</span><em>function</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/src/main/python/player/PlayStream.html#restrict_call"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.python.player.PlayStream.restrict_call" title="Permalink to this definition">¶</a></dt>
-<dd><p>Decorator applied to prevent additional function calls. If a second call is attempted to the function,
-exception is raised.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Raise:</th><td class="field-body">Exception: “Attempted to call function.__name__ twice.”</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
+  <div class="section" id="playstream-class">
+<h1><code class="docutils literal notranslate"><span class="pre">PlayStream</span></code> Class<a class="headerlink" href="#playstream-class" title="Permalink to this headline">¶</a></h1>
 </div>
 
 
