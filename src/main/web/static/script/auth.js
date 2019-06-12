@@ -93,7 +93,7 @@ function createAuth() {
     if (getCookie("id") == "") {
         create_auth_form();
     } else {
-        getJson('/db/users?id='+currId,function(data){if(typeof data == "string" || data.hasOwnProperty("name")){authFailure(data);}else{document.location.href = "/?v="+Math.random();}});
+        getJson('/db/users?id='+currId,function(data){if(typeof data == "string" || !data.hasOwnProperty("name")){authFailure(data);}else{document.location.href = "/?v="+Math.random();}});
     }
 }
 
