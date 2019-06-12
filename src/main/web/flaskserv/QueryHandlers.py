@@ -39,6 +39,11 @@ class BaseQuery(metaclass=abc.ABCMeta):
 			res = self.defaultCase()
 		return res
 
+	def _http_replace(self, string):
+		string = string.replace("%20", " ")
+		string = string.replace("%27", "'").replace("'", "''")
+		return string
+
 	@abc.abstractmethod
 	def defaultCase(self):
 		"""
@@ -68,7 +73,7 @@ class MusicQuery(BaseQuery):
 		"""
 		try:
 			songName = str(self.s_arg)
-			songName = songName.replace("%20", " ").replace("'", "''")
+			songName = self._http_replace(songName)
 		except Exception as e:
 			return self.defaultCase()
 
@@ -106,7 +111,7 @@ class MusicQuery(BaseQuery):
 		"""
 		try:
 			artistName = str(self.s_arg)
-			artistName = artistName.replace("%20", " ").replace("'", "''")
+			artistName = self._http_replace(artistName)
 		except Exception as e:
 			return self.defaultCase()
 
@@ -215,6 +220,8 @@ class UserQuery(BaseQuery):
 		db_result = UserDB(os.environ["USER_DB_PATH"]).get_all_users()
 		if db_result != ():
 			db_result = self._remove_pw(db_result)
+			for i in db_result:
+				del i["rowid"]
 
 		return Response(
 				json.dumps(db_result),
@@ -236,7 +243,7 @@ class UserQuery(BaseQuery):
 		except Exception as e:
 			return self.defaultCase()
 		
-		db_result = UserDB(os.environ["USER_DB_PATH"]).get_user_by_id(u_id)
+		db_result = UserDB(os.environ["USER_DB_PATH"]).get_by_id(u_id)
 		db_result = self._remove_pw(db_result)
 		if len(db_result) == 0:
 			return self.defaultCase()
@@ -250,6 +257,7 @@ class UserQuery(BaseQuery):
 	def _remove_pw(self, db_result):
 		for item in db_result:
 			del item["hash_pw"]
+		return db_result
 
 	def defaultCase(self):
 		"""

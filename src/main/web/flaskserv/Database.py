@@ -15,13 +15,38 @@ def sanatise(func):
             s_args.append(arg)
         return a_type(s_args)
 
+    def dedict(arg):
+        res = {}
+        for i, j in arg.items():
+            if type(j) == str:
+                j = j.replace("''", "'").replace('""', '"')
+            res[i] = j
+        return res
+
+    def desanit(args):
+        if args == None:
+            return None
+        a_type = type(args)
+        s_args = []
+        for arg in args:
+            if type(arg) == tuple:
+                arg = tuple(iterate(arg))
+            elif type(arg) == list:
+                arg = list(iterate(arg))
+            if type(arg) == dict:
+                arg = dedict(arg)
+            elif type(arg) == str:
+                arg = arg.replace("''", "'").replace('""', '"')
+            s_args.append(arg)
+        return a_type(s_args)
+
 
     @functools.wraps(func)
     def _sanatise(cls, *args):
         # print("DEBUG unsanatised ", args)
         s_args = iterate(args)
         # print("DEBUG sanatised", s_args)
-        return func(cls, *s_args)
+        return desanit(func(cls, *s_args))
     return _sanatise
 
 class DBInstance:
@@ -112,7 +137,7 @@ class DBInstance:
         keys = ("rowid",) + self.keys
         where_s = ", ".join([cond % (keys[i], str(j)) for i, j in where.items()])
         what_s = ", ".join(what)
-        # print('''SELECT %s FROM %s WHERE %s %s''' % (what_s, table_name, where_s, orderlimit))
+        print('''SELECT %s FROM %s WHERE %s %s''' % (what_s, table_name, where_s, orderlimit))
         ret = self.cursor.execute('''SELECT %s FROM %s WHERE %s %s;''' % (what_s, table_name, where_s, orderlimit))
         return self._sort(ret, what)
 
@@ -310,6 +335,7 @@ class MusicDB(metaclass=DBAccessory):
         """
         return self.db_inst.select_rows("songs", {"rowid", "*"}, {2:artist}, like=True)
 
+    @sanatise
     def get_by_rowid(self, *args):
         """
         Get song by id.
@@ -322,12 +348,14 @@ class MusicDB(metaclass=DBAccessory):
         rowids = ", ".join([str(i) for i in args])
         return self.db_inst.select_rows("songs", ("rowid", "*"), {0:rowids}, inlist=islist)
 
+    @sanatise
     def get_page(self):
         """
         TODO
         """
         return self.db_inst.get_n_latest_rows("songs", 50)
 
+    @sanatise
     def get_all_songs(self):
         """
         Returns all songs in database given in constructor.
@@ -370,6 +398,7 @@ class UserDB(metaclass=DBAccessory):
     def add_user(self, user):
         self.db_inst.insert_entire_row("users", user)
 
+    @sanatise
     def get_by_id(self, id_n):
         """
         Get user by id.
@@ -380,6 +409,7 @@ class UserDB(metaclass=DBAccessory):
         """
         return self.db_inst.select_rows("users", ("*",), {1:id_n})
 
+    @sanatise
     def get_all_users(self):
         """
         Returns all users in database given in constructor.
@@ -389,6 +419,7 @@ class UserDB(metaclass=DBAccessory):
         """
         return self.db_inst.get_all_rows("users")
 
+    @sanatise
     def get_latest_user(self):
         """
         TODO

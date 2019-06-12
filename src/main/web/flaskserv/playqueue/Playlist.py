@@ -26,7 +26,7 @@ class Playlist(metaclass=DBAccessory):
 		"""
 		TODO
 		"""
-		self.db_inst.create_table("playlist", self.k_type)
+		self.db_inst.create_table("playlist", self.k_type, additional=", CONSTRAINT s_id_unique UNIQUE (s_id)")
 
 	def add(self, item):
 		"""
@@ -47,7 +47,7 @@ class Playlist(metaclass=DBAccessory):
 		:type vote: int
 		"""
 		# print("DEBUG -- in update_vote, params are ", s_id, vote)
-		c_vote = self.db_inst.select_rows("playlist", {1:s_id})[0]["vote"]
+		c_vote = self.db_inst.select_rows("playlist", ("vote",), {1:s_id})[0]["vote"]
 		self.db_inst.update_generic("playlist", 
 				{3:int(c_vote)+int(vote)},
 				{1:s_id}
@@ -59,7 +59,6 @@ class Playlist(metaclass=DBAccessory):
 		"""
 		most_voted_song = self.db_inst.select_rows("playlist", ("*",), {0:""}, like=True, orderlimit="ORDER BY vote DESC LIMIT 1")
 		return most_voted_song
-	
 
 	def remove(self, s_id):
 		"""
