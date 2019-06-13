@@ -5,6 +5,7 @@ Babel==2.7.0
 certifi==2019.3.9
 chardet==3.0.4
 Click==7.0
+configparser==3.7.4
 docutils==0.14
 Flask==1.0.3
 idna==2.8
@@ -39,4 +40,5 @@ sphinxcontrib-websupport==1.1.2
 urllib3==1.25.3
 wcwidth==0.1.7
 Werkzeug==0.15.4
+wgetter==0.7
 zipp==0.5.1

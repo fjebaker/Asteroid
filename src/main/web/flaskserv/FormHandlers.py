@@ -1,4 +1,4 @@
-from src.main.python.flaskserv.Database import MusicDB, UserDB
+from src.main.web.flaskserv.Database import UserDB
 from flask import Response
 import os, json
 
@@ -27,14 +27,13 @@ class UserHandler():
 		:type name: str
 		"""
 		udb = UserDB(os.environ["USER_DB_PATH"])
-		ids = [int(i[0]) for i in udb.get_column("id")]
+		last_user = udb.get_latest_user()
+		if last_user == ():
+			new_id = 1
+		else:
+			new_id = int(last_user[0]["id"]) + 1
 
-		print("DEBUG -- ids:", ids)
-		new_id = 1	# TODO: future, make the database auto increment
-		if ids != []:
-			new_id = max(ids) + 1
-
-		udb.add_user({"id":new_id, "name":name, "hash_pw":0, "meta_dat":""})
+		udb.add_user((new_id, name, 0, ""))
 		return new_id
 
 	def __call__(self):

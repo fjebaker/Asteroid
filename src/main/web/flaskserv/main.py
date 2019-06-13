@@ -1,7 +1,6 @@
-from flask import Flask, redirect, request, url_for, Response, send_from_directory
-import src.main.python.flaskserv.QueryHandlers as queryhandle
-import src.main.python.flaskserv.FormHandlers as formhandle
-import src.main.python.flaskserv.model as models
+from flask import Flask, redirect, request, send_from_directory
+from src.main.web.flaskserv import MusicQuery, UserQuery, UserHandler
+from src.main.web.flaskserv import Vote, Playlist
 import importlib
 app = Flask(__name__)
 
@@ -28,13 +27,11 @@ def images(name):
 
 @app.route("/register", methods=["POST"])
 def register_user():
-	return formhandle.UserHandler(request)()
+	return UserHandler(request)()
 
 @app.route("/vote", methods=["GET", "POST"])
 def vote():
-	importlib.reload(models.Vote)
-	# u_id:user_id, s_id:song_id, vote:1,0
-	return models.Vote.Vote(request)()
+	return Vote(request)()
 
 @app.route("/rate", methods=["POST"])
 def rate():
@@ -42,15 +39,13 @@ def rate():
 
 @app.route("/db/music")
 def music_db():
-	query_string = request.query_string 
-	# print(query_string)
-	return queryhandle.MusicQuery(query_string)() 
+	query_string = request.query_string
+	return MusicQuery(query_string)()
 
 @app.route("/db/users")
 def user_db():
-	query_string = request.query_string 
-	# print(query_string)
-	return queryhandle.UserQuery(query_string)()
+	query_string = request.query_string
+	return UserQuery(query_string)()
 
 # TODO
 def admin():

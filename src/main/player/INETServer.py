@@ -1,7 +1,7 @@
 import socket
-import importlib, os
-import src.main.python.player.ClientThread as ClientThread
-import src.main.python.player.AudioHandler as AudioHandler
+import os
+from src.main.player.ClientThread import ClientThread
+from src.main.player.AudioHandler import AudioHandler
 from queue import Queue
 
 class Listener():

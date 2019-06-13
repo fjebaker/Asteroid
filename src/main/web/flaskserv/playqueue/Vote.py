@@ -1,5 +1,6 @@
 from flask import Response
-from src.main.python.flaskserv.model.Playlist import Playlist
+from src.main.web.flaskserv.playqueue.Playlist import Playlist
+from src.main.web.flaskserv.playqueue.History import History
 import os, json
 
 class Vote:
@@ -24,8 +25,8 @@ class Vote:
 		"""
 		Handles the vote. Manipulates the ``playlist`` table, which it finds in the database
 		given by the environment variable ``PLAYLIST_PATH``. Checks if ``s_id`` already in ``playlist`` in which case
-		it updates the vote by calling :meth:``src.main.python.flaskserv.model.Playlist.update_vote``.
-		If not already in ``playlist``, adds by calling :meth:``src.main.python.flaskserv.model.Playlist.add``
+		it updates the vote by calling :meth:``src.main.python.flaskserv.playqueue.Playlist.update_vote``.
+		If not already in ``playlist``, adds by calling :meth:``src.main.python.flaskserv.playqueue.Playlist.add``
 
 		:param int s_id: the song ``rowid``
 		:param int u_id: user ``id``
@@ -39,8 +40,9 @@ class Vote:
 
 		# check if already exists in database
 		exists = False
+		print("DEBOOF -- ", playlist, s_id)
 		for item in playlist:
-			if int(s_id) == int(item[0]):
+			if int(s_id) == int(item['s_id']):
 				exists = True
 
 		if exists:
@@ -51,7 +53,7 @@ class Vote:
 					mimetype='application/json'
 				)
 		else:
-			pl.add(self.form)
+			pl.add((s_id, u_id, vote))
 			return Response(
 					json.dumps({"message":"added entry into playlist"}), 
 					status=201,
@@ -61,11 +63,10 @@ class Vote:
 	def __call__(self):
 		if self.request.__dict__["environ"]["REQUEST_METHOD"] == 'GET' and self.request.query_string.decode() == '=currentSong':
 			return Response(
-					json.dumps(Playlist(os.environ["PLAYLIST_PATH"]).get_current_song()),
+					json.dumps(History(os.environ["PLAYLIST_PATH"]).get_current_song()),
 					status=200,
 					mimetype='application/json'
 				)
-		
 
 		if self.request.__dict__["environ"]["REQUEST_METHOD"] == 'GET' and self.request.query_string.decode() == '':
 			return Response(
@@ -76,8 +77,5 @@ class Vote:
 
 		if "s_id" in self.form and "u_id" in self.form and "vote" in self.form and self.request.__dict__["environ"]["REQUEST_METHOD"] == 'POST':
 			return self.handle_vote(self.form['s_id'], self.form["u_id"], self.form["vote"])
-
-#		if "pop" in self.form and "token" in self.form and self.request.__dict__["environ"]["REQUEST_METHOD"] == 'POST':
-#			return self.pop_playlist(self.form["pop"], self.form["token"])
 
 		return Response(json.dumps({"message":"no voting operation interpreted from request"}), status=400) 

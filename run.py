@@ -23,7 +23,7 @@ HEADER = r"""               _       _                 _     _
 
 def run_flask(host="0.0.0.0", port=8080):
 	print("[*] Starting flask HTTP server...")
-	import src.main.python.flaskserv.main as main
+	import src.main.web.flaskserv.main as main
 	main.app.run(host, port)
 
 def run_player(host="localhost", port="6666"):
@@ -45,8 +45,9 @@ def run_player(host="localhost", port="6666"):
 				pass
 			def write(self, *args, **kwargs):
 				#print("DEBUG: MockStream::write() with args='{}', kwargs='{}'".format(args, kwargs))
-				print("DEBUG -- mock stream got data")
-				sleep(1)
+				#print("DEBUG -- mock stream got data")
+				#sleep(1)
+				pass
 		module.PCM = lambda a, b, c: MockStream()
 		module.PCM_PLAYBACK = None
 		module.PCM_NORMAL = None
@@ -59,7 +60,7 @@ def run_player(host="localhost", port="6666"):
 		print("[*] Starting player INET server...")
 		os.environ["LISTENER_HOST"] = host
 		os.environ["LISTENER_PORT"] = port
-		from src.main.python.player.INETServer import Listener
+		from src.main.player import Listener
 		Listener().start()
 
 class databases:
@@ -67,21 +68,21 @@ class databases:
 	@staticmethod
 	def build_music(loc):
 		print("[+] adding '{}' table in '{}'...".format("songs", os.environ["MUSIC_DB_PATH"]))
-		from src.main.python.databasebuilder.SetupBuild import build_music
+		from src.main.databasebuilder import build_music
 		build_music(loc)
 		print("[*] Done building Music.")
 
 	@staticmethod
 	def build_user():
 		print("[+] adding '{}' table in '{}'...".format("users", os.environ["USER_DB_PATH"]))
-		from src.main.python.databasebuilder.SetupBuild import build_user
+		from src.main.databasebuilder import build_user
 		build_user()
 		print("[*] Done building Users.")
 
 	@staticmethod
 	def build_playlist():
 		print("[+] adding '{}' table in '{}'...".format("playlist", os.environ["PLAYLIST_PATH"]))
-		from src.main.python.databasebuilder.SetupBuild import build_playlist
+		from src.main.databasebuilder import build_playlist
 		build_playlist()
 		print("[*] Done building Playlist.")
 
@@ -94,7 +95,7 @@ class databases:
 
 	@staticmethod
 	def clear(path):
-		from src.main.python.databasebuilder.SetupBuild import clear
+		from src.main.databasebuilder import clear
 		print("\n[-] Deleting old database...")
 		clear(path)
 
