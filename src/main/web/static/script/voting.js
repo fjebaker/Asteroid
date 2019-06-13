@@ -271,24 +271,22 @@ function _queue(data) {
         console.log("Unable to load user data for uniqueness check: status "+data);
     } else {
         var usernameLookup = {};
-        data.sort(function(a,b){return b[2]-a[2];})
-        var last_index = data.findIndex(function(song){return song[2] <= 0;});
+        data.sort(function(a,b){return b.vote-a.vote;})
+        var last_index = data.findIndex(function(song){return song.vote <= 0;});
         last_index = (last_index > 0) ? last_index + 1 : data.length;
         data = data.slice(0,last_index);
-        console.log(data);
         function queueBuild(songsIdData) {
             if (typeof songsIdData == "string") {console.log("Unable to do the multi-id call");}
             else {
-                if (songsIdData[0] == null) {songsIdData = [songsIdData];}
                 var queueVotingTable = document.getElementById("queueVotingTable");
                 for (var i=0; i<songsIdData.length; i++) {
                     songsIdData[i].requesting_user = 1;
-                    songsIdData[i].votes_for = data[i][2];
+                    songsIdData[i].votes_for = data[i].vote;
                 } //end of for loop
                 constructTable(songsIdData,queueVotingTable,["Name","Artist","Duration","Requesting user","Votes","Vote","Favourite"]);
                 function replaceHTML(data,i,string) {
                     for (var j=0;j<data.length;j++) {
-                        if(data[i][1] === data[j][1]) {
+                        if(data[i].u_id === data[j].u_id) {
                             element = document.getElementById("queueVotingIDCellNo"+j);
                             if (element !== null) {
                                 element.innerHTML = string;
@@ -297,10 +295,10 @@ function _queue(data) {
                     }
                 }
                 for (var i=0;i<data.length;i++) {
-                    if (!usernameLookup.hasOwnProperty(data[i][1].toString())) {
+                    if (!usernameLookup.hasOwnProperty(data[i].u_id.toString())) {
                         const k=i;
-                        usernameLookup[data[i][1].toString()] = 1;
-                        getJson("/db/users?id="+data[i][1],function(usrdata){
+                        usernameLookup[data[i].u_id.toString()] = 1;
+                        getJson("/db/users?id="+data[i].u_id,function(usrdata){
                             var setStr = "UNKNOWN";
                             if (typeof usrdata !== "string") {setStr = usrdata.name;}
                             replaceHTML(data,k,setStr);
@@ -313,7 +311,7 @@ function _queue(data) {
         } //end of function
         var ids = [];
         for (var n=0; n<data.length; n++) {
-            ids.push(data[n][0]);
+            ids.push(data[n].s_id);
         }
         getJson("/db/music?id="+ids.join("%20"),queueBuild,function(songsIdData){document.getElementById("currentSongReading").innerHTML = "Unable to load queue data!"});
     }//end of else
@@ -326,15 +324,15 @@ function _updateCurrentSongReading() {
     getJson("/vote?=currentSong",function(data){
         if (typeof data == "string") {document.getElementById("currentSongReading").innerHTML="Error finding current song!";}
         else {
-            getJson("/db/music?id="+data[0],function(songdata){
+            getJson("/db/music?id="+data[0].s_id,function(songdata){
                 if (typeof songdata == "string") {
-                    document.getElementById("currentSongReading").innerHTML="Song with id "+data[0];
+                    document.getElementById("currentSongReading").innerHTML="Song with id "+data[0].s_id;
                 } else {
-                    document.getElementById("currentSongReading").innerHTML="\""+songdata.name+"\" by "+songdata.artist;
-                    setTimeout(_updateCurrentSongReading,1000*songdata.duration); //Can I work out a better way of doing this?
+                    document.getElementById("currentSongReading").innerHTML="\""+songdata[0].name+"\" by "+songdata[0].artist;
+                    setTimeout(_updateCurrentSongReading,1000*songdata[0].duration); //Can I work out a better way of doing this?
                 }
             },function(songdata){
-                document.getElementById("currentSongReading").innerHTML="Song with id "+data[0];
+                document.getElementById("currentSongReading").innerHTML="Song with id "+data[0].s_id;
             });
         }
     },function(data){
@@ -354,9 +352,7 @@ function queue() {
 
 function _favourites(data) {
     if (typeof data == "string") {document.getElementById("listDiv").innerHTML = "Unable to load favourites data!";}
-    else if (data[0] == null) {
-        constructTable([data],document.getElementById("favouritesVotingTable"),["Name","Artist","Duration","Vote","Favourite"]);
-    } else {
+    else {
         constructTable(data,document.getElementById("favouritesVotingTable"),["Name","Artist","Duration","Vote","Favourite"]);
     }
 }
