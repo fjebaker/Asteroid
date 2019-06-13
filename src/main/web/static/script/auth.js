@@ -64,8 +64,12 @@ function _submitClick(event) {
     }
 }
 
+/**
+ * Used to check if the user has a valid "id" auth cookie and creates a form if not
+ */
 function createAuth() {
-    if (getCookie("id") == "") {
+    var currId = getCookie("id");
+    function create_auth_form() {
         bodyDiv.innerHTML = "<p>Enter Username:</p>";
         const form = document.createElement('form');
         form.method = 'post';
@@ -81,8 +85,15 @@ function createAuth() {
         form.appendChild(sendButton);
         form.addEventListener("submit",_submitClick);
         bodyDiv.appendChild(form);
+    }
+    function authFailure(data) {
+        setCookie("id","",0);
+        create_auth_form();
+    }
+    if (getCookie("id") == "") {
+        create_auth_form();
     } else {
-        document.location.href = "/?v="+Math.random();
+        getJson('/db/users?id='+currId,function(data){if(typeof data == "string" || !data[0].hasOwnProperty("name")){authFailure(data);}else{document.location.href = "/?v="+Math.random();}});
     }
 }
 

@@ -45,8 +45,9 @@ def run_player(host="localhost", port="6666"):
 				pass
 			def write(self, *args, **kwargs):
 				#print("DEBUG: MockStream::write() with args='{}', kwargs='{}'".format(args, kwargs))
-				print("DEBUG -- mock stream got data")
-				sleep(1)
+				#print("DEBUG -- mock stream got data")
+				#sleep(1)
+				pass
 		module.PCM = lambda a, b, c: MockStream()
 		module.PCM_PLAYBACK = None
 		module.PCM_NORMAL = None

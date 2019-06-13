@@ -1,12 +1,10 @@
+<<<<<<< HEAD:src/main/databasebuilder/SetupBuild.py
 import src.main.web.flaskserv.Database as db
+=======
+from src.main.web.flaskserv import Playlist, MusicDB, UserDB, History
+>>>>>>> 2fbb391db5efdb0962cdc1705f400027ec95afdf:src/main/databasebuilder/SetupBuild.py
 import os
 import exiftool
-
-def sqlsafe(string):
-	"""
-	TODO -- look into SQLInjection prevention a bit more
-	"""
-	return string.replace("'", "''").replace('"', '""')
 
 def clear(path):
 	"""
@@ -22,17 +20,11 @@ def get_song_item(song_path):
 	with exiftool.ExifTool() as et:
 		metadata = et.get_metadata(song_path)
 
-	artist = sqlsafe(metadata["RIFF:Artist"])
-	title = sqlsafe(metadata["RIFF:Title"])
+	artist = metadata["RIFF:Artist"]
+	title = metadata["RIFF:Title"]
 	duration = metadata["Composite:Duration"]
 
-	return {
-		"name":title,
-		"artist":artist,
-		"duration":duration,
-		"file_path":sqlsafe(song_path),
-		"meta_dat":""
-		}
+	return (title, artist, duration, song_path, "")
 
 
 def list_wav(path):
@@ -46,13 +38,17 @@ def build_music(folder_location):
 	"""
 	TODO
 	"""
-	dbinst = db.DBInstance(os.environ["MUSIC_DB_PATH"])
+	dbinst = MusicDB(os.environ["MUSIC_DB_PATH"])
 	try:
+<<<<<<< HEAD:src/main/databasebuilder/SetupBuild.py
 		with dbinst as builder:
 			builder.create_table("songs", 
 				("name", "artist", "duration", "file_path", "meta_dat", "UNIQUE"),
 				("text", "text", "real", "text", "text", "file_path")
 			)
+=======
+		dbinst.create_table()
+>>>>>>> 2fbb391db5efdb0962cdc1705f400027ec95afdf:src/main/databasebuilder/SetupBuild.py
 	except Exception as e:
 		print("[!] trying to create table 'playlist' in {}, raised exception: \n\t\t'{}'".format(os.environ["MUSIC_DB_PATH"], str(e)))
 
@@ -63,24 +59,20 @@ def build_music(folder_location):
 		# print("NOW ON FILE -- ", file)
 		try:
 			song = get_song_item(file)
-			db.MusicDB(os.environ["MUSIC_DB_PATH"]).add_song(song)
+			dbinst.add_song(song)
 		except Exception as e:	# TODO, song doesn't exist if fails
-			print("[!] trying to add song '{}', raised exception: \n\t\t'{}'".format(song['file_path'], str(e)))
+			print("[!] trying to add song '{}', raised exception: \n\t\t'{}'".format(song[3], str(e)))
 		else:
-			print("[+] added '{}' by '{}' @ '{}' to database".format(song['name'], song['artist'], song['file_path']))
+			print("[+] added '{}' by '{}' @ '{}' to database".format(song[0], song[1], song[3]))
 
 
 def build_user():
 	"""
 	TODO
 	"""
-	dbinst = db.DBInstance(os.environ["USER_DB_PATH"])
+	dbinst = UserDB(os.environ["USER_DB_PATH"])
 	try:
-		with dbinst as builder:
-			builder.create_table("users", 
-				("id", "name", "hash_pw", "meta_dat", "UNIQUE"),
-				("long", "text", "long", "text", "id")
-			)
+		dbinst.create_table()
 	except Exception as e:
 		print("[!] trying to create table 'users' in {}, raised exception: \n\t\t'{}'".format(os.environ["USER_DB_PATH"], str(e)))
 
@@ -88,23 +80,14 @@ def build_playlist():
 	"""
 	TODO
 	"""
-	dbinst = db.DBInstance(os.environ["PLAYLIST_PATH"])
+	dbinst = Playlist(os.environ["PLAYLIST_PATH"])
 	try:
-		with dbinst as builder:
-			builder.create_table("playlist", 
-				("s_id", "u_id", "vote", "UNIQUE"),
-				("long", "long", "long", "s_id")
-			)
+		dbinst.create_table()
 	except Exception as e:
 			print("[!] trying to create table 'playlist' in {}, raised exception: \n\t\t'{}'".format(os.environ["PLAYLIST_PATH"], str(e)))
-			dbinst = db.DBInstance(os.environ["PLAYLIST_PATH"])
 
-	dbinst = db.DBInstance(os.environ["PLAYLIST_PATH"])
+	dbinst = History(os.environ["PLAYLIST_PATH"])
 	try:
-		with dbinst as builder:
-			builder.create_table("history", 
-				("s_id", "u_id", "vote"),
-				("long", "long", "long")
-			)
+		dbinst.create_table()
 	except Exception as e:
 			print("[!] trying to create table 'history' in {}, raised exception: \n\t\t'{}'".format(os.environ["PLAYLIST_PATH"], str(e)))

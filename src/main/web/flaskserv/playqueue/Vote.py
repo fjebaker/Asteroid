@@ -1,5 +1,9 @@
 from flask import Response
 from src.main.web.flaskserv.playqueue.Playlist import Playlist
+<<<<<<< HEAD:src/main/web/flaskserv/playqueue/Vote.py
+=======
+from src.main.web.flaskserv.playqueue.History import History
+>>>>>>> 2fbb391db5efdb0962cdc1705f400027ec95afdf:src/main/web/flaskserv/playqueue/Vote.py
 import os, json
 
 class Vote:
@@ -39,8 +43,9 @@ class Vote:
 
 		# check if already exists in database
 		exists = False
+		print("DEBOOF -- ", playlist, s_id)
 		for item in playlist:
-			if int(s_id) == int(item[0]):
+			if int(s_id) == int(item['s_id']):
 				exists = True
 
 		if exists:
@@ -51,7 +56,7 @@ class Vote:
 					mimetype='application/json'
 				)
 		else:
-			pl.add(self.form)
+			pl.add((s_id, u_id, vote))
 			return Response(
 					json.dumps({"message":"added entry into playlist"}), 
 					status=201,
@@ -61,11 +66,10 @@ class Vote:
 	def __call__(self):
 		if self.request.__dict__["environ"]["REQUEST_METHOD"] == 'GET' and self.request.query_string.decode() == '=currentSong':
 			return Response(
-					json.dumps(Playlist(os.environ["PLAYLIST_PATH"]).get_current_song()),
+					json.dumps(History(os.environ["PLAYLIST_PATH"]).get_current_song()),
 					status=200,
 					mimetype='application/json'
 				)
-		
 
 		if self.request.__dict__["environ"]["REQUEST_METHOD"] == 'GET' and self.request.query_string.decode() == '':
 			return Response(
@@ -76,8 +80,5 @@ class Vote:
 
 		if "s_id" in self.form and "u_id" in self.form and "vote" in self.form and self.request.__dict__["environ"]["REQUEST_METHOD"] == 'POST':
 			return self.handle_vote(self.form['s_id'], self.form["u_id"], self.form["vote"])
-
-#		if "pop" in self.form and "token" in self.form and self.request.__dict__["environ"]["REQUEST_METHOD"] == 'POST':
-#			return self.pop_playlist(self.form["pop"], self.form["token"])
 
 		return Response(json.dumps({"message":"no voting operation interpreted from request"}), status=400) 

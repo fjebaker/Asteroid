@@ -59,9 +59,15 @@ function refreshCookies(time) {
  * Used to ensure that the user has a valid "id" cookie and redirect to the auth page if it does not
  */
 function checkCookieValidity() {
-    if (getCookie("id") == "") {
+    var currId = getCookie("id");
+    if (currId == "") {
         document.location.href = "/auth?v="+Math.random();
     }
+    function authFailure(data) {
+        setCookie("id","",0);
+        document.location.href = "/auth?v="+Math.random();
+    }
+    getJson('/db/users?id='+currId,function(data){if (typeof data == "string" || !data[0].hasOwnProperty("name")){authFailure(data);}},authFailure);
 }
 
 /**
