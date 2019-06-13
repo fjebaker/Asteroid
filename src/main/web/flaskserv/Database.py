@@ -1,375 +1,433 @@
 import sqlite3
 import functools
 
-def sanatise_string(func):
-	@functools.wraps(func)
-	def _sanatise(cls, arg):
-		arg = arg.replace("'", "''").replace('"', '""')
-		return func(cls, arg)
-	return _sanatise
+def sanatise(func):
+    def iterate(args):
+        a_type = type(args)
+        s_args = []
+        for arg in args:
+            if type(arg) == tuple:
+                arg = tuple(iterate(arg))
+            elif type(arg) == list:
+                arg = list(iterate(arg))
+            elif type(arg) == str:
+                arg = arg.replace("'", "''").replace('"', '""')
+            s_args.append(arg)
+        return a_type(s_args)
 
-def sanatise_dict(keys):
-	def _wrapper(func):
-		@functools.wraps(func)
-		def _sanatise(cls, arg):
-			for i in keys:
-				arg[i] = arg[i].replace("'", "''").replace('"', '""')
-			return func(cls, arg)
-		return _sanatise
-	return _wrapper
+    def dedict(arg):
+        res = {}
+        for i, j in arg.items():
+            if type(j) == str:
+                j = j.replace("''", "'").replace('""', '"')
+            res[i] = j
+        return res
+
+    def desanit(args):
+        if args == None:
+            return None
+        a_type = type(args)
+        s_args = []
+        for arg in args:
+            if type(arg) == tuple:
+                arg = tuple(iterate(arg))
+            elif type(arg) == list:
+                arg = list(iterate(arg))
+            if type(arg) == dict:
+                arg = dedict(arg)
+            elif type(arg) == str:
+                arg = arg.replace("''", "'").replace('""', '"')
+            s_args.append(arg)
+        return a_type(s_args)
+
+
+    @functools.wraps(func)
+    def _sanatise(cls, *args):
+        # print("DEBUG unsanatised ", args)
+        s_args = iterate(args)
+        # print("DEBUG sanatised", s_args)
+        return desanit(func(cls, *s_args))
+    return _sanatise
 
 class DBInstance:
-	"""
-	Provides a specified wrapper for sqlite3 queries
+    """
+    TODO
+    """
+    def __init__(self, location):
+        if location != ":memory:" and ".db" != location[-3:]:
+            raise Exception("Not a valid string format.")
+        self.location = location
 
-	:param handle: location of sqlite database (can be :memory:)
-	:type handle: str
-	"""
-	def __init__(self, handle):
-		try:
-			if handle != ":memory:" and ".db" not in handle:
-				raise Exception("Not a valid string format.")
-			else:
-				self.handle = sqlite3.connect(handle)
-		except Exception as e:
-			raise Exception("Could not connect to handle '{}' : {}".format(handle, str(e)))
-		else:
-			self.cursor = self.handle.cursor()
+    def open(self):
+        """
+        TODO
+        """
+        return self.__enter__()
 
-	def __enter__(self):
-		return self
+    def close(self):
+        """
+        TODO
+        """
+        self.__exit__()
 
-	def __exit__(self, *args, **kwargs):
-		self._save()
-		self.handle.close()
-			
-	def create_table(self, table_name, keys, types):
-		"""
-		TODO
-		"""
-		column_type = ""
-		constraint = ""
-		for c, t in zip(keys, types):
-			if c == "UNIQUE":
-				constraint += ", CONSTRAINT unique_col UNIQUE ({})".format(t)
-				continue
-			column_type += c + " " + t + ", "
-		column_type = column_type[:-2]
+    def __call__(self, keys):
+        if type(keys) != tuple:
+            raise Exception("Keys are not tuple.")
+        else:
+            self.keys = keys
+        return self.__enter__()
 
-		self.cursor.execute('''CREATE TABLE %s (%s%s);''' % (table_name, column_type, constraint))
+    def __enter__(self):
+        try:
+            self.handle = sqlite3.connect(self.location)
+        except Exception as e:
+            raise Exception("Could not connect to handle '{}' : {}".format(self.handle, str(e)))
+        else:
+            self.cursor = self.handle.cursor()
+        return self
 
-	def insert_entire_row(self, table_name, data):
-		"""
-		insert a row of values into a given table
+    def __exit__(self, *args, **kwargs):
+        self._save()
+        self.handle.close()
 
-		:param table_name: name of table
-		:type table_name: str
-		:param data: items are data values
-		:type data: dict
-		:raises: Exception("Bad row format.")
-		"""
+    def create_table(self, table_name, types=(), additional=""):
+        """
+        TODO
 
-		# print("DEBUG -- insert_entire_row : ", table_name, data)
-		column_names = self.get_column_info(table_name)
-		if not self._is_row_correct(column_names, data):
-			raise Exception("Bad row format.")
+        :param table_name:
+        :param types:
+        """
+        if len(self.keys) != len(types):
+            raise Exception("Wrong number of types specified for keys {}.".format(self.keys))
+        column_type = ", ".join([i + " " + j for i, j in zip(self.keys, types)])
+        self.cursor.execute('''CREATE TABLE %s (%s %s);''' % (table_name, column_type, additional))
 
-		col_repr = []
-		data_repr = []
+    def insert_entire_row(self, table_name, data):
+        """
+        TODO
 
-		for i, j in data.items():
-			# print("DEBUG I J", i, j)
-			col_repr.append(str(i))
-			data_repr.append(str(j))
+        :param table_name:
+        :param data:
+        """
+        if len(data) != len(self.keys):
+            raise Exception("Wrong number of values for keys {}.".format(self.keys))
+        columns = ", ".join(self.keys)
+        data = [str(i) for i in data]
+        values = str(data)[1:-1]
+        # print('''INSERT INTO %s (%s) VALUES (%s);''' % (table_name, columns, values))
+        self.cursor.execute('''INSERT INTO %s (%s) VALUES (%s);''' % (table_name, columns, values))
 
-		col_repr = "(" + ", ".join(col_repr) + ")"
-		data_repr = "('" + "', '".join(data_repr) + "')"
+    def select_rows(self, table_name, what, where, orderlimit="ORDER BY rowid ASC", like=False, inlist=False):
+        """
+        TODO
 
-		self.cursor.execute('''INSERT INTO %s %s VALUES %s;''' % (table_name, col_repr, data_repr))
+        :param table_name:
+        :param what:
+        :param where:
+        :param orderlimit:
+        :param like:
+        :param inlist:
+        :return:
+        """
+        cond = "%s = '%s'"
+        if like:
+            cond = "%s LIKE '%%%s%%'"
+        if inlist:
+            cond = "%s IN (%s)"
+        keys = ("rowid",) + self.keys
+        where_s = ", ".join([cond % (keys[i], str(j)) for i, j in where.items()])
+        what_s = ", ".join(what)
+        # print('''SELECT %s FROM %s WHERE %s %s''' % (what_s, table_name, where_s, orderlimit))
+        ret = self.cursor.execute('''SELECT %s FROM %s WHERE %s %s;''' % (what_s, table_name, where_s, orderlimit))
+        return self._sort(ret, what)
 
-	def select_rows(self, table_name, condition, substring=False, rowid=False, vlist=False):
-		"""
-		select rows from table which meet condition
+    def select_columns(self, table_name, column_list):
+        """
+        select whole column from table
 
-		:param table_name: name of table
-		:type table_name: str
-		:param condition: the condition to be met to qualify for selection
-		:type condition: dict
-		"""
-		condition = list(condition.items())[0]
-		if not substring and not vlist:
-			condition_string = str(condition[0]) + " = '" + str(condition[1]) + "'"
-		elif not vlist and substring:
-			condition_string = str(condition[0]) + " LIKE '%" + str(condition[1]) + "%'"
-		else:
-			condition_string = str(condition[0]) + " IN (%s)" % str(condition[1])
+        :param table_name: name of table
+        :type table_name: str
+        :param column: name of column to select from
+        :type column: str/tuple[str]
+        :returns: tuple of tuples with items from column [(x1, y1, ...), (x2, y2, ...), ...]
+        """
+        if type(column_list) != tuple:
+            column_list = (column_list,)
+        cols = ", ".join(column_list)
+        # print('''SELECT {} from {}'''.format(cols, table_name))
+        return tuple(self.cursor.execute('''SELECT %s FROM %s ORDER BY rowid ASC;''' % (cols, table_name)).fetchall())
 
-		if rowid:
-			get_rowid = "rowid,"
-		else:
-			get_rowid = ""
+    def get_n_latest_rows(self, table_name, n):
+        """
+        TODO
 
-		print("DEBUG -- ", '''SELECT %s * FROM %s WHERE %s ORDER BY rowid ASC;''' % (get_rowid, table_name, condition_string))
-		return tuple(self.cursor.execute('''SELECT %s * FROM %s WHERE %s ORDER BY rowid ASC;''' % (get_rowid, table_name, condition_string)).fetchall())
-	
+        :param table_name:
+        :param n:
+        :param startingrowid:
+        :return:
+        """
+        return self.select_rows(table_name, ("rowid", "*"),
+                {0:""}, like=True, orderlimit="ORDER BY rowid DESC LIMIT %s" % str(n))
 
-	def select_columns(self, table_name, column_list):
-		"""
-		select whole column from table
+    def get_all_rows(self, table_name):
+        """
+        TODO
 
-		:param table_name: name of table
-		:type table_name: str
-		:param column: name of column to select from
-		:type column: str/tuple[str]
-		:returns: tuple of tuples with items from column [(x1, y1, ...), (x2, y2, ...), ...]
-		"""
-		if type(column_list) != tuple:
-			column_list = (column_list,)
-		cols = ", ".join(column_list)
-		# print('''SELECT {} from {}'''.format(cols, table_name))
-		return tuple(self.cursor.execute('''SELECT %s FROM %s ORDER BY rowid ASC;''' % (cols, table_name)).fetchall())
+        :param table_name:
+        :return:
+        """
+        return self.select_rows(table_name, ("rowid", "*"),
+                {0:""}, like=True)
 
-	def get_n_latest_items(self, table_name, n, startingrowid=None):
-		"""
-		TODO
-		"""
-		if startingrowid != None:
-			table_name += " WHERE rowid >= " + str(startingrowid)
-		return tuple(self.cursor.execute('''SELECT rowid, * FROM %s ORDER BY rowid DESC LIMIT %s''' % (table_name, n)))
+    def update_generic(self, table_name, changes, condition):
+        """
+        update entries according to condition in the database
 
-	def update_generic(self, table_name, changes, condition):
-		"""
-		update entries according to condition in the database
+        :param table_name: name of the table to update
+        :type table_name: str
+        :param changes: changes to enact e.g. `{col1:value1, ...}`
+        :type changes: dict
+        :param condition: the condition to be met to qualify for changes e.g. `{col3:value3}`
+        :type condition: dict
 
-		:param table_name: name of the table to update
-		:type table_name: str
-		:param changes: changes to enact e.g. `{col1:value1, ...}`
-		:type changes: dict
-		:param condition: the condition to be met to qualify for changes e.g. `{col3:value3}`
-		:type condition: dict
+        TODO check the changes fit the table
+        """
 
-		TODO check the changes fit the table
-		"""
+        keys = ("rowid",) + self.keys
+        cond = "%s = '%s'"
+        changes_string = ", ".join([cond % (keys[i], str(j)) for i, j in changes.items()])
+        condition_string = "".join([cond % (keys[i], str(j)) for i, j in condition.items()])
+        # print('''UPDATE %s SET %s WHERE %s''' % (table_name, changes_string, condition_string))
+        self.cursor.execute('''UPDATE %s SET %s WHERE %s''' % (table_name, changes_string, condition_string))
 
-		changes_string = ""
-		condition_string = ""
+    def delete_rows(self, table_name, condition):
+        """
+        TODO
 
-		for i, j in changes.items():
-			changes_string += str(i) + " = '" + str(j) + "', "
-		changes_string = changes_string[:-2]
+        :param table_name:
+        :param condition:
+        :return:
+        """
+        keys = ("rowid",) + self.keys
+        cond = "%s = '%s'"
+        condition_string = "".join([cond % (keys[i], str(j)) for i, j in condition.items()])
+        # print('''DELETE FROM {} WHERE {}'''.format(table_name, condition_string))
+        self.cursor.execute('''DELETE FROM %s WHERE %s''' % (table_name, condition_string))
 
-		condition = list(condition.items())[0]
-		condition_string = str(condition[0]) + " = '" + str(condition[1]) + "'"
+    def get_count(self, table_name):
+        """
+        TODO
+        """
+        return self.select_rows(table_name, ("rowid",), {0:""}, like=True, orderlimit="ORDER BY rowid DESC LIMIT 1")[0]["rowid"]
 
-		# print('''UPDATE %s SET %s WHERE %s''' % (table_name, changes_string, condition_string))
-		self.cursor.execute('''UPDATE %s SET %s WHERE %s''' % (table_name, changes_string, condition_string))
+    def _save(self):
+        """
+        internal method for commiting changes to the database
+        """
+        self.handle.commit()
 
-	def delete_rows(self, table_name, condition):
-		"""
-		delete rows from a table in database if condition is met
+    def _sort(self, vals, keys=()):
+        """
+        TODO
+        :param vals:
+        :param keys:
+        :return:
+        """
+        if keys == ():
+            keys = self.keys
 
-		:param table_name: name of table
-		:type table_name: str
-		:param condition: the condition to be met to qualify for removal
-		:type condition: dict		
-		"""
-		condition = tuple(list(condition.items()))[0]
-		condition_string = str(condition[0]) + " = '" + str(condition[1]) + "'"
-		# print("DEBUG -- in delete_rows making query: " + '''DELETE FROM {} WHERE {}'''.format(table_name, condition_string))
-		self.cursor.execute('''DELETE FROM %s WHERE %s''' % (table_name, condition_string))
+        # expand wildcard
+        elif "*" in keys:
+            keys = list(keys)
+            i = keys.index("*"); del keys[i]
+            for k in reversed(self.keys):
+                keys.insert(i, k)
 
-	def get_column_info(self, table_name):
-		"""
-		method for getting the column info of a table
-
-		:param table_name: name of the table to get the column names of
-		:type table_name: str
-		:return: tuple of column names
-		"""
-		cursor = self.cursor.execute('''PRAGMA table_info(%s);''' % (table_name,))
-		cols = sorted(cursor.fetchall(), key=lambda x: int(x[0]))
-		return tuple([i[1] for i in cols])
-
-	def get_count_of(self, table_name):
-		"""
-		TODO
-		"""
-		return self.cursor.execute('''SELECT COUNT(*) FROM %s''' % table_name)
-
-	def _save(self):
-		"""
-		internal method for commiting changes to the database
-		"""
-		self.handle.commit()
-
-	def _is_row_correct(self, column_names, row):
-		"""
-		internal method to validate whether a row string matches the table row
-		at the moment only checks length of the two arguments is the same, in future will be more thorough
-
-		:param column_names: names of the columns to check against
-		:type column_names: tuple of str
-		:param row: names of columns provided by user
-		:type row: tuple of str
-		"""
-		ok = True
-		# TODO
-		if len(column_names) != len(row):
-			ok = False
-		return ok
+        # sort and return
+        ret_l = []
+        for obj in vals:
+            ret = {}
+            for key, val in zip(keys, obj):
+                ret[key] = val
+            ret_l.append(ret)
+        return tuple(ret_l)
 
 class DBAccessory(type):
-	"""
-	Metaclass for the Database classes :class:`MusicDB` and :class:`UserDB`.
-	Will wrap all non-special functions with a decorator, providing a scoped instance of :class:`DBInstance`.
-	"""
-	def __new__(cls, name, bases, local):
-		for attr in local:
-			value = local[attr]
-			if "__" in attr:
-				# print("Skipping {}".format(attr))
-				continue
-			if callable(value):
-				local[attr] = DBAccessory.deco(value)
-		return type.__new__(cls, name, bases, local)
+    """
+    Metaclass for the Database classes :class:`MusicDB` and :class:`UserDB`.
+    Will wrap all non-special functions with a decorator, providing a scoped instance of :class:`DBInstance`.
+    """
 
-	@classmethod
-	def deco(cls, func):
-		"""
-		Decorator which calls function with scoped :class:`DBInstance` in the class dict
+    def __new__(cls, name, bases, local):
+        for attr in local:
+            value = local[attr]
+            if "__" in attr:
+                continue
+            if callable(value):
+                local[attr] = DBAccessory.deco(value)
+        return type.__new__(cls, name, bases, local)
 
-		:param func: function to decorate
-		:type func: function reference
-		"""
-		def wrapper(*args, **kwargs):
-			inst = args[0]						# class instance
-			with DBInstance(inst.db_handle) as inst.db_inst:
-				result = func(*args, **kwargs)
-			return result
-		return wrapper
+    @classmethod
+    def deco(cls, func):
+        """
+        Decorator which calls function with scoped :class:`DBInstance` in the class dict
+
+        :param func: function to decorate
+        :type func: function reference
+        """
+
+        def wrapper(*args, **kwargs):
+            inst = args[0]  # class instance
+            with DBInstance(inst.db_handle)(inst.keys) as inst.db_inst:
+                result = func(*args, **kwargs)
+            return result
+
+        return wrapper
+
 
 class MusicDB(metaclass=DBAccessory):
-	"""
-	Provides methods for interacting with the music database.
-	Encapsulates :class:`DBInstance`
+    """
+    Provides methods for interacting with the music database.
+    Encapsulates :class:`DBInstance`
 
-	Assumes database already has a table with format
-		
-		songs
+    Assumes database already has a table with format
 
-		name, artist, duration, path, meta_dat
+        songs
 
-	:param db_handle: sqlite database handle
-	:type db_handle: str
-	"""
-	def __init__(self, db_handle):
-		self.db_handle = db_handle
+        name, artist, duration, file_path, meta_dat
 
-	def add_song(self, song_dict):
-		# print("DEBUG -- add_song :: ", song_dict)
-		self.db_inst.insert_entire_row("songs", song_dict)
+    :param db_handle: sqlite database handle
+    :type db_handle: str
+    """
+    keys = ("name", "artist", "duration", "file_path", "meta_dat")
+    k_type = ("text", "text", "real", "text", "text")
 
-	@sanatise_string
-	def get_songs_by_name(self, name):
-		"""
-		TODO
-		"""
-		return self.db_inst.select_rows("songs", {"name":name}, substring=True, rowid=True)
+    def __init__(self, db_handle):
+        self.db_handle = db_handle
 
-	def get_by_rowid(self, rowids):
-		"""
-		Get song by id.
+    def create_table(self):
+        """
+        TODO
+        """
+        self.db_inst.create_table("songs", self.k_type,
+                additional=", CONSTRAINT id_unique UNIQUE (file_path)")
 
-		:param str rowids: database table ``rowid`` to return whole row from.
-		:returns: song with ``rowid``
-		:rtype: length 1 tuple of tuple
-		"""
-		if type(rowids) is int:
-			rowids = str(rowids)
-		return self.db_inst.select_rows("songs", {"rowid":rowids}, rowid=True, vlist=len(rowids.split(",")) > 1)
+    @sanatise
+    def add_song(self, song):
+        """
+        TODO
 
-	def get_page(self, starting):
-		"""
-		TODO
-		"""
-		return self.db_inst.get_n_latest_items("songs", 50)
+        :param song:
+        """
+        self.db_inst.insert_entire_row("songs", song)
 
-	@sanatise_string
-	def get_songs_by_artist(self, artist):
-		"""
-		TODO
-		"""
-		return self.db_inst.select_rows("songs", {"artist":artist}, substring=True, rowid=True)
+    @sanatise
+    def get_by_name(self, name):
+        """
+        TODO
+        """
+        return self.db_inst.select_rows("songs", {"rowid", "*"}, {1:name}, like=True)
 
-	def get_all_songs(self):
-		"""
-		Returns all songs in database given in constructor.
+    @sanatise
+    def get_by_artist(self, artist):
+        """
+        TODO
+        """
+        return self.db_inst.select_rows("songs", {"rowid", "*"}, {2:artist}, like=True)
 
-		:returns: all rows of ``songs`` table in database.
-		:rtype: tuple of tuples
-		"""
-		return self.db_inst.select_columns("songs",
-			("rowid", "name", "artist", "duration", "file_path", "meta_dat"))
+    @sanatise
+    def get_by_rowid(self, *args):
+        """
+        Get song by id.
+
+        :param str rowids: database table ``rowid`` to return whole row from.
+        :returns: song with ``rowid``
+        :rtype: length 1 tuple of tuple
+        """
+        islist = len(args) > 1
+        rowids = ", ".join([str(i) for i in args])
+        return self.db_inst.select_rows("songs", ("rowid", "*"), {0:rowids}, inlist=islist)
+
+    @sanatise
+    def get_page(self):
+        """
+        TODO
+        """
+        return self.db_inst.get_n_latest_rows("songs", 50)
+
+    @sanatise
+    def get_all_songs(self):
+        """
+        Returns all songs in database given in constructor.
+
+        :returns: all rows of ``songs`` table in database.
+        :rtype: tuple of tuples
+        """
+        return self.db_inst.get_all_rows("songs")
 
 
 class UserDB(metaclass=DBAccessory):
-	"""
-	Provides methods for interacting with the static user database.
-	Encapsulates :class:`DBInstance`
+    """
+    Provides methods for interacting with the static user database.
+    Encapsulates :class:`DBInstance`
 
-	Assumes database already has a table with format
-		
-		users
+    Assumes database already has a table with format
 
-		id, name, hash_pw, meta_dat
+        users
 
-	:param db_handle: sqlite database handle
-	:type db_handle: str
-	"""
-	def __init__(self, db_handle):
-		self.db_handle = db_handle
+        id, name, hash_pw, meta_dat
 
-	@sanatise_dict(['name'])
-	def add_user(self, user_dict):
-		# {id, name, hash_pw, meta_dat}
-		self.db_inst.insert_entire_row("users", user_dict)
+    :param db_handle: sqlite database handle
+    :type db_handle: str
+    """
 
-	def get_user_by_id(self, id_n):
-		"""
-		Get user by id.
+    keys = ("id", "name", "hash_pw", "meta_dat")
+    k_type = ("int", "text", "int", "text")
 
-		:param int id_n: ``users`` table column ``id`` to match and return whole row from.
-		:returns: user with ``id==id_n``
-		:rtype: length 1 tuple of tuple
-		"""
-		return self.db_inst.select_rows("users", {"id":id_n})
+    def __init__(self, db_handle):
+        self.db_handle = db_handle
 
-	@sanatise_string	
-	def get_user_by_name(self, name):
-		"""
-		TODO
-		"""
-		pass
+    def create_table(self):
+        """
+        TODO
+        """
+        self.db_inst.create_table("users", self.k_type,
+            additional=", CONSTRAINT path_unique UNIQUE (id)")
 
-	def get_column(self, column_name):
-		"""
-		Return the selected column from users table
+    @sanatise
+    def add_user(self, user):
+        self.db_inst.insert_entire_row("users", user)
 
-		:param column_name: name of column to retrieve
-		:type column_name: str
-		:returns: tuple of tuples representing column
-		"""
-		return self.db_inst.select_columns("users", column_name)
+    @sanatise
+    def get_by_id(self, id_n):
+        """
+        Get user by id.
 
-	def get_all_users(self):
-		"""
-		Returns all users in database given in constructor.
+        :param int id_n: ``users`` table column ``id`` to match and return whole row from.
+        :returns: user with ``id==id_n``
+        :rtype: length 1 tuple of tuple
+        """
+        return self.db_inst.select_rows("users", ("*",), {1:id_n})
 
-		:returns: all rows of ``users`` table in database.
-		:rtype: tuple of tuples
-		"""
-		return self.db_inst.select_columns("users",
-			("id", "name", "meta_dat"))
+    @sanatise
+    def get_all_users(self):
+        """
+        Returns all users in database given in constructor.
+
+        :returns: all rows of ``users`` table in database.
+        :rtype: tuple of tuples
+        """
+        return self.db_inst.get_all_rows("users")
+
+    @sanatise
+    def get_latest_user(self):
+        """
+        TODO
+
+        assumes no users ever removed (update in future?)
+        :return:
+        """
+        return self.db_inst.get_n_latest_rows("users", 1)
 
 if __name__ == '__main__':
-	pass
+    pass

@@ -1,8 +1,4 @@
-<<<<<<< HEAD:src/main/databasebuilder/SetupBuild.py
-import src.main.web.flaskserv.Database as db
-=======
 from src.main.web.flaskserv import Playlist, MusicDB, UserDB, History
->>>>>>> 2fbb391db5efdb0962cdc1705f400027ec95afdf:src/main/databasebuilder/SetupBuild.py
 import os
 import exiftool
 
@@ -40,15 +36,7 @@ def build_music(folder_location):
 	"""
 	dbinst = MusicDB(os.environ["MUSIC_DB_PATH"])
 	try:
-<<<<<<< HEAD:src/main/databasebuilder/SetupBuild.py
-		with dbinst as builder:
-			builder.create_table("songs", 
-				("name", "artist", "duration", "file_path", "meta_dat", "UNIQUE"),
-				("text", "text", "real", "text", "text", "file_path")
-			)
-=======
 		dbinst.create_table()
->>>>>>> 2fbb391db5efdb0962cdc1705f400027ec95afdf:src/main/databasebuilder/SetupBuild.py
 	except Exception as e:
 		print("[!] trying to create table 'playlist' in {}, raised exception: \n\t\t'{}'".format(os.environ["MUSIC_DB_PATH"], str(e)))
 
@@ -56,7 +44,6 @@ def build_music(folder_location):
 		return
 
 	for file in list_wav(folder_location):
-		# print("NOW ON FILE -- ", file)
 		try:
 			song = get_song_item(file)
 			dbinst.add_song(song)

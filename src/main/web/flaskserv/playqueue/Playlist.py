@@ -57,16 +57,7 @@ class Playlist(metaclass=DBAccessory):
 		"""
 		TODO
 		"""
-<<<<<<< HEAD:src/main/web/flaskserv/playqueue/Playlist.py
-		# playlist = self.db_inst.select_columns("playlist", "*")		# can't call own functions
-		playlist = self.get_playlist()
-		# print("DEBUG -- get_most_voted :: before return None")
-		if playlist == ():
-			return None
-		most_voted_song = max(playlist, key=lambda x: int(x[2]))
-=======
 		most_voted_song = self.db_inst.select_rows("playlist", ("*",), {0:""}, like=True, orderlimit="ORDER BY vote DESC LIMIT 1")
->>>>>>> 2fbb391db5efdb0962cdc1705f400027ec95afdf:src/main/web/flaskserv/playqueue/Playlist.py
 		return most_voted_song
 
 	def remove(self, s_id):

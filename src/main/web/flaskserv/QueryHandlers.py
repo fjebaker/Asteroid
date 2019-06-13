@@ -76,16 +76,6 @@ class MusicQuery(BaseQuery):
 			songName = self._http_replace(songName)
 		except Exception as e:
 			return self.defaultCase()
-<<<<<<< HEAD:src/main/web/flaskserv/QueryHandlers.py
-
-		db_result = MusicDB(os.environ["MUSIC_DB_PATH"]).get_songs_by_name(songName)
-
-		songs = []
-		for s in db_result:
-			songs.append(self._arrange_dict(s))
-
-=======
->>>>>>> 2fbb391db5efdb0962cdc1705f400027ec95afdf:src/main/web/flaskserv/QueryHandlers.py
 
 		db_result = MusicDB(os.environ["MUSIC_DB_PATH"]).get_by_name(songName)
 		if db_result != ():
@@ -142,16 +132,8 @@ class MusicQuery(BaseQuery):
 		:returns: :class:`flask.Response` with json of dictionary containing all songs, and ``status==200``.
 		"""
 		db_result = MusicDB(os.environ["MUSIC_DB_PATH"]).get_all_songs()
-<<<<<<< HEAD:src/main/web/flaskserv/QueryHandlers.py
-
-		all_songs = []
-		for song_tup in db_result:
-			all_songs.append(self._arrange_dict(song_tup))
-
-=======
 		if db_result != ():
 			db_result = self._remove_path(db_result)
->>>>>>> 2fbb391db5efdb0962cdc1705f400027ec95afdf:src/main/web/flaskserv/QueryHandlers.py
 		return Response(
 				json.dumps(db_result),
 				status=200,
@@ -168,30 +150,13 @@ class MusicQuery(BaseQuery):
 		# todo could probably merge these two
 		# print("DEBUG -- sargs", self.s_arg)
 		s_arg = self.s_arg.split("%20")
-<<<<<<< HEAD:src/main/web/flaskserv/QueryHandlers.py
-		db_results = []
-		rowids = ""
-=======
 		rowids = []
->>>>>>> 2fbb391db5efdb0962cdc1705f400027ec95afdf:src/main/web/flaskserv/QueryHandlers.py
 		for i in s_arg:
 			try:
 				i = int(i)
 			except:
 				continue
 			else:
-<<<<<<< HEAD:src/main/web/flaskserv/QueryHandlers.py
-				rowids += str(i) + ", "
-		if rowids == "":
-			return self.defaultCase()
-
-		s = MusicDB(os.environ["MUSIC_DB_PATH"]).get_by_rowid(rowids[:-2])
-		# print("DEBUG -- DB RESULTS", s)
-		for i in s:
-			db_results.append(self._arrange_dict(i))
-
-		if len(db_results) == 0:
-=======
 				rowids.append(i)
 		if rowids == []:
 			return self.defaultCase()
@@ -199,7 +164,6 @@ class MusicQuery(BaseQuery):
 		db_result = MusicDB(os.environ["MUSIC_DB_PATH"]).get_by_rowid(*rowids)
 		db_result = self._remove_path(db_result)
 		if len(db_result) == 0:
->>>>>>> 2fbb391db5efdb0962cdc1705f400027ec95afdf:src/main/web/flaskserv/QueryHandlers.py
 			return self.defaultCase()
 
 		return Response(
@@ -208,17 +172,6 @@ class MusicQuery(BaseQuery):
 				mimetype='application/json'
 			)
 
-<<<<<<< HEAD:src/main/web/flaskserv/QueryHandlers.py
-	def _arrange_dict(self, songitem):
-		song = {}
-		song_gen = iter(songitem)
-		for key in self.keys:
-			value = next(song_gen)
-			if key == "file_path":
-				continue
-			song[key] = value
-		return song
-=======
 	def _remove_path(self, db_result):
 		"""
 		TODO
@@ -228,7 +181,6 @@ class MusicQuery(BaseQuery):
 		for item in db_result:
 			del item["file_path"]
 		return db_result
->>>>>>> 2fbb391db5efdb0962cdc1705f400027ec95afdf:src/main/web/flaskserv/QueryHandlers.py
 
 	def defaultCase(self):
 		"""

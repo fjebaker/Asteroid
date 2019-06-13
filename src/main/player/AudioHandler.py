@@ -1,10 +1,6 @@
 from src.main.player.PlayStream import PlayStream
 from src.main.player.ConditionObject import ConditionObject
-<<<<<<< HEAD:src/main/player/AudioHandler.py
-from src.main.web.flaskserv import Playlist
-=======
 from src.main.web.flaskserv import Playlist, History
->>>>>>> 2fbb391db5efdb0962cdc1705f400027ec95afdf:src/main/player/AudioHandler.py
 from src.main.web.flaskserv import MusicDB
 from queue import Queue
 import threading, os

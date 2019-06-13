@@ -67,7 +67,7 @@ function checkCookieValidity() {
         setCookie("id","",0);
         document.location.href = "/auth?v="+Math.random();
     }
-    getJson('/db/users?id='+currId,function(data){if (typeof data == "string" || !data[0].hasOwnProperty("name")){authFailure(data);}},authFailure);
+    getJson('/db/users?id='+currId,function(data){if (typeof data == "string" || !data.hasOwnProperty("name")){authFailure(data);}},authFailure);
 }
 
 /**
