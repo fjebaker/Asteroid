@@ -128,7 +128,7 @@ function createVoteForm(id) {
 
 /**
  * Used for converting a number of seconds into a string formatted "[minutes]:[seconds]" for nice display
- *
+719 450 1265 1535 687 965 1467 1362 1314 181 837 1357 987 1066 1261 309 782 708 315 1050 3719 450 1265 1535 687 965 1467 1362 1314 181 837 1357 987 1066 1261 309 782 708 315 1050 3719 450 1265 1535 687 965 1467 1362 1314 181 837 1357 987 1066 1261 309 782 708 315 1050 3 *
  * @param {number} secs - the number of seconds to convert
  *
  * @returns {string} displayString - the formatted string in "[minutes]:[seconds]" corresponding to the supplied argument
@@ -279,11 +279,23 @@ function _queue(data) {
             if (typeof songsIdData == "string") {console.log("Unable to do the multi-id call");}
             else {
                 var queueVotingTable = document.getElementById("queueVotingTable");
-                for (var i=0; i<songsIdData.length; i++) {
-                    songsIdData[i].requesting_user = 1;
-                    songsIdData[i].votes_for = data[i].vote;
+                //sort songsIdData
+                sortedSongData = [];
+                for (var i=0; i<data.length; i++) {
+                    var sid = data[i].s_id;
+                    for (var j=0; j<songsIdData.length; j++) {
+                        if (songsIdData[j].rowid == sid) {
+                            sortedSongData.push(songsIdData.splice(j,1)[0]);
+                            j = songsIdData.length;
+                        }
+                    }
+                }
+                //done sorting
+                for (var i=0; i<sortedSongData.length; i++) {
+                    sortedSongData[i].requesting_user = 1;
+                    sortedSongData[i].votes_for = data[i].vote;
                 } //end of for loop
-                constructTable(songsIdData,queueVotingTable,["Name","Artist","Duration","Requesting user","Votes","Vote","Favourite"]);
+                constructTable(sortedSongData,queueVotingTable,["Name","Artist","Duration","Requesting user","Votes","Vote","Favourite"]);
                 function replaceHTML(data,i,string) {
                     for (var j=0;j<data.length;j++) {
                         if(data[i].u_id === data[j].u_id) {
@@ -300,7 +312,7 @@ function _queue(data) {
                         usernameLookup[data[i].u_id.toString()] = 1;
                         getJson("/db/users?id="+data[i].u_id,function(usrdata){
                             var setStr = "UNKNOWN";
-                            if (typeof usrdata !== "string") {setStr = usrdata.name;}
+                            if (typeof usrdata !== "string") {setStr = usrdata[0].name;}
                             replaceHTML(data,k,setStr);
                         },function(usrdata){
                             replaceHTML(data,k,"UNKNOWN");
