@@ -74,7 +74,15 @@ function _submitVote(event){
     var elements = event.target.elements;
     var isDownvote = (elements.namedItem("voteValueFormElement").value < 0);
     var voteFavCookie = getCookie("vote_favourite_settings");
-    if (voteFavCookie == "") {voteFavCookie = "1,1"; setCookie("vote_favourite_settings",voteFavCookie,getCookieDuration());}
+    if (voteFavCookie == "") {
+        var configJSON = getConfigJson();
+        if (configJSON.hasOwnProperty("default_vote_favourite_settings")) {
+            voteFavCookie = configJSON["default_vote_favourite_settings"];
+        } else {
+            voteFavCookie = "1,1";
+        }
+        setCookie("vote_favourite_settings",voteFavCookie,getCookieDuration());
+    }
     var voteFavArray = voteFavCookie.split(',');
     if(((!isDownvote) && voteFavArray[0]==1)||(isDownvote && voteFavArray[1]==1)) {
         _updateFavouriteCookie(elements.namedItem("songNameFormElement").value,isDownvote);

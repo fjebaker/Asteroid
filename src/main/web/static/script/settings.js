@@ -125,7 +125,15 @@ function populateDivAccount(divname) {
     var bodyDiv = document.getElementById(divname);
     bodyDiv.innerHTML = "Expiration time for basic client-side stored cookies: <select onchange='selectCookieDuration(this)' id='cookieDurationSelector'></select>"
     var voteFavCookie = getCookie("vote_favourite_settings");
-    if (voteFavCookie == "") {voteFavCookie = "1,1"; setCookie("vote_favourite_settings",voteFavCookie,getCookieDuration());}
+    if (voteFavCookie == "") {
+        var configJSON = getConfigJson();
+        if (configJSON.hasOwnProperty("default_vote_favourite_settings")) {
+            voteFavCookie = configJSON("default_vote_favourite_settings");
+        } else {
+            voteFavCookie = "1,1";
+        }
+        setCookie("vote_favourite_settings",voteFavCookie,getCookieDuration());
+    }
     var voteFavArray = voteFavCookie.split(',');
     voteFavArray[0] = (voteFavArray[0] == "1" ? "checked" : "");
     voteFavArray[1] = (voteFavArray[1] == "1" ? "checked" : "");

@@ -132,8 +132,13 @@ function defaultTabCallback(name) {
  * Used to ensure that a valid "tabs" cookie exists, and set the cookie to the default value if it doesn't exist
  */
 function defaultTabCookies() {
+    var configJSON = getConfigJson();
     if (getCookie("tabs") == ""){
-        setCookie("tabs","1,0,1,1,1,0",getCookieDuration());
+        if (configJSON.hasOwnProperty("default_tab_activation")) {
+            setCookie("tabs",configJSON["default_tab_activation"],getCookieDuration());
+        } else {
+            setCookie("tabs","1,0,1,1,1,0",getCookieDuration());
+        }
     }
 }
 
