@@ -21,6 +21,10 @@ def styles(name):
 def scripts(name):
 	return send_from_directory('../../web/static/script', name+'.js')
 
+@app.route("/config/jsconfig.js")
+def jsconfig(name):
+    return send_from_directory('../../web/dynamic/jsconfig.js')
+
 @app.route("/resources/images/<name>")
 def images(name):
 	return send_from_directory('../../web/static/resources/images', name)

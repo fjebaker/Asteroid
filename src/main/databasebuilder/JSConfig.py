@@ -1,10 +1,14 @@
-# stub
-
-class SomeClass:
-
+import JSON
+class JSConfiger:
 	def __init__(self, dict):
-		if dict["show-requests"]:
-			print("yay")
+		self.dict = dict
 
-	def build_config(self): # for each different js file
-		return 1 # 0 if bad
+	def build_config(self):
+        try:
+            jsonString = JSON.dumps(self.dict)
+            printString = "function getConfigJSON() {return JSON.parse("+jsonString+");}\ncurrent_callback();"
+            with open("src/main/web/dynamic/jsconfig.js","w") as myFile:
+                myFile.write(printString)
+    		return 1
+        except:
+            return 0
