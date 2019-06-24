@@ -394,7 +394,9 @@ function favourites() {
     setTimeout(autoAdd,10000);
 }
 
-function cellInfo(column,cell,song,favArray,index) {
+function cellInfo(column,cell,song,favArray,showColumnArray,index) {
+    if (showColumnArray[0] != "1" && column == "Favourite") {column = "";}
+    if (showColumnArray[1] != "1" && column == "Rating") {column = "";}
     switch(column) {
         case "Name":
             cell.innerHTML = song.name;
@@ -435,11 +437,24 @@ function cellInfo(column,cell,song,favArray,index) {
  *
  */
 function constructTable(tableData,tableElement,columnList) {
+    var showColumnCookie = getCookie("show_column_settings");
+    if (showColumnCookie == "") {
+        var configJSON = getConfigJson();
+        if (configJSON.hasOwnProperty("default_show_column_settings")) {
+            showColumnCookie = configJSON["default_show_column_settings"];
+        } else {
+            showColumnCookie = "1,0";
+        }
+        setCookie("show_column_settings",showColumnCookie,getCookieDuration());
+    }
+    var showColumnArray = showColumnCookie.split(',');
     var topRow = tableElement.insertRow(0);
     for (var i=0; i<columnList.length; i++) {
-        var newCell = document.createElement('th');
-        newCell.innerHTML = columnList[i];
-        topRow.appendChild(newCell);
+        if (!(showColumnArray[0] == "0" && columnList[i] == "Favourite") && !(showColumnArray[1] == "1" && columnList[i] == "Rating")) {
+            var newCell = document.createElement('th');
+            newCell.innerHTML = columnList[i];
+            topRow.appendChild(newCell);
+        }
     }
     favArray = getCookie("Favourites").split(',');
     for (var i=0; i<tableData.length; i++) {
@@ -447,7 +462,7 @@ function constructTable(tableData,tableElement,columnList) {
         var newRow = tableElement.insertRow(-1);
         for (var j=0; j<columnList.length; j++) {
             var newCell = newRow.insertCell(j);
-            cellInfo(columnList[j],newCell,currSong,favArray,i);
+            cellInfo(columnList[j],newCell,currSong,favArray,showColumnArray,i);
         }
     }
 }

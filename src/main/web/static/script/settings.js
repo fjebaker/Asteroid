@@ -117,6 +117,18 @@ function _toggleVoteFav(index,box) {
 }
 
 /**
+ * Used to toggle the show column settings for a particular checkbox
+ *
+ * @param {number} index - '0' if the setting for Favourite, '1' if the setting for Rating
+ * @param {Object} box - the checkbox object that triggered the toggle event
+ */
+function _toggleColumn(index,box) {
+    var colArray = getCookie("show_column_settings").split(',');
+    colArray[index] = box.checked ? 1 : 0;
+    setCookie("show_column_settings",colArray.join(','),getCookieDuration());
+}
+
+/**
  * Used for populating a div element with the accounts HTML
  *
  * @param {string} divname - the id for the div element
@@ -125,8 +137,8 @@ function populateDivAccount(divname) {
     var bodyDiv = document.getElementById(divname);
     bodyDiv.innerHTML = "Expiration time for basic client-side stored cookies: <select onchange='selectCookieDuration(this)' id='cookieDurationSelector'></select>"
     var voteFavCookie = getCookie("vote_favourite_settings");
+    var configJSON = getConfigJson();
     if (voteFavCookie == "") {
-        var configJSON = getConfigJson();
         if (configJSON.hasOwnProperty("default_vote_favourite_settings")) {
             voteFavCookie = configJSON("default_vote_favourite_settings");
         } else {
@@ -137,7 +149,20 @@ function populateDivAccount(divname) {
     var voteFavArray = voteFavCookie.split(',');
     voteFavArray[0] = (voteFavArray[0] == "1" ? "checked" : "");
     voteFavArray[1] = (voteFavArray[1] == "1" ? "checked" : "");
+    var showColumnCookie = getCookie("show_column_settings");
+    if (showColumnCookie == "") {
+        if (configJSON.hasOwnProperty("default_show_column_settings")) {
+            showColumnCookie = configJSON("default_show_column_settings");
+        } else {
+            showColumnCookie = "1,o";
+        }
+        setCookie("show_column_settings",showColumnCookie,getCookieDuration());
+    }
+    var showColumnArray = showColumnCookie.split(',');
+    showColumnArray[0] = (showColumnArray[0] == "1" ? "checked" : "");
+    showColumnArray[1] = (showColumnArray[1] == "1" ? "checked" : "");
     bodyDiv.innerHTML += "<br>Automatically favourite upvoted songs: <input type='checkbox' onclick='_toggleVoteFav(0,this);' "+voteFavArray[0]+"><br>Automatically unfavourite downvoted songs: <input type='checkbox' onclick='_toggleVoteFav(1,this);' "+voteFavArray[1]+">";
+    bodyDiv.innerHTML += "<br>Show 'favourite' column: <input type='checkbox' onclick='_toggleColumn(0,this);' "+showColumnArray[0]+"><br>Show 'rating' column: <input type='checkbox' onclick='_toggleColumn(1,this);' "+showColumnArray[1]+">";
     bodyDiv.innerHTML += "<table style='width:100%' id='tabSettingTable'><tr><th>Tab</th><th>Active</th></tr></table>";
     putOptions();
     populateTabSettingTable();

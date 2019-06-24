@@ -156,7 +156,6 @@ function supplyButtons(element,tabCallback) {
         var number = tabArray[i];
         if (number == "1") {
             var callback = tabCallback(getName(i));
-            console.log(callback)
             if (typeof callback !== "string") { //Checking that a valid callback exists
                 generateTabButton(element, getName(i), callback); //Creating a button with this callback
             }
