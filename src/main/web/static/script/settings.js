@@ -1,7 +1,7 @@
 /**
  * Callback used for modifying the "cookieDuration" cookie via a 'select' element on the 'change' event and reloading the page with new expiry times on all cookies.
  *
- * @param {Object} selec    t - the select element whose 'change' event has been triggered.
+ * @param {Object} select - the select element whose 'change' event has been triggered.
  */
 function selectCookieDuration(select) {
     setCookie("cookieDuration",select.value,convertNameToDuration(select.value));
