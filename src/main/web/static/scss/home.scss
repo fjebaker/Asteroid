@@ -6,7 +6,6 @@ $dark-green: #4f9e52;
 $dark-grey: #888;
 $light-grey: #ddd;
 
-
 /* Background Formatting */
 
 body {
@@ -32,11 +31,11 @@ button {
   -webkit-transition-duration: 0.4s;
   transition-duration: 0.2s;
   float: left;
-}
 
-button:hover {
-  background-color: $light-blue;
-  color: $black;
+  &:hover {
+    background-color: $light-blue;
+    color: $black;
+  }
 }
 
 #upvote {
@@ -47,11 +46,11 @@ button:hover {
   width: 35px;
   height: 35px;
   transition: all ease-in-out 0.2s;
-}
 
-#upvote:hover {
-  border: 1px solid $dark-grey;
-  background-color: $light-grey;
+  &:hover {
+    border: 1px solid $dark-grey;
+    background-color: $light-grey;
+  }
 }
 
 #downvote {
@@ -61,11 +60,11 @@ button:hover {
   background-size: 100% 100%;
   width: 35px;
   height: 35px;
-}
 
-#downvote:hover {
-  border: 1px solid $dark-grey;
-  background-color: $light-grey;
+  &:hover {
+    border: 1px solid $dark-grey;
+    background-color: $light-grey;
+  }
 }
 
 #favourite {
@@ -76,11 +75,11 @@ button:hover {
   width: 35px;
   height: 35px;
   transition: all ease-in-out 0.2s;
-}
 
-#favourite:hover {
-  border: 1px solid #888;
-  background-color: #ddd;
+  &:hover {
+    border: 1px solid #888;
+    background-color: #ddd;
+  }
 }
 
 #unfavourite {
@@ -91,11 +90,11 @@ button:hover {
   width: 35px;
   height: 35px;
   transition: all ease-in-out 0.2s;
-}
 
-#unfavourite:hover {
-  border: 1px solid #888;
-  background-color: #ddd;
+  &:hover {
+    border: 1px solid #888;
+    background-color: #ddd;
+  }
 }
 
 #favourite_gold {
@@ -106,11 +105,11 @@ button:hover {
   width: 35px;
   height: 35px;
   transition: all ease-in-out 0.2s;
-}
 
-#favourite_gold:hover {
-  border: 1px solid #888;
-  background-color: #ddd;
+  &:hover {
+    border: 1px solid #888;
+    background-color: #ddd;
+  }
 }
 
 #unfavourite_gold {
@@ -121,26 +120,28 @@ button:hover {
   width: 35px;
   height: 35px;
   transition: all ease-in-out 0.2s;
+
+  &:hover {
+    border: 1px solid #888;
+    background-color: #ddd;
+  }
 }
 
-#unfavourite_gold:hover {
-  border: 1px solid #888;
-  background-color: #ddd;
-}
 /* Table Formatting*/
 
-table,td,{
-    border-collapse: collapse;
-    border-style: solid;
-    color: $light-blue;
-    border: $light-blue;
-    font-family: verdana;
+table,
+td {
+  border-collapse: collapse;
+  border-style: solid;
+  color: $light-blue;
+  border: $light-blue;
+  font-family: verdana;
 }
 
 tr:nth-child(even) {
-    background-color: #111111;
-    color: $light-blue;
-    font-family: verdana;
+  background-color: #111111;
+  color: $light-blue;
+  font-family: verdana;
 }
 
 th {
@@ -170,6 +171,6 @@ hr {
 /* Search Bar Formatting */
 
 input.search-query {
-    background-color:#f47443;
-    color:white;
+  background-color: #f47443;
+  color: white;
 }
