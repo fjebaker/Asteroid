@@ -1,7 +1,7 @@
 /**
  * Callback used for modifying the "cookieDuration" cookie via a 'select' element on the 'change' event and reloading the page with new expiry times on all cookies.
  *
- * @param {Object} select - the select element whose 'change' event has been triggered.
+ * @param {Object} selec    t - the select element whose 'change' event has been triggered.
  */
 function selectCookieDuration(select) {
     setCookie("cookieDuration",select.value,convertNameToDuration(select.value));
@@ -69,7 +69,7 @@ function getName(index) {
 function _getCheckedState(index) {
     var tabArr = getCookie('tabs').split(',');
     if (index < 6) {
-        if (tabArr[index].split(':')[1] == "1") {return "checked";}
+        if (tabArr[index] == "1") {return "checked";}
         else {return "";}
     }
 }
@@ -84,7 +84,7 @@ function changeCallback(index,box) {
     var tabArr = getCookie('tabs').split(',');
     if (index < 6) {
         var adder = box.checked ? 1 : 0;
-        tabArr[index] = tabArr[index].split(':')[0]+":"+adder;
+        tabArr[index] = adder;
         setCookie("tabs",tabArr.join(','),getCookieDuration());
         updateQuery({v:Math.random()});
     }

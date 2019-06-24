@@ -57,6 +57,7 @@ function refreshCookies(time) {
 
 /**
  * Used to ensure that the user has a valid "id" cookie and redirect to the auth page if it does not
+ * TODO - Make so only resets if a successful response is got
  */
 function checkCookieValidity() {
     var currId = getCookie("id");
@@ -106,8 +107,14 @@ function convertNameToDuration(timeString) {
  * Used to reset the expiry time on the "cookieDuration" cookie, or set the cookie to the default value ('hour') if it does not exist
  */
 function setCookieDuration() {
+    var configJSON = getConfigJson();
     if (getCookie("cookieDuration") == "") {
-        setCookie("cookieDuration","hour",3600000);
+        if (configJSON.hasOwnProperty("default_cookie_expiry")) {
+            var default_cookie_expiry = configJSON["default_cookie_expiry"]
+            setCookie("cookieDuration",default_cookie_expiry,convertNameToDuration(default_cookie_expiry));
+        } else {
+            setCookie("cookieDuration","hour",3600000);
+        }
     }
     else {
         var duration = getCookie("cookieDuration");

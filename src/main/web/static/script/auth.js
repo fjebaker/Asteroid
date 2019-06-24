@@ -66,6 +66,7 @@ function _submitClick(event) {
 
 /**
  * Used to check if the user has a valid "id" auth cookie and creates a form if not
+ * TODO: Make this so that it only works if a successful response comes through
  */
 function createAuth() {
     var currId = getCookie("id");

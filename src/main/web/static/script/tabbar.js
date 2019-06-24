@@ -17,6 +17,41 @@ function generateTabButton(div, buttonText, callback) {
     return button;
 }
 
+/**
+ * Used as a lookup table for tab index to value of the "tab" query keys
+ *
+ * @param {number} index - the integer index of the tab
+ *
+ * @returns {string} queryName - the name of the "tab" query string key relating to the index. Returns the empty string "" if the index is out of bounds
+ */
+function getName(index) {
+    switch(index) {
+        case 0:
+            return "Voting";
+            break;
+        case 1:
+            return "Rating";
+            break;
+        case 2:
+            return "Queue";
+            break;
+        case 3:
+            return "Downloaded";
+            break;
+        case 4:
+            return "Favourites";
+            break;
+        case 5:
+            return "Playlists";
+            break;
+        case 6:
+            return "Settings"
+        default:
+            return "";
+            break;
+    }
+}
+
 /*
  * The callback for a button click
  * @callback buttonCallback
@@ -98,7 +133,7 @@ function defaultTabCallback(name) {
  */
 function defaultTabCookies() {
     if (getCookie("tabs") == ""){
-        setCookie("tabs","Voting:1,Rating:0,Queue:1,Downloaded:1,Favourites:1,Playlists:0",getCookieDuration());
+        setCookie("tabs","1,0,1,1,1,0",getCookieDuration());
     }
 }
 
@@ -110,14 +145,15 @@ function defaultTabCookies() {
  */
 function supplyButtons(element,tabCallback) {
     defaultTabCookies();
-    var tabStr = getCookie("tabs")+",Settings:1";
+    var tabStr = getCookie("tabs")+",1";
     var tabArray = tabStr.split(','); //Which tabs the user wishes to be shown
     for(var i=0; i<tabArray.length; i++) {
-        var namNum = tabArray[i].split(':');
-        if (namNum[1] == "1") {
-            var callback = tabCallback(namNum[0]); //namNum[0] will be a callback key
+        var number = tabArray[i];
+        if (number == "1") {
+            var callback = tabCallback(getName(i));
+            console.log(callback)
             if (typeof callback !== "string") { //Checking that a valid callback exists
-                generateTabButton(element, namNum[0], callback); //Creating a button with this callback
+                generateTabButton(element, getName(i), callback); //Creating a button with this callback
             }
         }
     }
