@@ -69,7 +69,6 @@ function includeQueryStringScript() {
             case "Voting":
                 tab_callback=function() {
                     includeQueryStringVoteFunc();
-                    tab_callback=function(){};
                 };
                 scriptName = "voting.js";
                 break;

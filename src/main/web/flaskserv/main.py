@@ -15,6 +15,9 @@ def index():
 def auth():
     return send_from_directory('../../web/static/html', 'auth.html')
 
+@app.route("/autoqueue")
+def autoqueue():
+    return send_from_directory('../../web/static/html', 'autoqueue.html')
 
 @app.route("/css/<name>.css")
 def styles(name):

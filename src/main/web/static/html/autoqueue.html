@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<title>Asteroid</title>
+<html>
+<head>
+    <link rel="icon" type="image/x-icon" href="/resources/images/asteroid_proper.ico" />
+    <link rel="apple-touch-icon" sizes="192x192" href="/resources/images/pixel.png">
+</head>
+<header>
+    <img src="/resources/images/asteroid_bubble_BLACK_LEGIT.png" style="width:50%"> 
+</header>
+<body>
+<div id="tabsDiv"></div>
+<script src="../script/dynamic_load.js"></script>
+<script id="scriptFiller"></script>
+<script language="JavaScript">
+insert_css("css/home.css");
+var current_callback = function(){}
+function final_callback() {
+    checkCookieValidity();
+    ensureKeyQuery('v',Math.random());
+    parseQueryStringSongList();
+    console.log("Done loading /");
+}
+var dependencies = ["../config/jsconfig.js","../script/cookies.js","../script/json.js","../script/queries.js","../script/post.js","../script/autoqueue.js"]
+var scriptFiller = document.getElementById("scriptFiller");
+insert_all_before(scriptFiller,dependencies,final_callback);
+</script>
+</body>
+</html>
