@@ -14,9 +14,9 @@
 #
 import os
 import sys
-#sys.path.insert(0, os.path.abspath('../src/main/python/flaskserv'))
-#sys.path.insert(0, os.path.abspath('../src/main/python/player'))
-#sys.path.insert(0, os.path.abspath('../src/main/python/player'))
+# sys.path.insert(0, os.path.abspath('../src/main/python/flaskserv'))
+# sys.path.insert(0, os.path.abspath('../src/main/python/player'))
+# sys.path.insert(0, os.path.abspath('../src/main/python/player'))
 sys.path.insert(0, os.path.abspath('..'))
 
 
@@ -83,9 +83,9 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 pygments_style = None
 
 # Mock imports
-autodoc_mock_imports = ['alsaaudio', 
-#'src'
-]
+autodoc_mock_imports = ['alsaaudio',
+                        # 'src'
+                        ]
 
 
 # -- Options for HTML output -------------------------------------------------

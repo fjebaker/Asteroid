@@ -1,6 +1,7 @@
 import sqlite3
 import functools
 
+
 def sanatise(func):
     def iterate(args):
         a_type = type(args)
@@ -40,7 +41,6 @@ def sanatise(func):
             s_args.append(arg)
         return a_type(s_args)
 
-
     @functools.wraps(func)
     def _sanatise(cls, *args):
         # print("DEBUG unsanatised ", args)
@@ -49,10 +49,12 @@ def sanatise(func):
         return desanit(func(cls, *s_args))
     return _sanatise
 
+
 class DBInstance:
     """
     TODO
     """
+
     def __init__(self, location):
         if location != ":memory:" and ".db" != location[-3:]:
             raise Exception("Not a valid string format.")
@@ -81,7 +83,8 @@ class DBInstance:
         try:
             self.handle = sqlite3.connect(self.location)
         except Exception as e:
-            raise Exception("Could not connect to handle '{}' : {}".format(self.handle, str(e)))
+            raise Exception(
+                "Could not connect to handle '{}' : {}".format(self.handle, str(e)))
         else:
             self.cursor = self.handle.cursor()
         return self
@@ -98,9 +101,12 @@ class DBInstance:
         :param types:
         """
         if len(self.keys) != len(types):
-            raise Exception("Wrong number of types specified for keys {}.".format(self.keys))
-        column_type = ", ".join([i + " " + j for i, j in zip(self.keys, types)])
-        self.cursor.execute('''CREATE TABLE %s (%s %s);''' % (table_name, column_type, additional))
+            raise Exception(
+                "Wrong number of types specified for keys {}.".format(self.keys))
+        column_type = ", ".join(
+            [i + " " + j for i, j in zip(self.keys, types)])
+        self.cursor.execute('''CREATE TABLE %s (%s %s);''' %
+                            (table_name, column_type, additional))
 
     def insert_entire_row(self, table_name, data):
         """
@@ -110,12 +116,14 @@ class DBInstance:
         :param data:
         """
         if len(data) != len(self.keys):
-            raise Exception("Wrong number of values for keys {}.".format(self.keys))
+            raise Exception(
+                "Wrong number of values for keys {}.".format(self.keys))
         columns = ", ".join(self.keys)
         data = [str(i) for i in data]
         values = str(data)[1:-1]
         # print('''INSERT INTO %s (%s) VALUES (%s);''' % (table_name, columns, values))
-        self.cursor.execute('''INSERT INTO %s (%s) VALUES (%s);''' % (table_name, columns, values))
+        self.cursor.execute('''INSERT INTO %s (%s) VALUES (%s);''' %
+                            (table_name, columns, values))
 
     def select_rows(self, table_name, what, where, orderlimit="ORDER BY rowid ASC", like=False, inlist=False):
         """
@@ -135,10 +143,12 @@ class DBInstance:
         if inlist:
             cond = "%s IN (%s)"
         keys = ("rowid",) + self.keys
-        where_s = ", ".join([cond % (keys[i], str(j)) for i, j in where.items()])
+        where_s = ", ".join([cond % (keys[i], str(j))
+                             for i, j in where.items()])
         what_s = ", ".join(what)
         # print('''SELECT %s FROM %s WHERE %s %s''' % (what_s, table_name, where_s, orderlimit))
-        ret = self.cursor.execute('''SELECT %s FROM %s WHERE %s %s;''' % (what_s, table_name, where_s, orderlimit))
+        ret = self.cursor.execute('''SELECT %s FROM %s WHERE %s %s;''' % (
+            what_s, table_name, where_s, orderlimit))
         return self._sort(ret, what)
 
     def select_columns(self, table_name, column_list):
@@ -167,7 +177,7 @@ class DBInstance:
         :return:
         """
         return self.select_rows(table_name, ("rowid", "*"),
-                {0:""}, like=True, orderlimit="ORDER BY rowid DESC LIMIT %s" % str(n))
+                                {0: ""}, like=True, orderlimit="ORDER BY rowid DESC LIMIT %s" % str(n))
 
     def get_all_rows(self, table_name):
         """
@@ -177,7 +187,7 @@ class DBInstance:
         :return:
         """
         return self.select_rows(table_name, ("rowid", "*"),
-                {0:""}, like=True)
+                                {0: ""}, like=True)
 
     def update_generic(self, table_name, changes, condition):
         """
@@ -195,10 +205,13 @@ class DBInstance:
 
         keys = ("rowid",) + self.keys
         cond = "%s = '%s'"
-        changes_string = ", ".join([cond % (keys[i], str(j)) for i, j in changes.items()])
-        condition_string = "".join([cond % (keys[i], str(j)) for i, j in condition.items()])
+        changes_string = ", ".join([cond % (keys[i], str(j))
+                                    for i, j in changes.items()])
+        condition_string = "".join([cond % (keys[i], str(j))
+                                    for i, j in condition.items()])
         # print('''UPDATE %s SET %s WHERE %s''' % (table_name, changes_string, condition_string))
-        self.cursor.execute('''UPDATE %s SET %s WHERE %s''' % (table_name, changes_string, condition_string))
+        self.cursor.execute('''UPDATE %s SET %s WHERE %s''' %
+                            (table_name, changes_string, condition_string))
 
     def delete_rows(self, table_name, condition):
         """
@@ -210,15 +223,17 @@ class DBInstance:
         """
         keys = ("rowid",) + self.keys
         cond = "%s = '%s'"
-        condition_string = "".join([cond % (keys[i], str(j)) for i, j in condition.items()])
+        condition_string = "".join([cond % (keys[i], str(j))
+                                    for i, j in condition.items()])
         # print('''DELETE FROM {} WHERE {}'''.format(table_name, condition_string))
-        self.cursor.execute('''DELETE FROM %s WHERE %s''' % (table_name, condition_string))
+        self.cursor.execute('''DELETE FROM %s WHERE %s''' %
+                            (table_name, condition_string))
 
     def get_count(self, table_name):
         """
         TODO
         """
-        return self.select_rows(table_name, ("rowid",), {0:""}, like=True, orderlimit="ORDER BY rowid DESC LIMIT 1")[0]["rowid"]
+        return self.select_rows(table_name, ("rowid",), {0: ""}, like=True, orderlimit="ORDER BY rowid DESC LIMIT 1")[0]["rowid"]
 
     def _save(self):
         """
@@ -239,7 +254,8 @@ class DBInstance:
         # expand wildcard
         elif "*" in keys:
             keys = list(keys)
-            i = keys.index("*"); del keys[i]
+            i = keys.index("*")
+            del keys[i]
             for k in reversed(self.keys):
                 keys.insert(i, k)
 
@@ -251,6 +267,7 @@ class DBInstance:
                 ret[key] = val
             ret_l.append(ret)
         return tuple(ret_l)
+
 
 class DBAccessory(type):
     """
@@ -310,7 +327,7 @@ class MusicDB(metaclass=DBAccessory):
         TODO
         """
         self.db_inst.create_table("songs", self.k_type,
-                additional=", CONSTRAINT id_unique UNIQUE (file_path)")
+                                  additional=", CONSTRAINT id_unique UNIQUE (file_path)")
 
     @sanatise
     def add_song(self, song):
@@ -326,14 +343,14 @@ class MusicDB(metaclass=DBAccessory):
         """
         TODO
         """
-        return self.db_inst.select_rows("songs", {"rowid", "*"}, {1:name}, like=True)
+        return self.db_inst.select_rows("songs", {"rowid", "*"}, {1: name}, like=True)
 
     @sanatise
     def get_by_artist(self, artist):
         """
         TODO
         """
-        return self.db_inst.select_rows("songs", {"rowid", "*"}, {2:artist}, like=True)
+        return self.db_inst.select_rows("songs", {"rowid", "*"}, {2: artist}, like=True)
 
     @sanatise
     def get_by_rowid(self, *args):
@@ -346,7 +363,7 @@ class MusicDB(metaclass=DBAccessory):
         """
         islist = len(args) > 1
         rowids = ", ".join([str(i) for i in args])
-        return self.db_inst.select_rows("songs", ("rowid", "*"), {0:rowids}, inlist=islist)
+        return self.db_inst.select_rows("songs", ("rowid", "*"), {0: rowids}, inlist=islist)
 
     @sanatise
     def get_page(self):
@@ -392,7 +409,7 @@ class UserDB(metaclass=DBAccessory):
         TODO
         """
         self.db_inst.create_table("users", self.k_type,
-            additional=", CONSTRAINT path_unique UNIQUE (id)")
+                                  additional=", CONSTRAINT path_unique UNIQUE (id)")
 
     @sanatise
     def add_user(self, user):
@@ -407,7 +424,7 @@ class UserDB(metaclass=DBAccessory):
         :returns: user with ``id==id_n``
         :rtype: length 1 tuple of tuple
         """
-        return self.db_inst.select_rows("users", ("*",), {1:id_n})
+        return self.db_inst.select_rows("users", ("*",), {1: id_n})
 
     @sanatise
     def get_all_users(self):
@@ -428,6 +445,7 @@ class UserDB(metaclass=DBAccessory):
         :return:
         """
         return self.db_inst.get_n_latest_rows("users", 1)
+
 
 if __name__ == '__main__':
     pass
