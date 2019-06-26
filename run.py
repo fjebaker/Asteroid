@@ -1,8 +1,5 @@
 import os, sys
-os.environ["MUSIC_DB_PATH"] = "test.db"
-os.environ["USER_DB_PATH"] = "test.db"
-os.environ["PLAYLIST_PATH"] = "test.db"
-
+from src import Config, music_db_path, user_db_path, playlist_db_path
 HEADER = r"""               _       _                 _     _ 
  _ __  _   _  /_\  ___| |_ ___ _ __ ___ (_) __| |
 | '_ \| | | |//_\\/ __| __/ _ \ '__/ _ \| |/ _` |
@@ -21,12 +18,24 @@ HEADER = r"""               _       _                 _     _
 	-- all databases should have id
 """
 
-def run_flask(host="0.0.0.0", port=8080):
+def run_flask(host="", port=""):
+	cfg = Config()
+	if host == "":
+		host = cfg.get("FlaskServer", "hostname")
+	if port == "":
+		port = cfg.get("FlaskServer", "port")
+
 	print("[*] Starting flask HTTP server...")
 	import src.main.web.flaskserv.main as main
 	main.app.run(host, port)
 
-def run_player(host="localhost", port="6666"):
+def run_player(host="", port=""):
+	cfg = Config()
+	if host == "":
+		host = cfg.get("PlayerConfig", "hostname")
+	if port == "":
+		port = cfg.get("PlayerConfig", "port")
+
 	try:
 		import alsaaudio
 	except:
@@ -67,21 +76,21 @@ class databases:
 
 	@staticmethod
 	def build_music(loc):
-		print("[+] adding '{}' table in '{}'...".format("songs", os.environ["MUSIC_DB_PATH"]))
+		print("[+] adding '{}' table in '{}'...".format("songs", music_db_path()))
 		from src.main.databasebuilder import build_music
 		build_music(loc)
 		print("[*] Done building Music.")
 
 	@staticmethod
 	def build_user():
-		print("[+] adding '{}' table in '{}'...".format("users", os.environ["USER_DB_PATH"]))
+		print("[+] adding '{}' table in '{}'...".format("users", user_db_path()))
 		from src.main.databasebuilder import build_user
 		build_user()
 		print("[*] Done building Users.")
 
 	@staticmethod
 	def build_playlist():
-		print("[+] adding '{}' table in '{}'...".format("playlist", os.environ["PLAYLIST_PATH"]))
+		print("[+] adding '{}' table in '{}'...".format("playlist", playlist_db_path()))
 		from src.main.databasebuilder import build_playlist
 		build_playlist()
 		print("[*] Done building Playlist.")

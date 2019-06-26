@@ -5,7 +5,7 @@ from src.main.web.flaskserv import MusicDB
 from queue import Queue
 import threading
 import os
-
+from src.main.databasebuilder.setupfuncs import music_db_path, playlist_db_path
 
 class AudioHandler(threading.Thread):
     """
@@ -17,7 +17,6 @@ class AudioHandler(threading.Thread):
     :param queue: queue to get new INET server commands.
     :type queue: :class:`queue.Queue`
     """
-
     def __init__(self, queue):
         threading.Thread.__init__(self)
         self.queue = queue
@@ -26,7 +25,7 @@ class AudioHandler(threading.Thread):
         self.current_player = None
         self.condObj = ConditionObject()
 
-        self.first = True 		# hacky, since first call must be over socket msg
+        self.first = True         # hacky, since first call must be over socket msg
 
     def run(self):
         '''
@@ -59,7 +58,7 @@ class AudioHandler(threading.Thread):
         :returns: the path to the most voted song
         :rtype: str
         """
-        pl = Playlist(os.environ["PLAYLIST_PATH"])
+        pl = Playlist(playlist_db_path())
         n_item = pl.get_most_voted()
         if n_item == ():
             # TODO
@@ -68,11 +67,10 @@ class AudioHandler(threading.Thread):
         n_item = n_item[0]
         s_id = n_item["s_id"]
         pl.remove(s_id)
-        History(os.environ["PLAYLIST_PATH"]).add(
-            (n_item["s_id"], n_item["u_id"], n_item["vote"]))
+        History(playlist_db_path()).add((n_item["s_id"], n_item["u_id"], n_item["vote"]))
 
         try:
-            song = MusicDB(os.environ["MUSIC_DB_PATH"]).get_by_rowid(s_id)[0]
+            song = MusicDB(music_db_path()).get_by_rowid(s_id)[0]
         except Exception as e:
             print("DEBUG -- get_path_from_database :: Exception = " + str(e))
             return None

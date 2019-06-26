@@ -3,7 +3,7 @@ from flask import Response
 import abc
 import json
 import os
-
+from src.main.databasebuilder.setupfuncs import music_db_path, user_db_path
 
 class BaseQuery(metaclass=abc.ABCMeta):
     """
@@ -82,7 +82,7 @@ class MusicQuery(BaseQuery):
         except Exception as e:
             return self.defaultCase()
 
-        db_result = MusicDB(os.environ["MUSIC_DB_PATH"]).get_by_name(songName)
+        db_result = MusicDB(music_db_path()).get_by_name(songName)
         if db_result != ():
             db_result = self._remove_path(db_result)
         return Response(
@@ -100,7 +100,7 @@ class MusicQuery(BaseQuery):
         except Exception as e:
             return self.defaultCase()
 
-        db_result = MusicDB(os.environ["MUSIC_DB_PATH"]).get_page()
+        db_result = MusicDB(music_db_path()).get_page()
         if db_result != ():
             db_result = self._remove_path(db_result)
         return Response(
@@ -119,8 +119,7 @@ class MusicQuery(BaseQuery):
         except Exception as e:
             return self.defaultCase()
 
-        db_result = MusicDB(
-            os.environ["MUSIC_DB_PATH"]).get_by_artist(artistName)
+        db_result = MusicDB(music_db_path()).get_by_artist(artistName)
         if db_result != ():
             db_result = self._remove_path(db_result)
         return Response(
@@ -136,7 +135,7 @@ class MusicQuery(BaseQuery):
 
         :returns: :class:`flask.Response` with json of dictionary containing all songs, and ``status==200``.
         """
-        db_result = MusicDB(os.environ["MUSIC_DB_PATH"]).get_all_songs()
+        db_result = MusicDB(music_db_path()).get_all_songs()
         if db_result != ():
             db_result = self._remove_path(db_result)
         return Response(
@@ -166,7 +165,7 @@ class MusicQuery(BaseQuery):
         if rowids == []:
             return self.defaultCase()
 
-        db_result = MusicDB(os.environ["MUSIC_DB_PATH"]).get_by_rowid(*rowids)
+        db_result = MusicDB(music_db_path()).get_by_rowid(*rowids)
         db_result = self._remove_path(db_result)
         if len(db_result) == 0:
             return self.defaultCase()
@@ -199,7 +198,6 @@ class MusicQuery(BaseQuery):
             mimetype='application/json'
         )
 
-
 class UserQuery(BaseQuery):
     """
     Handler for interfacing between user database and the web server.
@@ -211,11 +209,9 @@ class UserQuery(BaseQuery):
     :returns: :class:`flask.Response` containing query result
     """
 
-    # : json keys for parsing database
-    keys = ("id", "name", "hash_pw", "meta_dat")
-
     def __init__(self, query):
         BaseQuery.__init__(self, query)
+
 
     def getAllUsers(self):
         """
@@ -224,7 +220,7 @@ class UserQuery(BaseQuery):
 
         :returns: :class:`flask.Response` with json of dictionary containing all users, and ``status==200``.
         """
-        db_result = UserDB(os.environ["USER_DB_PATH"]).get_all_users()
+        db_result = UserDB(user_db_path()).get_all_users()
         if db_result != ():
             db_result = self._remove_pw(db_result)
             for i in db_result:
@@ -235,6 +231,7 @@ class UserQuery(BaseQuery):
             status=200,
             mimetype='application/json'
         )
+
 
     def id(self):
         """
@@ -250,7 +247,7 @@ class UserQuery(BaseQuery):
         except Exception as e:
             return self.defaultCase()
 
-        db_result = UserDB(os.environ["USER_DB_PATH"]).get_by_id(u_id)
+        db_result = UserDB(user_db_path()).get_by_id(u_id)
         db_result = self._remove_pw(db_result)
         if len(db_result) == 0:
             return self.defaultCase()
@@ -261,10 +258,12 @@ class UserQuery(BaseQuery):
             mimetype='application/json'
         )
 
+
     def _remove_pw(self, db_result):
         for item in db_result:
             del item["hash_pw"]
         return db_result
+
 
     def defaultCase(self):
         """
