@@ -87,18 +87,19 @@ class PlayStream(threading.Thread):
         paused = False
 
         sample = 0
-        while data:
-            with self.CO.lock:
-                if self.CO.play == False:
-                    break
-                paused = self.CO.pause
-            if paused:
+        with self.CO.lock:
+            play = self.CO.play
+            paused = self.CO.pause
+        while data and play:
+            if not paused:
+                val = np.fromstring(data, dtype=np.short)
+                if sample % 4 == 0:
+                    self.q.put(val)
+                stream.write(data)
+                data = wf.readframes(self.CHUNK)
+                sample += 1
+            else:
                 time.sleep(0.2)
-                continue
-
-            val = np.fromstring(data, dtype=np.short)
-            if sample % 4 == 0:
-                self.q.put(val)
-            stream.write(data)
-            data = wf.readframes(self.CHUNK)
-            sample += 1
+            with self.CO.lock:
+                play = self.CO.play
+                paused = self.CO.pause
