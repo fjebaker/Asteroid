@@ -1,13 +1,14 @@
 import configparser
+import os
 
 class Config(configparser.ConfigParser):
     """
     TODO
     """
-    def __init__(self, PATH="./config.ini"):
+    def __init__(self):
         configparser.ConfigParser.__init__(self)
-        self.path = PATH
-        self.read(PATH)
+        self.path = os.environ["ASTEROID_CONFIG_PATH"]
+        self.read(self.path)
 
     def getval(self, section, option, raw=False):
         """

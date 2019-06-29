@@ -8,6 +8,13 @@ from src.main.web.flaskserv import MusicDB, UserDB, Playlist, History
 
 @pytest.fixture(scope='module')
 def temp_db(tmpdir_factory):
+    """
+    Creates the temporary directory structure for the test, and mocks the minimal config.ini required
+    to pass the tests.
+
+    :param tmpdir_factory:
+    :return:
+    """
     fn = str(tmpdir_factory.mktemp("data").join("test.db"))
     mdb = MusicDB(fn)
     mdb.create_table()
@@ -16,16 +23,21 @@ def temp_db(tmpdir_factory):
     UserDB(fn).create_table()
     Playlist(fn).create_table()
     History(fn).create_table()
+
+    config = str(tmpdir_factory.mktemp("data").join("config.ini"))
+    os.environ["ASTEROID_CONFIG_PATH"] = config
+    with open(config, 'w+') as f:
+        f.write('''[Databases]
+    music-db-path = {}
+    user-db-path = {}
+    playlist-db-path = {}
+    '''.format(fn, fn, fn))
+
     yield fn
 
 
 @pytest.fixture(scope='module')
 def test_client(temp_db):
-    # set environment variables
-    os.environ['USER_DB_PATH'] = temp_db
-    os.environ['MUSIC_DB_PATH'] = temp_db
-    os.environ['PLAYLIST_PATH'] = temp_db
-
     # Flask provides a way to test your application by exposing the Werkzeug test Client
     # and handling the context locals for you.
     test_client = flask_app.test_client()
