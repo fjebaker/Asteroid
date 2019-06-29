@@ -1,7 +1,6 @@
 from flask import Flask, redirect, request, send_from_directory
 from src.main.web.flaskserv import MusicQuery, UserQuery, UserHandler
-from src.main.web.flaskserv import Vote, Playlist
-import importlib
+from src.main.web.flaskserv import Vote
 app = Flask(__name__)
 
 

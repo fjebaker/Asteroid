@@ -1,11 +1,6 @@
-"""Main driver module"""
-import os
-import sys
-os.environ["MUSIC_DB_PATH"] = "test.db"
-os.environ["USER_DB_PATH"] = "test.db"
-os.environ["PLAYLIST_PATH"] = "test.db"
-
-HEADER = r"""               _       _                 _     _
+import os, sys
+from src import Config, music_db_path, user_db_path, playlist_db_path
+HEADER = r"""               _       _                 _     _ 
  _ __  _   _  /_\  ___| |_ ___ _ __ ___ (_) __| |
 | '_ \| | | |//_\\/ __| __/ _ \ '__/ _ \| |/ _` |
 | |_) | |_| /  _  \__ \ ||  __/ | | (_) | | (_| |
@@ -23,21 +18,59 @@ HEADER = r"""               _       _                 _     _
     -- all databases should have id
 """
 
+def run_flask(host="", port=""):
+	cfg = Config()
+	if host == "":
+		host = cfg.get("FlaskServer", "hostname")
+	if port == "":
+		port = cfg.get("FlaskServer", "port")
 
-def run_flask(host="0.0.0.0", port=8080):
-    print("[*] Starting flask HTTP server...")
-    import src.main.web.flaskserv.main as main
-    main.app.run(host, port)
+	print("[*] Starting flask HTTP server...")
+	import src.main.web.flaskserv.main as main
+	main.app.run(host, port)
 
+def run_player(host="", port=""):
+	cfg = Config()
+	if host == "":
+		host = cfg.get("PlayerConfig", "hostname")
+	if port == "":
+		port = cfg.get("PlayerConfig", "port")
 
-def run_player(host="localhost", port="6666"):
-    try:
-        import alsaaudio
-    except:
-        from time import sleep
-        print("[*] No package 'alsaaudio' found, creating a mock...")
-        # mock alsaaudio
-        module = type(sys)('alsaaudio')
+	try:
+		import alsaaudio
+	except:
+		from time import sleep
+		print("[*] No package 'alsaaudio' found, creating a mock...")
+		# mock alsaaudio
+		module = type(sys)('alsaaudio')
+		class MockStream:
+			def setformat(self, *args, **kwargs):
+				pass
+			def setchannels(self, *args, **kwargs):
+				pass
+			def setrate(self, *args, **kwargs):
+				pass
+			def setperiodsize(self, *args, **kwargs):
+				pass
+			def write(self, *args, **kwargs):
+				#print("DEBUG: MockStream::write() with args='{}', kwargs='{}'".format(args, kwargs))
+				#print("DEBUG -- mock stream got data")
+				#sleep(1)
+				pass
+		module.PCM = lambda a, b, c: MockStream()
+		module.PCM_PLAYBACK = None
+		module.PCM_NORMAL = None
+		module.PCM_FORMAT_S16_LE = None
+		sys.modules['alsaaudio'] = module
+		print("[+] Mock 'alsaaudio' created!")
+	else:
+		print("[*] Package 'alsaaudio' found!")
+	finally:
+		print("[*] Starting player INET server...")
+		os.environ["LISTENER_HOST"] = host
+		os.environ["LISTENER_PORT"] = port
+		from src.main.player import Listener
+		Listener().start()
 
         class MockStream:
             def setformat(self, *args, **kwargs):
@@ -75,26 +108,26 @@ def run_player(host="localhost", port="6666"):
 
 class databases:
 
-    @staticmethod
-    def build_music(loc):
-        print("[+] adding '{}' table in '{}'...".format("songs", os.environ["MUSIC_DB_PATH"]))
-        from src.main.databasebuilder import build_music
-        build_music(loc)
-        print("[*] Done building Music.")
+	@staticmethod
+	def build_music(loc):
+		print("[+] adding '{}' table in '{}'...".format("songs", music_db_path()))
+		from src.main.databasebuilder import build_music
+		build_music(loc)
+		print("[*] Done building Music.")
 
-    @staticmethod
-    def build_user():
-        print("[+] adding '{}' table in '{}'...".format("users", os.environ["USER_DB_PATH"]))
-        from src.main.databasebuilder import build_user
-        build_user()
-        print("[*] Done building Users.")
+	@staticmethod
+	def build_user():
+		print("[+] adding '{}' table in '{}'...".format("users", user_db_path()))
+		from src.main.databasebuilder import build_user
+		build_user()
+		print("[*] Done building Users.")
 
-    @staticmethod
-    def build_playlist():
-        print("[+] adding '{}' table in '{}'...".format("playlist", os.environ["PLAYLIST_PATH"]))
-        from src.main.databasebuilder import build_playlist
-        build_playlist()
-        print("[*] Done building Playlist.")
+	@staticmethod
+	def build_playlist():
+		print("[+] adding '{}' table in '{}'...".format("playlist", playlist_db_path()))
+		from src.main.databasebuilder import build_playlist
+		build_playlist()
+		print("[*] Done building Playlist.")
 
     @staticmethod
     def build_all():

@@ -1,5 +1,6 @@
 from src.main.web.flaskserv import Playlist, MusicDB, UserDB, History
 import os
+from src.main.databasebuilder.setupfuncs import music_db_path, user_db_path, playlist_db_path
 import exiftool
 
 
@@ -38,12 +39,11 @@ def build_music(folder_location):
     """
     TODO
     """
-    dbinst = MusicDB(os.environ["MUSIC_DB_PATH"])
+    dbinst = MusicDB(music_db_path())
     try:
         dbinst.create_table()
     except Exception as e:
-        print("[!] trying to create table 'playlist' in {}, raised exception: \n\t\t'{}'".format(
-            os.environ["MUSIC_DB_PATH"], str(e)))
+        print("[!] trying to create table 'playlist' in {}, raised exception: \n\t\t'{}'".format(music_db_path(), str(e)))
 
     if folder_location == None:
         return
@@ -53,39 +53,35 @@ def build_music(folder_location):
             song = get_song_item(file)
             dbinst.add_song(song)
         except Exception as e:  # TODO, song doesn't exist if fails
-            print("[!] trying to add song '{}', raised exception: \n\t\t'{}'".format(
-                song[3], str(e)))
+            print("[!] trying to add song '{}', raised exception: \n\t\t'{}'".format(song[3], str(e)))
         else:
-            print(
-                "[+] added '{}' by '{}' @ '{}' to database".format(song[0], song[1], song[3]))
+            print("[+] added '{}' by '{}' @ '{}' to database".format(song[0], song[1], song[3]))
 
 
 def build_user():
     """
     TODO
     """
-    dbinst = UserDB(os.environ["USER_DB_PATH"])
+    dbinst = UserDB(user_db_path())
     try:
         dbinst.create_table()
     except Exception as e:
-        print("[!] trying to create table 'users' in {}, raised exception: \n\t\t'{}'".format(
-            os.environ["USER_DB_PATH"], str(e)))
+        print("[!] trying to create table 'users' in {}, raised exception: \n\t\t'{}'".format(user_db_path(), str(e)))
 
 
 def build_playlist():
     """
     TODO
     """
-    dbinst = Playlist(os.environ["PLAYLIST_PATH"])
+    dbinst = Playlist(playlist_db_path())
     try:
         dbinst.create_table()
     except Exception as e:
-        print("[!] trying to create table 'playlist' in {}, raised exception: \n\t\t'{}'".format(
-            os.environ["PLAYLIST_PATH"], str(e)))
+        print(
+            "[!] trying to create table 'playlist' in {}, raised exception: \n\t\t'{}'".format(playlist_db_path(), str(e)))
 
-    dbinst = History(os.environ["PLAYLIST_PATH"])
+    dbinst = History(playlist_db_path())
     try:
         dbinst.create_table()
     except Exception as e:
-        print("[!] trying to create table 'history' in {}, raised exception: \n\t\t'{}'".format(
-            os.environ["PLAYLIST_PATH"], str(e)))
+        print("[!] trying to create table 'history' in {}, raised exception: \n\t\t'{}'".format(playlist_db_path(), str(e)))

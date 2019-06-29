@@ -14,3 +14,5 @@
 
 .. js:autofunction:: supplyTabButtons
 
+.. js:autofunction:: getName
+
