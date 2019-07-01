@@ -28,6 +28,7 @@ Section 1.2 JS Code:
    js/home
    js/json
    js/auth
+   js/autoqueue
    js/cookies
    js/queries
    js/post

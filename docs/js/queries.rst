@@ -6,6 +6,8 @@
 
 .. js:autofunction:: updateQuery
 
+.. js:autofunction:: updateQueryWithoutReload
+
 .. js:autofunction:: ensureQuery
 
 .. js:autofunction:: ensureKeyQuery

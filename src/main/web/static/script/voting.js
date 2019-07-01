@@ -6,6 +6,13 @@ bodyDiv.innerHTML = "<div id='listTabsDiv'></div><div id='listDiv'>Redirecting t
 //success func should check if string
 //getJson("/db/music?=getAllSongs",function(data){allSongsJSONData = data;queue();},function(){document.location.href = document.location.href;});
 
+const _listTabLookup = {
+    "Queue":queue,
+    "Downloaded":downloaded,
+    "Favourites":favourites,
+    "Playlists":playlists
+};
+
 /**
  * Used to run a particular function based on a valid 'votetab' query in the query string
  */
@@ -13,7 +20,7 @@ function includeQueryStringVoteFunc() {
     var urlParams = new URLSearchParams(location.search);
     if(urlParams.has("votetab")) { //check if tab query exists
         var tabName = urlParams.get("votetab");
-        var callback = listTabCallback(tabName);
+        var callback = _listTabLookup[tabName] || "";
         if (typeof callback == "string") {
             updateQuery({votetab:"Queue",v:Math.random()});
         } else {callback();}
@@ -414,7 +421,7 @@ function favourites() {
  * @param Object showColumnArray - an array for whether the columns "Favourite" and "Rating" should be shown to the user
  * @param number index - the index of the row that the cell is found in
  */
-function cellInfo(column,cell,song,favArray,showColumnArray,index) {
+function _cellInfo(column,cell,song,favArray,showColumnArray,index) {
     if (showColumnArray[0] != "1" && column == "Favourite") {column = "";}
     if (showColumnArray[1] != "1" && column == "Rating") {column = "";}
     switch(column) {
@@ -485,7 +492,7 @@ function constructTable(tableData,tableElement,columnList) {
         var newRow = tableElement.insertRow(-1);
         for (var j=0; j<columnList.length; j++) {
             var newCell = newRow.insertCell(j);
-            cellInfo(columnList[j],newCell,currSong,favArray,showColumnArray,i);
+            _cellInfo(columnList[j],newCell,currSong,favArray,showColumnArray,i);
         }
     }
 }
@@ -498,33 +505,6 @@ function playlists() {
     document.getElementById("listDiv").innerHTML = "playlist data goes here";
 }
 
-/**
- * Used as a lookup table for onclick callbacks for the buttons needed in the 'voting' tab
- *
- * @param {string} name - the tab name: should be one of ["Queue","Downloaded","Favourites","Playlists"]
- *
- * @returns {string|buttonCallback} callback - the callback relating to the given string, or the empty string "" if the 'name' argument is not one of the expected values
- */
-function listTabCallback(name) {
-    switch(name) {
-        case "Queue":
-            return queue;
-            break;
-        case "Downloaded":
-            return downloaded;
-            break;
-        case "Favourites":
-            return favourites;
-            break;
-        case "Playlists":
-            return playlists;
-            break;
-        default:
-            return "";
-            break;
-    }
-}
-
-supplyButtons(document.getElementById("listTabsDiv"),listTabCallback);
+supplyButtons(document.getElementById("listTabsDiv"),function(name){return _listTabLookup[name] || "";});
 
 tab_callback();

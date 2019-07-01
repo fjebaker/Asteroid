@@ -17,41 +17,6 @@ function generateTabButton(div, buttonText, callback) {
     return button;
 }
 
-/**
- * Used as a lookup table for tab index to value of the "tab" query keys
- *
- * @param {number} index - the integer index of the tab
- *
- * @returns {string} queryName - the name of the "tab" query string key relating to the index. Returns the empty string "" if the index is out of bounds
- */
-function getName(index) {
-    switch(index) {
-        case 0:
-            return "Voting";
-            break;
-        case 1:
-            return "Rating";
-            break;
-        case 2:
-            return "Queue";
-            break;
-        case 3:
-            return "Downloaded";
-            break;
-        case 4:
-            return "Favourites";
-            break;
-        case 5:
-            return "Playlists";
-            break;
-        case 6:
-            return "Settings"
-        default:
-            return "";
-            break;
-    }
-}
-
 /*
  * The callback for a button click
  * @callback buttonCallback
@@ -98,6 +63,12 @@ function settings() {updateQuery({"tab":"Settings","v":Math.random()});}
 //function tabs() {updateQuery({"tab":"Tabs","v":Math.random()});}
 //function account() {updateQuery({"tab":"Account","v":Math.random()});}
 
+const _defaultTabCallback = {
+    "Voting":voting,
+    "Rating":rating,
+    "Settings":settings
+};
+
 /**
  * Used as a lookup table for values of the "tab" query to javascript functions for button callback
  *
@@ -106,25 +77,7 @@ function settings() {updateQuery({"tab":"Settings","v":Math.random()});}
  * @returns {string|buttonCallback} callback - the relevant callback function for the 'name' string if it matches one of the expected values, or the string "" if it doesn't.
  */
 function defaultTabCallback(name) {
-    switch(name) {
-        case "Voting":
-            return voting;
-            break;
-        case "Rating":
-            return rating;
-            break;
-//        case "Tabs":
-//            return tabs;
-//            break;
-//        case "Account":
-//            return account;
-//            break;
-        case "Settings":
-            return settings;
-            break;
-        default:
-            return "";
-    }
+    return _defaultTabCallback[name] || "";
 }
 
 /**
@@ -148,15 +101,24 @@ function defaultTabCookies() {
  * @param {tableCallback} tableCallback - the lookup table for buttons to use
  */
 function supplyButtons(element,tabCallback) {
+    const _tabbarLookupNames = {
+        0:"Voting",
+        1:"Rating",
+        2:"Queue",
+        3:"Downloaded",
+        4:"Favourites",
+        5:"Playlists",
+        6:"Settings"
+    };
     defaultTabCookies();
     var tabStr = getCookie("tabs")+",1";
     var tabArray = tabStr.split(','); //Which tabs the user wishes to be shown
     for(var i=0; i<tabArray.length; i++) {
         var number = tabArray[i];
         if (number == "1") {
-            var callback = tabCallback(getName(i));
+            var callback = tabCallback(_tabbarLookupNames[i] || "");
             if (typeof callback !== "string") { //Checking that a valid callback exists
-                generateTabButton(element, getName(i), callback); //Creating a button with this callback
+                generateTabButton(element, _tabbarLookupNames[i] || "", callback); //Creating a button with this callback
             }
         }
     }

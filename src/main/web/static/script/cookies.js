@@ -71,6 +71,14 @@ function checkCookieValidity() {
     getJson('/db/users?id='+currId,function(data){if (typeof data == "string" || !data[0].hasOwnProperty("name")){authFailure(data);}},authFailure);
 }
 
+const _durationNames = {
+    "minute":60000,
+    "hour":3600000,
+    "day":86400000,
+    "month":2656800000,
+    "year":31557600000
+};
+
 /**
  * Used to convert string-formatted values for the "cookieDuration" cookie to number of milliseconds
  *
@@ -79,28 +87,7 @@ function checkCookieValidity() {
  * @returns {number} timeMilliseconds - the number of milliseconds represented by the given string. Defaults to 0 if the string is not one of the above recognised strings
  */
 function convertNameToDuration(timeString) {
-    switch (timeString){
-        case "minute":
-            return 60000;
-            break;
-        case "hour":
-            return 3600000;
-            break;
-        case "day":
-            return 86400000;
-            break;
-        case "week":
-            return 604800000;
-            break;
-        case "month":
-            return 2656800000;
-            break;
-        case "year":
-            return 31557600000;
-            break;
-        default:
-            return 0;
-    }
+    return _durationNames[timeString] || 0
 }
 
 /**

@@ -27,39 +27,6 @@ function putOptions() {
 }
 
 /**
- * Used as a lookup table for tab index to value of the "tab" query keys
- *
- * @param {number} index - the integer index of the tab
- *
- * @returns {string} queryName - the name of the "tab" query string key relating to the index. Returns the empty string "" if the index is out of bounds
- */
-function getName(index) {
-    switch(index) {
-        case 0:
-            return "Voting";
-            break;
-        case 1:
-            return "Rating";
-            break;
-        case 2:
-            return "Queue";
-            break;
-        case 3:
-            return "Downloaded";
-            break;
-        case 4:
-            return "Favourites";
-            break;
-        case 5:
-            return "Playlists";
-            break;
-        default:
-            return "";
-            break;
-    }
-}
-
-/**
  * Used to determine whether the checkbox for a tab of particular index should be checked by default
  *
  * @param {number} index - the integer index of the tab
@@ -80,7 +47,7 @@ function _getCheckedState(index) {
  * @param {number} index - the integer index of the tab
  * @param {Object} box - the checkbox object that triggered the toggle event
  */
-function changeCallback(index,box) {
+function _changeCallback(index,box) {
     var tabArr = getCookie('tabs').split(',');
     if (index < 6) {
         var adder = box.checked ? 1 : 0;
@@ -94,13 +61,21 @@ function changeCallback(index,box) {
  * Used to populate the tab setting table with tab checkboxes
  */
 function populateTabSettingTable() {
+    const _settingsLookupNames = {
+        0:"Voting",
+        1:"Rating",
+        2:"Queue",
+        3:"Downloaded",
+        4:"Favourites",
+        5:"Playlists"
+    };
     var tabSettingTable = document.getElementById("tabSettingTable");
     for (var i=0; i<6; i++) {
         var newRow = tabSettingTable.insertRow(-1);
         var nameCell = newRow.insertCell(0);
         var buttonCell = newRow.insertCell(1);
-        nameCell.innerHTML = getName(i);
-        buttonCell.innerHTML = "<input type=\'checkbox\' onclick=\'changeCallback(" + i + ",this);\'" + _getCheckedState(i) + "></input>";
+        nameCell.innerHTML = _settingsLookupNames[i] || "";
+        buttonCell.innerHTML = "<input type=\'checkbox\' onclick=\'_changeCallback(" + i + ",this);\'" + _getCheckedState(i) + "></input>";
     }
 }
 
