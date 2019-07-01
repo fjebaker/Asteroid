@@ -134,7 +134,9 @@ function createVoteForm(id) {
     return form;
 }
 
+
 /**
+ * CURRENTLY WIP, WILL BE IMPLEMENTED IN FUTURE COMMIT
  * Used to generate 
  *
  */
@@ -160,9 +162,15 @@ function songLengthFormat(secs) {
 }
 
 /**
- * Used to check if string1 is alphabetically before string2 to sort songs alphabetically
+ * Used to check if a string is alphabetically before a second string for the purpose of alphabetical string sorting
+ *
+ * @param string str1 - the first string of an ordered pair of strings
+ * @param string str2 - the second string of an ordered pair of strings
+ *
+ * @returns number result - returns 0 if str1 is identical to str2, -1 if the str1 comes alphabetically before str2 and 1 if str1 comes alphabetically after str2
  */
 function _stringCompare(str1,str2) {
+    if (str1 === str2) {return 0;}
     var shorterLength = str1.length;
     if (str2.length < shorterLength) {shorterLength = str2.length;}
     for (var i=1; i<shorterLength; i++) {
@@ -176,7 +184,12 @@ function _stringCompare(str1,str2) {
 }
 
 /**
- * Used to sort songs
+ * Used to sort a pair of songs alphabetically, by artist name first and then song name
+ *
+ * @param Object a - the first song object
+ * @param Object b - the second song object
+ *
+ * @returns number result - returns 0 if the songs are identical, -1 if a should be sorted before b, and 1 if b should be sorted before a
  */
 function _sorter(a,b) {
     if (a.artist === b.artist) {
@@ -189,6 +202,8 @@ function _sorter(a,b) {
 
 /**
  * Callback used for refreshing the "downloaded songs" table after a search
+ *
+ * @param {Object|string} data - the JSON data returned by the GET request requesting songs, or a string representation of the status code if the GET request was unsuccessful
  */
 function _refreshSearch(data) {
     var currentResultsNo = document.getElementById("currentResultsNo");
@@ -203,6 +218,8 @@ function _refreshSearch(data) {
 
 /**
  * Callback used for refreshing the "downloaded songs" table after no search
+ *
+ * @param {Object|string} data - the JSON data returned by the GET request requesting songs, or a string representation of the status code if the GET request was unsuccessful
  */
 function _refreshNoSearch(data) {
     var downloadedVotingTable = document.getElementById("downloadedVotingTable");
@@ -259,7 +276,7 @@ function downloaded() {
 /**
  * Callback used to populate the table of queued songs with the server's song queue
  *
- * @param {Object} data - the JSON data returned from the GET request requesting song queue
+ * @param {Object} data - the JSON data returned from the GET request requesting song queue, or a string representation of the status code if the GET request was unsuccessful
  */
 function _queue(data) {
     if (typeof data == "string") {
@@ -325,7 +342,7 @@ function _queue(data) {
 }
 
 /**
- *
+ * Function used to continuously ensure that the user is shown the name of the song that is currently playing by updating the <em> element of id currentSongReading
  */
 function _updateCurrentSongReading() {
     getJson("/vote?=currentSong",function(data){
@@ -357,14 +374,17 @@ function queue() {
     getJson("/vote",_queue,function(data){document.getElementById("listDiv").innerHTML = "Unable to load queue data!";});
 }
 
+/**
+ * Callback used for populating a table with favourites data after a GET request for all songs matching the favourites rowids
+ *
+ * @param {Object|string} data - the JSON data returned by the GET request requesting songs, or a string representation of the status code if the GET request was unsuccessful
+ */
 function _favourites(data) {
     if (typeof data == "string") {document.getElementById("listDiv").innerHTML = "Unable to load favourites data!";}
     else {
         constructTable(data,document.getElementById("favouritesVotingTable"),["Name","Artist","Duration","Vote","Favourite","Rating"]);
     }
 }
-
-
 
 /**
  * Used to construct and populate a table of songs from the user's "favourites" cookie
@@ -384,6 +404,16 @@ function favourites() {
     }
 }
 
+/**
+ * Lookup table used to populate a table cell with the relevant contents
+ *
+ * @param string column - the name identifier (e.g "Artist") of the column that the cell is found in
+ * @param Object cell - the cell element to be modified
+ * @param Object song - the song object relevant to the row that the cell is found in
+ * @param Object favArray - an array containing string representation of the rowid of each song that the user has favourited
+ * @param Object showColumnArray - an array for whether the columns "Favourite" and "Rating" should be shown to the user
+ * @param number index - the index of the row that the cell is found in
+ */
 function cellInfo(column,cell,song,favArray,showColumnArray,index) {
     if (showColumnArray[0] != "1" && column == "Favourite") {column = "";}
     if (showColumnArray[1] != "1" && column == "Rating") {column = "";}
@@ -425,6 +455,9 @@ function cellInfo(column,cell,song,favArray,showColumnArray,index) {
 /**
  * Generalised function used to populate a song table from some data along with which columns should be shown.
  *
+ * @param Object tableData - an array containing all the song objects for songs to be present in the table
+ * @param Object tableElement - the <table> element to be populated
+ * @param Object columnList - an array of strings defining the columns to be found in the table (e.g "Favourite")
  */
 function constructTable(tableData,tableElement,columnList) {
     var showColumnCookie = getCookie("show_column_settings");

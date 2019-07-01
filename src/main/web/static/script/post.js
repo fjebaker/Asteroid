@@ -2,6 +2,7 @@
  * Used to handle POST requests to the flask server
  *
  * @param {FormData} data - the form data to be posted to the server
+ * @param string address - the HTTP location to which the POST request should be sent
  * @param {postCallback} successCallback - the callback to call upon success of the POST request
  * @param {postCallback} failureCallback -  the callback to call upon timeout or error event of the POST request
  */

@@ -1,5 +1,7 @@
 /**
+ * Function used to request a song from the autoadd song list once every 2 minutes
  *
+ * @param Object songArr - A javascript array object containing the rowids of all songs in the autoadd song list (as strings)
  */
 function autoAdd(songArr) {
     var indexToAdd = songArr[Math.floor(Math.random()*songArr.length)];
@@ -13,7 +15,7 @@ function autoAdd(songArr) {
         }
         if (request.status == 201||request.status == 200) {
             console.log("Queued song with id "+indexToAdd)
-            document.getElementById("tabsDiv").innerHTML += "Queued song with id "+indexToAdd;
+            document.getElementById("tabsDiv").innerHTML += "Queued song with id "+indexToAdd+"<br>";
             setTimeout(autoAdd,120000,songArr);
         }
     }
@@ -25,7 +27,7 @@ function autoAdd(songArr) {
 
 
 /**
- *
+ * Function used to begin the autoadding process with a list of songs in the query string, or redirect if autoadding is not allowed / invalid
  */
 function parseQueryStringSongList() {
     //Check if valid to be here

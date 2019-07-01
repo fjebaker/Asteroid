@@ -78,7 +78,7 @@ function _getCheckedState(index) {
  * Callback used to change the "tabs" cookie when a checkbox is checked or unchecked
  *
  * @param {number} index - the integer index of the tab
- * @param {Object}
+ * @param {Object} box - the checkbox object that triggered the toggle event
  */
 function changeCallback(index,box) {
     var tabArr = getCookie('tabs').split(',');
