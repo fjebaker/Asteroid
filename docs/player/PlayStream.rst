@@ -1,7 +1,7 @@
 ``PlayStream`` Class 
 ====================
 
-.. automodule:: src.main.python.player.PlayStream
+.. automodule:: src.main.player.PlayStream
     :members:
     :undoc-members:
     :show-inheritance:

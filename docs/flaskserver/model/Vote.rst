@@ -1,7 +1,7 @@
 ``Vote`` Class 
 ==============
 
-.. automodule:: src.main.python.flaskserv.model.Vote
+.. automodule:: src.main.web.flaskserv.playqueue.Vote
     :members:
     :undoc-members:
     :show-inheritance:

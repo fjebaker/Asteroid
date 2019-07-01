@@ -1,7 +1,7 @@
 ``INETServer`` Module 
 =====================
 
-.. automodule:: src.main.python.player.INETServer
+.. automodule:: src.main.player.INETServer
     :members:
     :undoc-members:
     :show-inheritance:

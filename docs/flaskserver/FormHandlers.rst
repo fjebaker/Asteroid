@@ -1,7 +1,7 @@
 ``FormHandlers`` Classes 
 ========================
 
-.. automodule:: src.main.python.flaskserv.FormHandlers
+.. automodule:: src.main.web.flaskserv.FormHandlers
     :members:
     :undoc-members:
     :show-inheritance:

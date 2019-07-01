@@ -1,7 +1,7 @@
 ``QueryHandlers`` Classes
 =========================
 
-.. automodule:: src.main.python.flaskserv.QueryHandlers
+.. automodule:: src.main.web.flaskserv.QueryHandlers
     :members:
     :undoc-members:
     :show-inheritance:

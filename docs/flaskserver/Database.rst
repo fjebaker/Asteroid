@@ -1,7 +1,7 @@
 ``Database`` Classes 
 ====================
 
-.. automodule:: src.main.python.flaskserv.Database
+.. automodule:: src.main.web.flaskserv.Database
     :members:
     :undoc-members:
     :show-inheritance:
