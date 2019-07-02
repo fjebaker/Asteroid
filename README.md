@@ -64,6 +64,14 @@ PS C:\> Deactivate.ps1
 ```sh
 # Ensure the virtual environment is activated
 $ source venv/bin/activate
-# Run with python
-$ python run.py
+# Run with python and print help message
+$ python run.py -h
+
+# To configure a new database
+$ python run.py database --fresh
+# To load in music
+$ python run.py database music --load [path to dir with .wav files]
+
+# For more help on a command
+$ python run.py {database,flask,player} -h
 ```
