@@ -7,6 +7,7 @@ import threading
 import os
 from src.main.databasebuilder.setupfuncs import music_db_path, playlist_db_path
 
+
 class AudioHandler(threading.Thread):
     """
     Controlls how the music is being played. Will spawn instances of :class:`src.main.python.player.PlayStream` for each song.
@@ -17,6 +18,7 @@ class AudioHandler(threading.Thread):
     :param queue: queue to get new INET server commands.
     :type queue: :class:`queue.Queue`
     """
+
     def __init__(self, queue):
         threading.Thread.__init__(self)
         self.queue = queue

@@ -1,4 +1,5 @@
-import os, sys
+import os
+import sys
 from src import Config, music_db_path, user_db_path, playlist_db_path
 os.environ["ASTEROID_CONFIG_PATH"] = './config.ini'
 HEADER = r"""               _       _                 _     _ 
@@ -19,6 +20,7 @@ HEADER = r"""               _       _                 _     _
     -- all databases should have id
 """
 
+
 def run_flask(host="", port=""):
     cfg = Config()
     if host == "":
@@ -29,6 +31,7 @@ def run_flask(host="", port=""):
     print("[*] Starting flask HTTP server...")
     import src.main.web.flaskserv.main as main
     main.app.run(host, port)
+
 
 def run_player(host="", port=""):
     cfg = Config()

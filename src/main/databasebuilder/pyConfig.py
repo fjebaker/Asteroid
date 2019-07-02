@@ -1,10 +1,12 @@
 import configparser
 import os
 
+
 class Config(configparser.ConfigParser):
     """
     TODO
     """
+
     def __init__(self):
         configparser.ConfigParser.__init__(self)
         self.path = os.environ["ASTEROID_CONFIG_PATH"]

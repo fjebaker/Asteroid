@@ -5,6 +5,7 @@ import json
 import os
 from src.main.databasebuilder.setupfuncs import music_db_path, user_db_path
 
+
 class BaseQuery(metaclass=abc.ABCMeta):
     """
     Abstract class off of which to construct query classes for the different databases
@@ -198,6 +199,7 @@ class MusicQuery(BaseQuery):
             mimetype='application/json'
         )
 
+
 class UserQuery(BaseQuery):
     """
     Handler for interfacing between user database and the web server.
@@ -211,7 +213,6 @@ class UserQuery(BaseQuery):
 
     def __init__(self, query):
         BaseQuery.__init__(self, query)
-
 
     def getAllUsers(self):
         """
@@ -231,7 +232,6 @@ class UserQuery(BaseQuery):
             status=200,
             mimetype='application/json'
         )
-
 
     def id(self):
         """
@@ -258,12 +258,10 @@ class UserQuery(BaseQuery):
             mimetype='application/json'
         )
 
-
     def _remove_pw(self, db_result):
         for item in db_result:
             del item["hash_pw"]
         return db_result
-
 
     def defaultCase(self):
         """
