@@ -3,7 +3,7 @@ import sys
 import os
 import json
 from src.main.web.flaskserv.main import app as flask_app
-from src.main.web.flaskserv import MusicDB, UserDB, Playlist, History
+from src.main.web.flaskserv import MusicDB, UserDB, Playlist, History, request_song
 
 
 @pytest.fixture(scope='module')
@@ -155,3 +155,14 @@ class TestPlaylist():
         response = test_client.get("/vote")
         assert response.status_code == 200
         assert json.loads(response.data.decode()) == [{'s_id': 1, 'u_id': 3, 'vote': 2}]
+
+
+class TestRequestSong():
+    """Test the request_song method."""
+
+    def test_valid_url(self, test_client):
+        """Test the url is valid.
+        """
+        url = 'https://example.com/song.mp3'
+        response = test_client.post('/request', data={'url': url})
+        assert response.status_code == 201

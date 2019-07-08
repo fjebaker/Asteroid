@@ -1,5 +1,5 @@
 from flask import Flask, redirect, request, send_from_directory
-from src.main.web.flaskserv import MusicQuery, UserQuery, UserHandler
+from src.main.web.flaskserv import MusicQuery, UserQuery, UserHandler, request_song
 from src.main.web.flaskserv import Vote
 app = Flask(__name__)
 
@@ -67,6 +67,13 @@ def user_db():
     return UserQuery(query_string)()
 
 # TODO
+
+
+@app.route("/request", methods=["POST"])
+def request_new_song():
+    json = request.form
+    url = json['url']
+    return request_song.request_song(url)
 
 
 def admin():
