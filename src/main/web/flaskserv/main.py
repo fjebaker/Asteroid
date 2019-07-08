@@ -1,4 +1,5 @@
-from flask import Flask, redirect, request, send_from_directory
+from flask import Flask, redirect, request, send_from_directory, Response
+import requests
 from src.main.web.flaskserv import MusicQuery, UserQuery, UserHandler, request_song
 from src.main.web.flaskserv import Vote
 app = Flask(__name__)
@@ -73,7 +74,13 @@ def user_db():
 def request_new_song():
     json = request.form
     url = json['url']
-    return request_song.request_song(url)
+    status = 500
+    try:
+        request_song.request_song(url)
+        status = 201
+    except (requests.HTTPError, requests.exceptions.MissingSchema):
+        status = 400
+    return Response(status=status)
 
 
 def admin():

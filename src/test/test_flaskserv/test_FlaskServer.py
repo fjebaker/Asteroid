@@ -160,9 +160,23 @@ class TestPlaylist():
 class TestRequestSong():
     """Test the request_song method."""
 
-    def test_valid_url(self, test_client):
-        """Test the url is valid.
+    def test_valid_url_returns_201(self, test_client):
+        """Test a 201 status is returned when a valid url is passed.
+        """
+        url = 'https://google.com'
+        response = test_client.post('/request', data={'url': url})
+        assert response.status_code == 201
+
+    def test_invalid_url_returns_400(self, test_client):
+        """Test a 400 status is returned when an invalid url is passed.
+        """
+        url = 'mp3'
+        response = test_client.post('/request', data={'url': url})
+        assert response.status_code == 400
+
+    def test_nonexistent_url_returns_400(self, test_client):
+        """Test a 400 status is returned when a nonexistent url is passed.
         """
         url = 'https://example.com/song.mp3'
         response = test_client.post('/request', data={'url': url})
-        assert response.status_code == 201
+        assert response.status_code == 400
