@@ -3,7 +3,7 @@ import sys
 import os
 import json
 from src.main.web.flaskserv.main import app as flask_app
-from src.main.web.flaskserv import MusicDB, UserDB, Playlist, History, request_song
+from src.main.web.flaskserv import MusicDB, UserDB, Playlist, History
 
 
 @pytest.fixture(scope='module')
@@ -166,6 +166,13 @@ class TestRequestSong():
         url = 'https://google.com'
         response = test_client.post('/request', data={'url': url})
         assert response.status_code == 201
+
+    def test_invalid_data_returns_400(self, test_client):
+        """Test a 400 status is returned when non-json data is passed.
+        """
+        data = None
+        response = test_client.post('/request', data=data)
+        assert response.status_code == 400
 
     def test_invalid_url_returns_400(self, test_client):
         """Test a 400 status is returned when an invalid url is passed.

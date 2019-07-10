@@ -72,13 +72,29 @@ def user_db():
 
 @app.route("/request", methods=["POST"])
 def request_new_song():
-    json = request.form
-    url = json['url']
+    """Request a new song to be added to the server.
+
+    :return: HTTP status code: `201` if website exists, `400` if website
+    doesn't exist or is invalid, otherwise `500`
+    :rtype: flask.Response
+    """
     status = 500
     try:
+        json = request.form
+        if not isinstance(json, dict):
+            raise TypeError
+        url = json['url']
+        if not isinstance(url, str):
+            raise TypeError
         request_song.request_song(url)
         status = 201
-    except (requests.HTTPError, requests.exceptions.MissingSchema):
+    except TypeError as e:
+        status = 400
+    except requests.exceptions.MissingSchema as e:
+        print(f"{e}: '{url}' is an invalid URL")
+        status = 400
+    except requests.exceptions.ConnectionError as e:
+        print(f"{e}: Failed to connect to '{url}'")
         status = 400
     return Response(status=status)
 
