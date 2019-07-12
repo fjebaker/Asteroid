@@ -160,10 +160,10 @@ class TestPlaylist():
 class TestRequestSong():
     """Test the request_song method."""
 
-    def test_valid_url_returns_201(self, test_client):
+    def test_valid_song_url_returns_201(self, test_client):
         """Test a 201 status is returned when a valid url is passed.
         """
-        url = 'https://google.com'
+        url = 'https://static.xx.fbcdn.net/rsrc.php/yy/r/XFhtdTsftOC.ogg'
         response = test_client.post('/request', data={'url': url})
         assert response.status_code == 201
 
@@ -185,5 +185,12 @@ class TestRequestSong():
         """Test a 400 status is returned when a nonexistent url is passed.
         """
         url = 'https://example.com/song.mp3'
+        response = test_client.post('/request', data={'url': url})
+        assert response.status_code == 400
+
+    def test_valid_not_song_url_returns_400(self, test_client):
+        """Test a 201 status is returned when a valid url is passed.
+        """
+        url = 'https://google.com'
         response = test_client.post('/request', data={'url': url})
         assert response.status_code == 400
