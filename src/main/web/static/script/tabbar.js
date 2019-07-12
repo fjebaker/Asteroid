@@ -70,17 +70,6 @@ const _defaultTabCallback = {
 };
 
 /**
- * Used as a lookup table for values of the "tab" query to javascript functions for button callback
- *
- * @param {string} name - the name of the tab as per the "tab" query: expecting one of ["Voting","Rating","Tabs","Account"]
- *
- * @returns {string|buttonCallback} callback - the relevant callback function for the 'name' string if it matches one of the expected values, or the string "" if it doesn't.
- */
-function defaultTabCallback(name) {
-    return _defaultTabCallback[name] || "";
-}
-
-/**
  * Used to ensure that a valid "tabs" cookie exists, and set the cookie to the default value if it doesn't exist
  */
 function defaultTabCookies() {
@@ -132,7 +121,7 @@ function supplyButtons(element,tabCallback) {
  */
 function supplyTabButtons(elementname) {
     var tabsDiv = document.getElementById(elementname);
-    supplyButtons(tabsDiv,defaultTabCallback);
+    supplyButtons(tabsDiv,function(name){return _defaultTabCallback[name] || "";});
 }
 
 current_callback();

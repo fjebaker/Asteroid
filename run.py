@@ -1,7 +1,7 @@
 import os
 import sys
 import argparse
-from src import Config, music_db_path, user_db_path, playlist_db_path
+from src import Config, music_db_path, user_db_path, playlist_db_path, build_js_config
 os.environ["ASTEROID_CONFIG_PATH"] = './config.ini'
 HEADER = r"""               _       _                 _     _ 
  _ __  _   _  /_\  ___| |_ ___ _ __ ___ (_) __| |
@@ -28,7 +28,7 @@ def run_flask(host="", port=""):
         host = cfg.get("FlaskServer", "hostname")
     if port == "":
         port = cfg.get("FlaskServer", "port")
-
+    build_js_config(cfg._sections['JSConfig'])
     print("[*] Starting flask HTTP server...")
     import src.main.web.flaskserv.main as main
     main.app.run(host, port)
