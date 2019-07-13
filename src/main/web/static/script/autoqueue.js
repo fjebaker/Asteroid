@@ -34,6 +34,7 @@ function parseQueryStringSongList() {
     var urlParams = new URLSearchParams(location.search);
     if(urlParams.has("songs")) {
         var songsArr = urlParams.get("songs").split(" ");
+        document.getElementById("tabsDiv").innerHTML = "Autoqueueing songs -- as long as this tab is actively running, a random song from the requested set of songs will be added to the queue every so often.<br>";
         setTimeout(autoAdd,120000,songsArr);
     } else {
         document.location.href ="/?v="+Math.random();
