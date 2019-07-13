@@ -63,10 +63,13 @@ function settings() {updateQuery({"tab":"Settings","v":Math.random()});}
 //function tabs() {updateQuery({"tab":"Tabs","v":Math.random()});}
 //function account() {updateQuery({"tab":"Account","v":Math.random()});}
 
+function request() {document.location}
+
 const _defaultTabCallback = {
     "Voting":voting,
     "Rating":rating,
-    "Settings":settings
+    "Settings":settings,
+    "Request":request
 };
 
 /**
@@ -75,8 +78,8 @@ const _defaultTabCallback = {
 function defaultTabCookies() {
     var configJSON = getConfigJson();
     if (getCookie("tabs") == ""){
-        if (configJSON.hasOwnProperty("default_tab_activation")) {
-            setCookie("tabs",configJSON["default_tab_activation"],getCookieDuration());
+        if (configJSON.hasOwnProperty("default-tab-activation")) {
+            setCookie("tabs",configJSON["default-tab-activation"],getCookieDuration());
         } else {
             setCookie("tabs","1,0,1,1,1,0",getCookieDuration());
         }
@@ -97,10 +100,11 @@ function supplyButtons(element,tabCallback) {
         3:"Downloaded",
         4:"Favourites",
         5:"Playlists",
-        6:"Settings"
+        6:"Settings",
+        7:"Request"
     };
     defaultTabCookies();
-    var tabStr = getCookie("tabs")+",1";
+    var tabStr = getCookie("tabs")+",1,1";
     var tabArray = tabStr.split(','); //Which tabs the user wishes to be shown
     for(var i=0; i<tabArray.length; i++) {
         var number = tabArray[i];

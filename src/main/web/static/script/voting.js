@@ -83,8 +83,8 @@ function _submitVote(event){
     var voteFavCookie = getCookie("vote_favourite_settings");
     if (voteFavCookie == "") {
         var configJSON = getConfigJson();
-        if (configJSON.hasOwnProperty("default_vote_favourite_settings")) {
-            voteFavCookie = configJSON["default_vote_favourite_settings"];
+        if (configJSON.hasOwnProperty("default-vote-favourite-settings")) {
+            voteFavCookie = configJSON["default-vote-favourite-settings"];
         } else {
             voteFavCookie = "1,1";
         }
@@ -470,8 +470,8 @@ function constructTable(tableData,tableElement,columnList) {
     var showColumnCookie = getCookie("show_column_settings");
     if (showColumnCookie == "") {
         var configJSON = getConfigJson();
-        if (configJSON.hasOwnProperty("default_show_column_settings")) {
-            showColumnCookie = configJSON["default_show_column_settings"];
+        if (configJSON.hasOwnProperty("default-show-column-settings")) {
+            showColumnCookie = configJSON["default-show-column-settings"];
         } else {
             showColumnCookie = "1,0";
         }
