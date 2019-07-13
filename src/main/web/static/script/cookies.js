@@ -96,8 +96,13 @@ function setCookieDuration() {
     var configJSON = getConfigJson();
     if (getCookie("cookieDuration") == "") {
         if (configJSON.hasOwnProperty("default-cookie-expiry")) {
-            var default_cookie_expiry = configJSON["default-cookie-expiry"]
-            setCookie("cookieDuration",default_cookie_expiry,convertNameToDuration(default_cookie_expiry));
+            var default_cookie_expiry = configJSON["default-cookie-expiry"];
+            var duration = convertNameToDuration(default_cookie_expiry);
+            if (duration != 0) {
+                setCookie("cookieDuration",default_cookie_expiry,convertNameToDuration(default_cookie_expiry));
+            } else {
+                setCookie("cookieDuration","hour",3600000);
+            }
         } else {
             setCookie("cookieDuration","hour",3600000);
         }
