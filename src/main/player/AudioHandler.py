@@ -69,15 +69,19 @@ class AudioHandler(threading.Thread):
         n_item = n_item[0]
         s_id = n_item["s_id"]
         pl.remove(s_id)
-        History(playlist_db_path()).add((n_item["s_id"], n_item["u_id"], n_item["vote"]))
+        if n_item["vote"] > 0: #Don't play songs which have downvotes >= upvotes
+            History(playlist_db_path()).add((n_item["s_id"], n_item["u_id"], n_item["vote"]))
 
-        try:
-            song = MusicDB(music_db_path()).get_by_rowid(s_id)[0]
-        except Exception as e:
-            print("DEBUG -- get_path_from_database :: Exception = " + str(e))
-            return None
+            try:
+                song = MusicDB(music_db_path()).get_by_rowid(s_id)[0]
+            except Exception as e:
+                print("DEBUG -- get_path_from_database :: Exception = " + str(e))
+                return None
+            else:
+                return song["file_path"]
         else:
-            return song["file_path"]
+            print("DEBUG -- get_path_from_database :: reached songs with under zero (0) votes")
+            return None
 
     def play(self, *args):
         """

@@ -20,7 +20,7 @@ function final_callback() {
     createAuth();
     console.log("Done loading /auth");
 }
-var dependencies = ["../config/jsconfig.js","../script/cookies.js","../script/json.js","../script/post.js","../script/queries.js","../script/auth.js"];
+var dependencies = ["../config/jsconfig.js","../script/json.js","../script/cookies.js","../script/post.js","../script/queries.js","../script/auth.js"];
 insert_all_before(document.getElementById("dynamicLoad"),dependencies,final_callback);
 </script>
 </body>

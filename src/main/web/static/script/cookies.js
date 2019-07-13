@@ -65,7 +65,6 @@ function checkCookieValidity() {
         document.location.href = "/auth?v="+Math.random();
     }
     function authFailure(data) {
-        setCookie("id","",0);
         document.location.href = "/auth?v="+Math.random();
     }
     getJson('/db/users?id='+currId,function(data){if (typeof data == "string" || !data[0].hasOwnProperty("name")){authFailure(data);}},authFailure);
@@ -96,9 +95,14 @@ function convertNameToDuration(timeString) {
 function setCookieDuration() {
     var configJSON = getConfigJson();
     if (getCookie("cookieDuration") == "") {
-        if (configJSON.hasOwnProperty("default_cookie_expiry")) {
-            var default_cookie_expiry = configJSON["default_cookie_expiry"]
-            setCookie("cookieDuration",default_cookie_expiry,convertNameToDuration(default_cookie_expiry));
+        if (configJSON.hasOwnProperty("default-cookie-expiry")) {
+            var default_cookie_expiry = configJSON["default-cookie-expiry"];
+            var duration = convertNameToDuration(default_cookie_expiry);
+            if (duration != 0) {
+                setCookie("cookieDuration",default_cookie_expiry,convertNameToDuration(default_cookie_expiry));
+            } else {
+                setCookie("cookieDuration","hour",3600000);
+            }
         } else {
             setCookie("cookieDuration","hour",3600000);
         }

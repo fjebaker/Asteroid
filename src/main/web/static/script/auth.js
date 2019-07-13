@@ -88,8 +88,10 @@ function createAuth() {
         bodyDiv.appendChild(form);
     }
     function authFailure(data) {
-        setCookie("id","",0);
-        create_auth_form();
+        const em = document.createElement('em')
+        em.innerHTML = "Error contacting the server to authorise your account! Please try again."
+        bodyDiv.parentNode.insertBefore(em,bodyDiv)
+        bodyDiv.innerHTML = "<button onclick='updateQuery(\"v\":Math.random())'>Refresh page</button>"
     }
     if (getCookie("id") == "") {
         create_auth_form();

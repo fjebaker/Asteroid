@@ -63,22 +63,14 @@ function settings() {updateQuery({"tab":"Settings","v":Math.random()});}
 //function tabs() {updateQuery({"tab":"Tabs","v":Math.random()});}
 //function account() {updateQuery({"tab":"Account","v":Math.random()});}
 
+function request() {document.location.href=""}
+
 const _defaultTabCallback = {
     "Voting":voting,
     "Rating":rating,
-    "Settings":settings
+    "Settings":settings,
+    "Request":request
 };
-
-/**
- * Used as a lookup table for values of the "tab" query to javascript functions for button callback
- *
- * @param {string} name - the name of the tab as per the "tab" query: expecting one of ["Voting","Rating","Tabs","Account"]
- *
- * @returns {string|buttonCallback} callback - the relevant callback function for the 'name' string if it matches one of the expected values, or the string "" if it doesn't.
- */
-function defaultTabCallback(name) {
-    return _defaultTabCallback[name] || "";
-}
 
 /**
  * Used to ensure that a valid "tabs" cookie exists, and set the cookie to the default value if it doesn't exist
@@ -86,8 +78,8 @@ function defaultTabCallback(name) {
 function defaultTabCookies() {
     var configJSON = getConfigJson();
     if (getCookie("tabs") == ""){
-        if (configJSON.hasOwnProperty("default_tab_activation")) {
-            setCookie("tabs",configJSON["default_tab_activation"],getCookieDuration());
+        if (configJSON.hasOwnProperty("default-tab-activation")) {
+            setCookie("tabs",configJSON["default-tab-activation"],getCookieDuration());
         } else {
             setCookie("tabs","1,0,1,1,1,0",getCookieDuration());
         }
@@ -101,17 +93,25 @@ function defaultTabCookies() {
  * @param {tableCallback} tableCallback - the lookup table for buttons to use
  */
 function supplyButtons(element,tabCallback) {
+    var configJSON = getConfigJson();
+    var allow_requests = ""
+    var allow_favourites = ""
+    var allow_playlists = ""
+    if (configJSON.hasOwnProperty("allow-requests")) {allow_requests = (configJSON["allow-requests"] == "1" ? "Request" : "");}
+    if (configJSON.hasOwnProperty("allow-favourites")) {allow_favourites = (configJSON["allow-favourites"] == "1" ? "Favourites" : "");}
+    if (configJSON.hasOwnProperty("allow-playlists")) {allow_playlists = (configJSON["allow-playlists"] == "1" ? "Playlists" : "");}
     const _tabbarLookupNames = {
         0:"Voting",
         1:"Rating",
         2:"Queue",
         3:"Downloaded",
-        4:"Favourites",
-        5:"Playlists",
-        6:"Settings"
+        4: allow_favourites,
+        5: allow_playlists,
+        6:"Settings",
+        7: allow_requests
     };
     defaultTabCookies();
-    var tabStr = getCookie("tabs")+",1";
+    var tabStr = getCookie("tabs")+",1,1";
     var tabArray = tabStr.split(','); //Which tabs the user wishes to be shown
     for(var i=0; i<tabArray.length; i++) {
         var number = tabArray[i];
@@ -132,7 +132,7 @@ function supplyButtons(element,tabCallback) {
  */
 function supplyTabButtons(elementname) {
     var tabsDiv = document.getElementById(elementname);
-    supplyButtons(tabsDiv,defaultTabCallback);
+    supplyButtons(tabsDiv,function(name){return _defaultTabCallback[name] || "";});
 }
 
 current_callback();
