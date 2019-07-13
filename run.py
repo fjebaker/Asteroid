@@ -41,6 +41,7 @@ def run_player(host="", port=""):
     if port == "":
         port = cfg.get("PlayerConfig", "port")
 
+    del sys.modules['alsaaudio']
     try:
         import alsaaudio
     except:
