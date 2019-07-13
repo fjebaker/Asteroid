@@ -63,7 +63,7 @@ function settings() {updateQuery({"tab":"Settings","v":Math.random()});}
 //function tabs() {updateQuery({"tab":"Tabs","v":Math.random()});}
 //function account() {updateQuery({"tab":"Account","v":Math.random()});}
 
-function request() {document.location}
+function request() {document.location.href=""}
 
 const _defaultTabCallback = {
     "Voting":voting,
@@ -93,15 +93,22 @@ function defaultTabCookies() {
  * @param {tableCallback} tableCallback - the lookup table for buttons to use
  */
 function supplyButtons(element,tabCallback) {
+    var configJSON = getConfigJson();
+    var allow_requests = ""
+    var allow_favourites = ""
+    var allow_playlists = ""
+    if (configJSON.hasOwnProperty("allow-requests")) {allow_requests = (configJSON["allow-requests"] == "1" ? "Request" : "");}
+    if (configJSON.hasOwnProperty("allow-favourites")) {allow_favourites = (configJSON["allow-favourites"] == "1" ? "Favourites" : "");}
+    if (configJSON.hasOwnProperty("allow-playlists")) {allow_playlists = (configJSON["allow-playlists"] == "1" ? "Playlists" : "");}
     const _tabbarLookupNames = {
         0:"Voting",
         1:"Rating",
         2:"Queue",
         3:"Downloaded",
-        4:"Favourites",
-        5:"Playlists",
+        4: allow_favourites,
+        5: allow_playlists,
         6:"Settings",
-        7:"Request"
+        7: allow_requests
     };
     defaultTabCookies();
     var tabStr = getCookie("tabs")+",1,1";

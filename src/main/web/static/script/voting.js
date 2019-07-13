@@ -81,8 +81,8 @@ function _submitVote(event){
     var elements = event.target.elements;
     var isDownvote = (elements.namedItem("voteValueFormElement").value < 0);
     var voteFavCookie = getCookie("vote_favourite_settings");
+    var configJSON = getConfigJson();
     if (voteFavCookie == "") {
-        var configJSON = getConfigJson();
         if (configJSON.hasOwnProperty("default-vote-favourite-settings")) {
             voteFavCookie = configJSON["default-vote-favourite-settings"];
         } else {
@@ -99,7 +99,15 @@ function _submitVote(event){
             console.log("404: POST response not found");
         }
         if (request.status == 201||request.status == 200) {
-            updateQueryWithoutReload({v:Math.random(),votetab:"Queue"});
+            redirects = true
+            if (configJSON.hasOwnProperty("redirect-on-vote") && configJSON.hasOwnProperty("on-vote-redirect-path")) {
+                redirects = (configJSON["redirect-on-vote"] == "1");
+            }
+            if (redirects) {
+                document.location.href = configJSON["on-vote-redirect-path"]
+            } else {
+                updateQueryWithoutReload({v:Math.random(),votetab:"Queue"});
+            }
         }
     }
     function failure(request) {
@@ -397,13 +405,20 @@ function _favourites(data) {
  * Used to construct and populate a table of songs from the user's "favourites" cookie
  */
 function favourites() {
+    var configJSON = getConfigJson();
+    autoqueueButtonText = ""
+    if (configJSON.hasOwnProperty("allow-autoqueue")) {
+        autoqueueButtonText = (configJSON["allow-autoqueue"] == "1") ? "<button id='autoQueueButton'>Autoqueue Favourites</button>": "";
+    }
     updateQueryWithoutReload({votetab:"Favourites",v:Math.random()});
-    document.getElementById("listDiv").innerHTML = "<button id='autoQueueButton'>Autoqueue Favourites</button><table style='width:100%' id='favouritesVotingTable'></table>";
+    document.getElementById("listDiv").innerHTML = autoqueueButtonText+"<table style='width:100%' id='favouritesVotingTable'></table>";
     var favouritesVotingTable = document.getElementById("favouritesVotingTable");
     var currCookieData = getCookie("Favourites");
     if (!(currCookieData === "")) {
         favArray = currCookieData.split(',');
-        document.getElementById("autoQueueButton").outerHTML="<button id='autoQueueButton' onclick='document.location.href=\"/autoqueue?songs="+favArray.join('%20')+'"\'>Autoqueue Favourites</button>'
+        if (autoqueueButtonText != "") {
+            document.getElementById("autoQueueButton").outerHTML="<button id='autoQueueButton' onclick='document.location.href=\"/autoqueue?songs="+favArray.join('%20')+'"\'>Autoqueue Favourites</button>'
+        }
         getJson("/db/music?id="+favArray.join("%20"),_favourites,function(data){document.getElementById("listDiv").innerHTML = "Unable to load favourites table!";})
     } else {
         aqbElem = document.getElementById("autoQueueButton");
