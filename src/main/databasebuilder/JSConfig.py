@@ -3,7 +3,7 @@
 import json
 
 
-def build_js_config(config):
+def build(config):
     """Build the config for the client-side JavaScript using the dictionary
     passed in the constructor.
 
