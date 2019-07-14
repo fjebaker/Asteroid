@@ -13,11 +13,11 @@ def get(url):
     :raises TypeError: URL is not an audio file
     """
     song_name = url.rsplit('/', 1)[-1]
-    music_path = f'src/main/music/{song_name}'
+    music_path = 'src/main/music/{song_name}'.format(song_name=song_name)
     response = requests.get(url)
     mime_type = response.headers['Content-Type']
     if 'audio' not in mime_type:
-        raise TypeError(f'{url} is not an audio file')
+        raise TypeError('{url} is not an audio file'.format(url=url))
     with open(music_path, 'wb') as file:
         file.write(response.content)
 
@@ -46,9 +46,9 @@ def handle(request):
     except FileNotFoundError as e:
         status = 400
     except requests.exceptions.MissingSchema as e:
-        print(f"{e}: '{url}' is an invalid URL")
+        print("{e}: '{url}' is an invalid URL".format(e=e,url=url))
         status = 400
     except requests.exceptions.ConnectionError as e:
-        print(f"{e}: Failed to connect to '{url}'")
+        print("{e}: Failed to connect to '{url}'".format(e=e,url=url))
         status = 400
     return flask.Response(status=status)
