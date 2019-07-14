@@ -22,7 +22,7 @@ def test_nonexistent_url_raises_connection_error():
     """Test a requests.exceptions.ConnectionError exception is raised when a nonexistent url is passed.
     """
     with pytest.raises(requests.exceptions.ConnectionError):
-        song_request_handler.get(url='https://example.com/song.mp3')
+        song_request_handler.get(url='https://example.invalid/song.mp3')
 
 
 def test_valid_not_song_url_raises_type_error():
