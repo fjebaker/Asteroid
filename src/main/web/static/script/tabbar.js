@@ -48,6 +48,13 @@ function includeQueryStringScript() {
                 };
                 scriptName = "settings.js"
                 break;
+            case "Request":
+                tab_callback=function(){
+                    setupRequestArea();
+                    tab_callback=function(){};
+                }
+                scriptName = "request.js"
+                break;
             default:
                 var message = "No known tab with the name: "+tabName;
                 document.getElementById("bodyDiv").innerHTML = message;
@@ -60,10 +67,9 @@ function includeQueryStringScript() {
 function voting() {updateQuery({"tab":"Voting","v":Math.random()});}
 function rating() {updateQuery({"tab":"Rating","v":Math.random()});}
 function settings() {updateQuery({"tab":"Settings","v":Math.random()});}
-//function tabs() {updateQuery({"tab":"Tabs","v":Math.random()});}
-//function account() {updateQuery({"tab":"Account","v":Math.random()});}
+function request() {updateQuery({"tab":"Request","v":Math.random()});}
 
-function request() {document.location.href=""}
+//function request() {document.location.href="/request"}
 
 const _defaultTabCallback = {
     "Voting":voting,
