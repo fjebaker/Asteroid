@@ -1,5 +1,6 @@
-from flask import Flask, redirect, request, send_from_directory
-from src.main.web.flaskserv import MusicQuery, UserQuery, UserHandler
+from flask import Flask, redirect, request, send_from_directory, Response
+import requests
+from src.main.web.flaskserv import MusicQuery, UserQuery, UserHandler, song_request_handler
 from src.main.web.flaskserv import Vote
 app = Flask(__name__)
 
@@ -67,6 +68,17 @@ def user_db():
     return UserQuery(query_string)()
 
 # TODO
+
+
+@app.route("/request", methods=["POST"])
+def request_song():
+    """Request a new song to be added to the server.
+
+    :return: HTTP status code: `201` if website exists, `400` if website
+    doesn't exist or is invalid, otherwise `500`
+    :rtype: flask.Response
+    """
+    return song_request_handler.handle(request)
 
 
 def admin():
