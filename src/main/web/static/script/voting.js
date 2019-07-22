@@ -493,12 +493,22 @@ function constructTable(tableData,tableElement,columnList) {
         setCookie("show_column_settings",showColumnCookie,getCookieDuration());
     }
     var showColumnArray = showColumnCookie.split(',');
-    var topRow = tableElement.insertRow(0);
-    for (var i=0; i<columnList.length; i++) {
-        if (!(showColumnArray[0] == "0" && columnList[i] == "Favourite") && !(showColumnArray[1] == "0" && columnList[i] == "Rating")) {
-            var newCell = document.createElement('th');
-            newCell.innerHTML = columnList[i];
-            topRow.appendChild(newCell);
+    //Only if a top th row does not exist
+    var headerBool = true;
+    if (tableElement.rows.length != 0) {
+        var topRow = tableElement.rows[0].cells;
+        if (topRow.length != 0) {
+            headerBool = topRow[0].nodeName.toLowerCase() != "th";
+        }
+    }
+    if (headerBool) {
+        var topRow = tableElement.insertRow(0);
+        for (var i=0; i<columnList.length; i++) {
+            if (!(showColumnArray[0] == "0" && columnList[i] == "Favourite") && !(showColumnArray[1] == "0" && columnList[i] == "Rating")) {
+                var newCell = document.createElement('th');
+                newCell.innerHTML = columnList[i];
+                topRow.appendChild(newCell);
+            }
         }
     }
     favArray = getCookie("Favourites").split(',');
