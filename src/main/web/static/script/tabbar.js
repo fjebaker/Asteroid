@@ -87,7 +87,7 @@ function defaultTabCookies() {
         if (configJSON.hasOwnProperty("default-tab-activation")) {
             setCookie("tabs",configJSON["default-tab-activation"],getCookieDuration());
         } else {
-            setCookie("tabs","1,0,1,1,1,0",getCookieDuration());
+            setCookie("tabs","1,1,1,1,0",getCookieDuration());
         }
     }
 }
@@ -108,13 +108,12 @@ function supplyButtons(element,tabCallback) {
     if (configJSON.hasOwnProperty("allow-playlists")) {allow_playlists = (configJSON["allow-playlists"] == "1" ? "Playlists" : "");}
     const _tabbarLookupNames = {
         0:"Voting",
-        1:"Rating",
-        2:"Queue",
-        3:"Downloaded",
-        4: allow_favourites,
-        5: allow_playlists,
-        6:"Settings",
-        7: allow_requests
+        1:"Queue",
+        2:"Downloaded",
+        3: allow_favourites,
+        4: allow_playlists,
+        5:"Settings",
+        6: allow_requests
     };
     defaultTabCookies();
     var tabStr = getCookie("tabs")+",1,1";

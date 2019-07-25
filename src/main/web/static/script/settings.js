@@ -35,7 +35,7 @@ function putOptions() {
  */
 function _getCheckedState(index) {
     var tabArr = getCookie('tabs').split(',');
-    if (index < 6) {
+    if (index < 5) {
         if (tabArr[index] == "1") {return "checked";}
         else {return "";}
     }
@@ -49,7 +49,7 @@ function _getCheckedState(index) {
  */
 function _changeCallback(index,box) {
     var tabArr = getCookie('tabs').split(',');
-    if (index < 6) {
+    if (index < 5) {
         var adder = box.checked ? 1 : 0;
         tabArr[index] = adder;
         setCookie("tabs",tabArr.join(','),getCookieDuration());
@@ -63,14 +63,13 @@ function _changeCallback(index,box) {
 function populateTabSettingTable() {
     const _settingsLookupNames = {
         0:"Voting",
-        1:"Rating",
-        2:"Queue",
-        3:"Downloaded",
-        4:"Favourites",
-        5:"Playlists"
+        1:"Queue",
+        2:"Downloaded",
+        3:"Favourites",
+        4:"Playlists"
     };
     var tabSettingTable = document.getElementById("tabSettingTable");
-    for (var i=0; i<6; i++) {
+    for (var i=0; i<5; i++) {
         var newRow = tabSettingTable.insertRow(-1);
         var nameCell = newRow.insertCell(0);
         var buttonCell = newRow.insertCell(1);
