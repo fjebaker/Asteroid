@@ -70,6 +70,29 @@ function _updateFavouriteCookie(id,removeBool) {
     }
 }
 
+function _updateRatingCookie(id,removeBool,score) {
+    var currCookieData = getCookie("Ratings");
+    if (currCookieData == "") {
+        setCookie("Ratings",""+id+":"+score,getCookieDuration());
+        //Update elements
+    } else {
+        var rateArr = currCookieData.split(',');
+        var rateObj = {};
+        for (var i = 0; i < rateArr.length, i++) {
+            var rateItem = rateArr[i].split(":");
+            rateObj[Number(rateItem[0])] = Number(rateItem[1]);
+        }
+        rateObj[id] = score;
+        saveStr = "";
+        for (var songid in rateObj) {
+            saveStr += ""+songid+":"+rateObj(songid)+",";
+        }
+        saveStr = saveStr.slice(0,-1);
+        setCookie("Ratings",saveStr,getCookieDuration());
+        //Update elements
+    }
+}
+
 /**
  * Callback used to submit an upvote or downvote on form submission
  *
@@ -149,14 +172,21 @@ function createVoteForm(id) {
     return form;
 }
 
-
 /**
  * CURRENTLY WIP, WILL BE IMPLEMENTED IN FUTURE COMMIT
- * Used to generate 
+ * Used to generate an element with rating buttons for a particular song id
  *
  */
 function createRatingButtons(id) {
-    
+    const div = document.createElement('div');
+    for (var i=1;i<6;i++) {
+        const ib = i;
+        var rateButton = document.createElement('button')
+        _supplyFromDict(rateButton,{id:'downvote'});
+        rateButton.onclick = function(){_updateRatingCookie(id,false,ib);};
+        div.appendChild(rateButton);
+    }
+    return div;
 }
 
 /**
@@ -467,8 +497,9 @@ function _cellInfo(column,cell,song,favArray,showColumnArray,index) {
         case "Votes":
             cell.innerHTML = song.votes_for;
             break;
-        case "Rating":
-            cell.innerHTML = "<button id='1star"+song.rowid+"' title='1 star' class='starempty'>1 star</button><button id='2star"+song.rowid+"' title='2 stars' class='starempty'>2 stars</button><button id='3star"+song.rowid+"'>";
+        //case "Rating":
+            //cell.appendChild(createRatingButtons(song.rowid));
+            //cell.innerHTML = "<button id='1star"+song.rowid+"' title='1 star' class='starempty'>1 star</button><button id='2star"+song.rowid+"' title='2 stars' class='starempty'>2 stars</button><button id='3star"+song.rowid+"'>";
         default:
             break;
     }
