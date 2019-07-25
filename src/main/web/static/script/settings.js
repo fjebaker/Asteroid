@@ -137,7 +137,8 @@ function populateDivAccount(divname) {
     showColumnArray[0] = (showColumnArray[0] == "1" ? "checked" : "");
     showColumnArray[1] = (showColumnArray[1] == "1" ? "checked" : "");
     bodyDiv.innerHTML += "<br>Automatically favourite upvoted songs: <input type='checkbox' onclick='_toggleVoteFav(0,this);' "+voteFavArray[0]+"><br>Automatically unfavourite downvoted songs: <input type='checkbox' onclick='_toggleVoteFav(1,this);' "+voteFavArray[1]+">";
-    bodyDiv.innerHTML += "<br>Show 'favourite' column: <input type='checkbox' onclick='_toggleColumn(0,this);' "+showColumnArray[0]+"><br>Show 'rating' column: <input type='checkbox' onclick='_toggleColumn(1,this);' "+showColumnArray[1]+">";
+    bodyDiv.innerHTML += "<br>Show 'favourite' column: <input type='checkbox' onclick='_toggleColumn(0,this);' "+showColumnArray[0]+">";
+    //bodyDiv.innerHTML += "<br>Show 'rating' column: <input type='checkbox' onclick='_toggleColumn(1,this);' "+showColumnArray[1]+">";
     bodyDiv.innerHTML += "<table style='width:100%' id='tabSettingTable'><tr><th>Tab</th><th>Active</th></tr></table>";
     putOptions();
     populateTabSettingTable();

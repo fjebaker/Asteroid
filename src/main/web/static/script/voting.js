@@ -78,7 +78,7 @@ function _updateRatingCookie(id,removeBool,score) {
     } else {
         var rateArr = currCookieData.split(',');
         var rateObj = {};
-        for (var i = 0; i < rateArr.length, i++) {
+        for (var i = 0; i < rateArr.length; i++) {
             var rateItem = rateArr[i].split(":");
             rateObj[Number(rateItem[0])] = Number(rateItem[1]);
         }
@@ -535,6 +535,7 @@ function constructTable(tableData,tableElement,columnList) {
     if (headerBool) {
         var topRow = tableElement.insertRow(0);
         for (var i=0; i<columnList.length; i++) {
+            showColumnArray[1] = "0" //Rating temporarily non-functional
             if (!(showColumnArray[0] == "0" && columnList[i] == "Favourite") && !(showColumnArray[1] == "0" && columnList[i] == "Rating")) {
                 var newCell = document.createElement('th');
                 newCell.innerHTML = columnList[i];
