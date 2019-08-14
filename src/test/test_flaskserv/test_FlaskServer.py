@@ -1,9 +1,8 @@
 import pytest
-import sys
 import os
 import json
 from src.main.web.flaskserv.main import app as flask_app
-from src.main.web.flaskserv import MusicDB, UserDB, Playlist, History
+from src.main.web.flaskserv.Database import MusicDB, init_database_session
 
 
 @pytest.fixture(scope='module')
@@ -15,23 +14,20 @@ def temp_db(tmpdir_factory):
     :param tmpdir_factory:
     :return:
     """
-    fn = str(tmpdir_factory.mktemp("data").join("test.db"))
-    mdb = MusicDB(fn)
-    mdb.create_table()
-    mdb.add_song(("testname1", "testartist1", 1, "testpath1", "testmetadata1"))
-    mdb.add_song(("testname2", "testartist'2", 2, "testpath2", "testmetadata2"))
-    UserDB(fn).create_table()
-    Playlist(fn).create_table()
-    History(fn).create_table()
 
+    fn = str(tmpdir_factory.mktemp("data").join("test.db"))
     config = str(tmpdir_factory.mktemp("data").join("config.ini"))
     os.environ["ASTEROID_CONFIG_PATH"] = config
     with open(config, 'w+') as f:
         f.write('''[Databases]
-    music-db-path = {}
-    user-db-path = {}
-    playlist-db-path = {}
-    '''.format(fn, fn, fn))
+        db-path = {}
+        '''.format(fn))
+
+    init_database_session()
+
+    mdb = MusicDB()
+    mdb.add_song({'name': "testname1", 'artist': "testartist1",  'duration': 1,  'file_path': "testpath1",  'meta_dat': "testmetadata1"})
+    mdb.add_song({'name': "testname2", 'artist': "testartist'2", 'duration': 2, 'file_path': "testpath2", 'meta_dat': "testmetadata2"})
 
     yield fn
 
@@ -75,11 +71,11 @@ class TestServerUsers():
             assert response.status_code == 200
             assert json.loads(response.data.decode()) == [{'id': i, 'name': 'TestUser' + str(i), 'meta_dat': ''}]
         response = test_client.get('/db/users', query_string={'id': 0})
-        assert response.status_code == 400
-        assert json.loads(response.data.decode()) == {}
+        assert response.status_code == 200
+        assert json.loads(response.data.decode()) == []
 
     def test_get_all_users(self, test_client):
-        response = test_client.get('/db/users', query_string={'': 'getAllUsers'})
+        response = test_client.get('/db/users', query_string={'getAllUsers': ''})
         assert response.status_code == 200
         assert json.loads(response.data.decode()) == [
             {'id': 1, 'name': 'TestUser1', 'meta_dat': ''},
@@ -90,27 +86,27 @@ class TestServerUsers():
 class TestServerMusic():
 
     def test_get_songs(self, test_client):
-        response = test_client.get("/db/music", query_string={'': 'getAllSongs'})
+        response = test_client.get("/db/music", query_string={'getAllSongs':''})
         assert response.status_code == 200
         assert json.loads(response.data.decode()) == [
-            {'rowid': 1, 'name': 'testname1', 'artist': 'testartist1', 'duration': 1.0, 'meta_dat': 'testmetadata1'},
-            {'rowid': 2, 'name': 'testname2', 'artist': "testartist'2", 'duration': 2.0, 'meta_dat': 'testmetadata2'}]
+            {'id': 1, 'name': 'testname1', 'artist': 'testartist1', 'duration': 1.0, 'meta_dat': 'testmetadata1'},
+            {'id': 2, 'name': 'testname2', 'artist': "testartist'2", 'duration': 2.0, 'meta_dat': 'testmetadata2'}]
 
     def test_get_song_by_id(self, test_client):
         response = test_client.get("/db/music", query_string={'id': 1})
         assert response.status_code == 200
         assert json.loads(response.data.decode()) == [
-            {'rowid': 1, 'name': 'testname1', 'artist': 'testartist1', 'duration': 1.0, 'meta_dat': 'testmetadata1'}]
+            {'id': 1, 'name': 'testname1', 'artist': 'testartist1', 'duration': 1.0, 'meta_dat': 'testmetadata1'}]
 
         response = test_client.get("/db/music", query_string={'id': 3})
-        assert response.status_code == 400
+        assert response.status_code == 200
 
     def test_get_by_name(self, test_client):
         response = test_client.get("/db/music", query_string={"name": "test"})
         assert response.status_code == 200
         assert json.loads(response.data.decode()) == [
-            {'rowid': 1, 'name': 'testname1', 'artist': 'testartist1', 'duration': 1.0, 'meta_dat': 'testmetadata1'},
-            {'rowid': 2, 'name': 'testname2', 'artist': "testartist'2", 'duration': 2.0, 'meta_dat': 'testmetadata2'}]
+            {'id': 1, 'name': 'testname1', 'artist': 'testartist1', 'duration': 1.0, 'meta_dat': 'testmetadata1'},
+            {'id': 2, 'name': 'testname2', 'artist': "testartist'2", 'duration': 2.0, 'meta_dat': 'testmetadata2'}]
 
         response = test_client.get("/db/music", query_string={"name": "deadbeef'"})
         assert response.status_code == 200
@@ -120,8 +116,8 @@ class TestServerMusic():
         response = test_client.get("/db/music", query_string={"artist": "test"})
         assert response.status_code == 200
         assert json.loads(response.data.decode()) == [
-            {'rowid': 1, 'name': 'testname1', 'artist': 'testartist1', 'duration': 1.0, 'meta_dat': 'testmetadata1'},
-            {'rowid': 2, 'name': 'testname2', 'artist': "testartist'2", 'duration': 2.0, 'meta_dat': 'testmetadata2'}]
+            {'id': 1, 'name': 'testname1', 'artist': 'testartist1', 'duration': 1.0, 'meta_dat': 'testmetadata1'},
+            {'id': 2, 'name': 'testname2', 'artist': "testartist'2", 'duration': 2.0, 'meta_dat': 'testmetadata2'}]
 
         response = test_client.get("/db/music", query_string={"artist": "deadbeef'"})
         assert response.status_code == 200
@@ -131,7 +127,7 @@ class TestServerMusic():
         response = test_client.get("db/music", query_string={"artist": "st'"})
         assert response.status_code == 200
         assert json.loads(response.data.decode()) == [
-            {'rowid': 2, 'name': 'testname2', 'artist': "testartist'2", 'duration': 2.0, 'meta_dat': 'testmetadata2'}]
+            {'id': 2, 'name': 'testname2', 'artist': "testartist'2", 'duration': 2.0, 'meta_dat': 'testmetadata2'}]
 
 
 class TestPlaylist():
