@@ -1,8 +1,9 @@
 import os
+os.environ["ASTEROID_CONFIG_PATH"] = './config.ini'
 import sys
 import argparse
-from src import Config, music_db_path, user_db_path, playlist_db_path, JSConfig
-os.environ["ASTEROID_CONFIG_PATH"] = './config.ini'
+from src import Config, db_path, JSConfig
+from src.main.web.flaskserv.Database import init_database_session
 HEADER = r"""               _       _                 _     _ 
  _ __  _   _  /_\  ___| |_ ___ _ __ ___ (_) __| |
 | '_ \| | | |//_\\/ __| __/ _ \ '__/ _ \| |/ _` |
@@ -21,6 +22,7 @@ HEADER = r"""               _       _                 _     _
     -- all databases should have id
 """
 
+init_database_session()
 
 def run_flask(host="", port=""):
     cfg = Config()
@@ -93,31 +95,15 @@ class databases:
 
     @staticmethod
     def build_music(loc):
-        print("[+] adding '{}' table in '{}'...".format("songs", music_db_path()))
+        print("[+] adding '{}' table in '{}'...".format("songs", db_path()))
         from src.main.databasebuilder import build_music
         build_music(loc)
         print("[*] Done building Music.")
 
     @staticmethod
-    def build_user():
-        print("[+] adding '{}' table in '{}'...".format("users", user_db_path()))
-        from src.main.databasebuilder import build_user
-        build_user()
-        print("[*] Done building Users.")
-
-    @staticmethod
-    def build_playlist():
-        print("[+] adding '{}' table in '{}'...".format("playlist", playlist_db_path()))
-        from src.main.databasebuilder import build_playlist
-        build_playlist()
-        print("[*] Done building Playlist.")
-
-    @staticmethod
     def build_all():
         print("\n[*] Building all tables in database...")
         databases.build_music(None)
-        databases.build_playlist()
-        databases.build_user()
 
     @staticmethod
     def clear(database):
