@@ -3,23 +3,9 @@ from src.main.databasebuilder.pyConfig import Config
 
 
 @lru_cache(None)
-def music_db_path():
+def db_path():
     print("Getting music database path...")
-    path = Config().getval("Databases", "music-db-path")
-    return path
-
-
-@lru_cache(None)
-def user_db_path():
-    print("Getting user database path...")
-    path = Config().getval("Databases", "user-db-path")
-    return path
-
-
-@lru_cache(None)
-def playlist_db_path():
-    print("Getting playlist database path...")
-    path = Config().getval("Databases", "playlist-db-path")
+    path = Config().getval("Databases", "db-path")
     return path
 
 

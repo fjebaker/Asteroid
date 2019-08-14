@@ -1,11 +1,9 @@
 from src.main.player.PlayStream import PlayStream
 from src.main.player.ConditionObject import ConditionObject
-from src.main.web.flaskserv import Playlist, History
-from src.main.web.flaskserv import MusicDB
+from src.main.web.flaskserv.Database import Playlist, History, MusicDB
 from queue import Queue
 import threading
 import os
-from src.main.databasebuilder.setupfuncs import music_db_path, playlist_db_path
 
 
 class AudioHandler(threading.Thread):
@@ -60,8 +58,8 @@ class AudioHandler(threading.Thread):
         :returns: the path to the most voted song
         :rtype: str
         """
-        pl = Playlist(playlist_db_path())
-        n_item = pl.get_most_voted()
+        pl = Playlist()
+        n_item = pl.get_most_voted().format()
         if n_item == ():
             # TODO
             return None
@@ -70,7 +68,7 @@ class AudioHandler(threading.Thread):
         s_id = n_item["s_id"]
         pl.remove(s_id)
         if n_item["vote"] > 0: #Don't play songs which have downvotes >= upvotes
-            History(playlist_db_path()).add((n_item["s_id"], n_item["u_id"], n_item["vote"]))
+            History().add(n_item)
 
             try:
                 song = MusicDB(music_db_path()).get_by_rowid(s_id)[0]

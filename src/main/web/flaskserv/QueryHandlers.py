@@ -2,8 +2,6 @@ from src.main.web.flaskserv.Database import MusicDB, UserDB
 from flask import Response
 import abc
 import json
-import os
-from src.main.databasebuilder.setupfuncs import music_db_path, user_db_path
 
 
 class BaseQuery(metaclass=abc.ABCMeta):
@@ -13,33 +11,28 @@ class BaseQuery(metaclass=abc.ABCMeta):
     Has :meth:`__call__` defined which uses :meth:`__getattribute__` calls on sanitised query string to produce appropriate response.
     The response method should be defined in the inheriting class.
 
-    :param query: the query request
-    :type query: byte string
+    :param query: the query request dict
+    :type query: dict
     :returns: json object containing query result
     """
 
     def __init__(self, query):
+        if type(query) == type(b''):
+            query = query.decode().split('=')
+            if len(query) == 1:
+                query.append('')
+            query = {query[0]:query[1]}
         self.query = query
-
-    def clean_query(self):
-        """
-        Sanitises and converts the query passed in constructor to a python string.
-        """
-        s_query = str(self.query)[2:-1].split("=")
-        if len(s_query) == 1:
-            self.s_query = "defaultCase"
-            self.s_arg = None
-        elif s_query[0] != '':
-            self.s_query = s_query[0]
-            self.s_arg = s_query[1]
-        else:
-            self.s_query = s_query[1]
-            self.s_arg = None
+        self.s_arg = ''
 
     def __call__(self):
-        self.clean_query()
-        if self.s_query in dir(self):
-            res = self.__getattribute__(self.s_query)()
+        print(self.query)
+        if self.query == {}:
+            return
+        key, value = list(self.query.items())[0]
+        if key in dir(self):
+            self.s_arg = value
+            res = self.__getattribute__(key)()
         else:
             res = self.defaultCase()
         return res
@@ -48,6 +41,20 @@ class BaseQuery(metaclass=abc.ABCMeta):
         string = string.replace("%20", " ")
         string = string.replace("%27", "'").replace("'", "''")
         return string
+
+    def response(self, result):
+        if len(result) == 0:
+            return Response(
+                json.dumps([]),
+                status=200,
+                mimetype='application/json'
+            )
+        else:
+            return Response(
+                json.dumps([item.format() for item in result]),
+                status=200,
+                mimetype='application/json'
+            )
 
     @abc.abstractmethod
     def defaultCase(self):
@@ -83,14 +90,8 @@ class MusicQuery(BaseQuery):
         except Exception as e:
             return self.defaultCase()
 
-        db_result = MusicDB(music_db_path()).get_by_name(songName)
-        if db_result != ():
-            db_result = self._remove_path(db_result)
-        return Response(
-            json.dumps(db_result),
-            status=200,
-            mimetype='application/json'
-        )
+        db_result = MusicDB().get_by_name(songName)
+        return self.response(db_result)
 
     def page(self):
         """
@@ -101,14 +102,8 @@ class MusicQuery(BaseQuery):
         except Exception as e:
             return self.defaultCase()
 
-        db_result = MusicDB(music_db_path()).get_page()
-        if db_result != ():
-            db_result = self._remove_path(db_result)
-        return Response(
-            json.dumps(db_result),
-            status=200,
-            mimetype='application/json'
-        )
+        db_result = MusicDB().get_page()
+        return self.response(db_result)
 
     def artist(self):
         """
@@ -120,14 +115,8 @@ class MusicQuery(BaseQuery):
         except Exception as e:
             return self.defaultCase()
 
-        db_result = MusicDB(music_db_path()).get_by_artist(artistName)
-        if db_result != ():
-            db_result = self._remove_path(db_result)
-        return Response(
-            json.dumps(db_result),
-            status=200,
-            mimetype='application/json'
-        )
+        db_result = MusicDB().get_by_artist(artistName)
+        return self.response(db_result)
 
     def getAllSongs(self):
         """
@@ -136,14 +125,8 @@ class MusicQuery(BaseQuery):
 
         :returns: :class:`flask.Response` with json of dictionary containing all songs, and ``status==200``.
         """
-        db_result = MusicDB(music_db_path()).get_all_songs()
-        if db_result != ():
-            db_result = self._remove_path(db_result)
-        return Response(
-            json.dumps(db_result),
-            status=200,
-            mimetype='application/json'
-        )
+        db_result = MusicDB().get_all_songs()
+        return self.response(db_result)
 
     def id(self):
         """
@@ -166,26 +149,8 @@ class MusicQuery(BaseQuery):
         if rowids == []:
             return self.defaultCase()
 
-        db_result = MusicDB(music_db_path()).get_by_rowid(*rowids)
-        db_result = self._remove_path(db_result)
-        if len(db_result) == 0:
-            return self.defaultCase()
-
-        return Response(
-            json.dumps(db_result),
-            status=200,
-            mimetype='application/json'
-        )
-
-    def _remove_path(self, db_result):
-        """
-        TODO
-        :param db_result:
-        :return:
-        """
-        for item in db_result:
-            del item["file_path"]
-        return db_result
+        db_result = MusicDB().get_by_id(*rowids)
+        return self.response(db_result)
 
     def defaultCase(self):
         """
@@ -221,17 +186,12 @@ class UserQuery(BaseQuery):
 
         :returns: :class:`flask.Response` with json of dictionary containing all users, and ``status==200``.
         """
-        db_result = UserDB(user_db_path()).get_all_users()
-        if db_result != ():
-            db_result = self._remove_pw(db_result)
-            for i in db_result:
-                del i["rowid"]
+        db_result = UserDB().get_all_users()
 
-        return Response(
-            json.dumps(db_result),
-            status=200,
-            mimetype='application/json'
-        )
+        # can return empty without throwing default, so has custom return
+        if len(db_result) == 0:
+            return Response(json.dumps([]), status=200, mimetype='application/json')
+        return self.response(db_result)
 
     def id(self):
         """
@@ -247,21 +207,8 @@ class UserQuery(BaseQuery):
         except Exception as e:
             return self.defaultCase()
 
-        db_result = UserDB(user_db_path()).get_by_id(u_id)
-        db_result = self._remove_pw(db_result)
-        if len(db_result) == 0:
-            return self.defaultCase()
-
-        return Response(
-            json.dumps(db_result),
-            status=200,
-            mimetype='application/json'
-        )
-
-    def _remove_pw(self, db_result):
-        for item in db_result:
-            del item["hash_pw"]
-        return db_result
+        db_result = UserDB().get_by_id(u_id)
+        return self.response(db_result)
 
     def defaultCase(self):
         """

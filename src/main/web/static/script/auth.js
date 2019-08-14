@@ -60,7 +60,7 @@ function _submitClick(event) {
         messageSection.innerHTML = "Blank usernames are not valid"
         bodyDiv.appendChild(messageSection);
     } else {
-        getJson("/db/users?=getAllUsers",function(data){_dealWithReceivedJson(data,submittedName,event);},function(data){messageSection.innerHTML = "Unable to load user data for uniqueness check";bodyDiv.appendChild(messageSection);});
+        getJson("/db/users?getAllUsers",function(data){_dealWithReceivedJson(data,submittedName,event);},function(data){messageSection.innerHTML = "Unable to load user data for uniqueness check";bodyDiv.appendChild(messageSection);});
     }
 }
 

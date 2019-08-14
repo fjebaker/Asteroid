@@ -1,10 +1,6 @@
 from flask import Response
-from src.main.web.flaskserv.playqueue.Playlist import Playlist
-from src.main.web.flaskserv.playqueue.History import History
-import os
+from src.main.web.flaskserv.Database import Playlist, History
 import json
-
-from src.main.databasebuilder.setupfuncs import playlist_db_path
 
 
 class Vote:
@@ -36,14 +32,14 @@ class Vote:
         :returns: :class:``flask.Response``
         """
 
-        pl = Playlist(playlist_db_path())
+        pl = Playlist()
         playlist = pl.get_playlist()
 
         # check if already exists in database
         exists = False
         # print("DEBOOF -- ", playlist, s_id)
         for item in playlist:
-            if int(s_id) == int(item['s_id']):
+            if int(s_id) == int(item.s_id):
                 exists = True
 
         if exists:
@@ -54,7 +50,7 @@ class Vote:
                 mimetype='application/json'
             )
         else:
-            pl.add((s_id, u_id, vote))
+            pl.add({'s_id': s_id, 'u_id': u_id, 'vote': vote})
             return Response(
                 json.dumps({"message": "added entry into playlist"}),
                 status=201,
@@ -64,15 +60,20 @@ class Vote:
     def __call__(self):
         if self.request.__dict__["environ"][
                 "REQUEST_METHOD"] == 'GET' and self.request.query_string.decode() == '=currentSong':
+            song = History().get_current_song()
+            if song == None:
+                song = []
+            else:
+                song = song.format()
             return Response(
-                json.dumps(History(playlist_db_path()).get_current_song()),
+                json.dumps(song),
                 status=200,
                 mimetype='application/json'
             )
 
         if self.request.__dict__["environ"]["REQUEST_METHOD"] == 'GET' and self.request.query_string.decode() == '':
             return Response(
-                json.dumps(Playlist(playlist_db_path()).get_playlist()),
+                json.dumps([item.format() for item in Playlist().get_playlist()]),
                 status=200,
                 mimetype='application/json'
             )

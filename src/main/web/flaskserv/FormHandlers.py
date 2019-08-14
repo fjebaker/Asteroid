@@ -1,8 +1,6 @@
 """Contains all form handlers."""
 from src.main.web.flaskserv.Database import UserDB
 from flask import Response
-from src.main.databasebuilder.setupfuncs import user_db_path
-import os
 import json
 
 
@@ -30,15 +28,9 @@ class UserHandler():
         :param name: name of new user to add to database
         :type name: str
         """
-        udb = UserDB(user_db_path())
-        last_user = udb.get_latest_user()
-        if last_user == ():
-            new_id = 1
-        else:
-            new_id = int(last_user[0]["id"]) + 1
-
-        udb.add_user((new_id, name, 0, ""))
-        return new_id
+        udb = UserDB()
+        udb.add_user({'name':name, 'hash_pw': 0, 'meta_dat':''})
+        return udb.get_latest_user().id
 
     def __call__(self):
         if "name" in self.form and self.request.__dict__["environ"]["REQUEST_METHOD"] == 'POST':

@@ -1,7 +1,7 @@
 from flask import Flask, redirect, request, send_from_directory, Response
 import requests
 from src.main.web.flaskserv import MusicQuery, UserQuery, UserHandler, song_request_handler
-from src.main.web.flaskserv import Vote
+from src.main.web.flaskserv.Vote import Vote
 app = Flask(__name__)
 
 
@@ -56,13 +56,13 @@ def rate():
     return "TODO"
 
 
-@app.route("/db/music")
+@app.route("/db/music", methods=["GET", "POST"])
 def music_db():
-    query_string = request.query_string
-    return MusicQuery(query_string)()
+    query = request.args.to_dict()
+    return MusicQuery(query)()
 
 
-@app.route("/db/users")
+@app.route("/db/users", methods=["GET", "POST"])
 def user_db():
     query_string = request.query_string
     return UserQuery(query_string)()
