@@ -114,7 +114,7 @@ function populateDivAccount(divname) {
     var configJSON = getConfigJson();
     if (voteFavCookie == "") {
         if (configJSON.hasOwnProperty("default-vote-favourite-settings")) {
-            voteFavCookie = configJSON("default-vote-favourite-settings");
+            voteFavCookie = configJSON["default-vote-favourite-settings"];
         } else {
             voteFavCookie = "1,1";
         }
@@ -126,7 +126,7 @@ function populateDivAccount(divname) {
     var showColumnCookie = getCookie("show_column_settings");
     if (showColumnCookie == "") {
         if (configJSON.hasOwnProperty("default-show-column-settings")) {
-            showColumnCookie = configJSON("default-show-column-settings");
+            showColumnCookie = configJSON["default-show-column-settings"];
         } else {
             showColumnCookie = "1,o";
         }
