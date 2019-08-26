@@ -341,7 +341,7 @@ function _queue(data) {
                 for (var i=0; i<data.length; i++) {
                     var sid = data[i].s_id;
                     for (var j=0; j<songsIdData.length; j++) {
-                        if (songsIdData[j].rowid == sid) {
+                        if (songsIdData[j].id == sid) {
                             sortedSongData.push(songsIdData.splice(j,1)[0]);
                             j = songsIdData.length;
                         }
@@ -420,7 +420,7 @@ function queue() {
 }
 
 /**
- * Callback used for populating a table with favourites data after a GET request for all songs matching the favourites rowids
+ * Callback used for populating a table with favourites data after a GET request for all songs matching the favourites ids
  *
  * @param {Object|string} data - the JSON data returned by the GET request requesting songs, or a string representation of the status code if the GET request was unsuccessful
  */
@@ -462,7 +462,7 @@ function favourites() {
  * @param string column - the name identifier (e.g "Artist") of the column that the cell is found in
  * @param Object cell - the cell element to be modified
  * @param Object song - the song object relevant to the row that the cell is found in
- * @param Object favArray - an array containing string representation of the rowid of each song that the user has favourited
+ * @param Object favArray - an array containing string representation of the id of each song that the user has favourited
  * @param Object showColumnArray - an array for whether the columns "Favourite" and "Rating" should be shown to the user
  * @param number index - the index of the row that the cell is found in
  */
@@ -480,14 +480,14 @@ function _cellInfo(column,cell,song,favArray,showColumnArray,index) {
             cell.innerHTML = songLengthFormat(song.duration);
             break;
         case "Vote":
-            cell.appendChild(createVoteForm(song.rowid));
+            cell.appendChild(createVoteForm(song.id));
             break;
         case "Favourite":
-            cell.id="tableFavCell"+song.rowid;
-            if (favArray.includes(song.rowid.toString())) {
-               cell.innerHTML="<button id='unfavourite' title='Remove from favourites' onclick='_updateFavouriteCookie("+song.rowid+",true)'>Unfavourite</button>"
+            cell.id="tableFavCell"+song.id;
+            if (favArray.includes(song.id.toString())) {
+               cell.innerHTML="<button id='unfavourite' title='Remove from favourites' onclick='_updateFavouriteCookie("+song.id+",true)'>Unfavourite</button>"
             } else {
-                cell.innerHTML="<button id='favourite' title='Add to favourites' onclick='_updateFavouriteCookie("+song.rowid+",false)'>Favourite</button>";
+                cell.innerHTML="<button id='favourite' title='Add to favourites' onclick='_updateFavouriteCookie("+song.id+",false)'>Favourite</button>";
             }
             break;
         case "Requesting user":
@@ -498,8 +498,8 @@ function _cellInfo(column,cell,song,favArray,showColumnArray,index) {
             cell.innerHTML = song.votes_for;
             break;
         //case "Rating":
-            //cell.appendChild(createRatingButtons(song.rowid));
-            //cell.innerHTML = "<button id='1star"+song.rowid+"' title='1 star' class='starempty'>1 star</button><button id='2star"+song.rowid+"' title='2 stars' class='starempty'>2 stars</button><button id='3star"+song.rowid+"'>";
+            //cell.appendChild(createRatingButtons(song.id));
+            //cell.innerHTML = "<button id='1star"+song.id+"' title='1 star' class='starempty'>1 star</button><button id='2star"+song.id+"' title='2 stars' class='starempty'>2 stars</button><button id='3star"+song.id+"'>";
         default:
             break;
     }
