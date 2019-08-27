@@ -432,7 +432,6 @@ function queue() {
 function _favourites(data) {
     if (typeof data == "string") {document.getElementById("listDiv").innerHTML = "Unable to load favourites data!";}
     else {
-        console.log(data)
         constructTable(data,document.getElementById("favouritesVotingTable"),["Name","Artist","Duration","Vote","Favourite","Rating"]);
     }
 }
@@ -457,13 +456,6 @@ function favourites() {
     var currCookieData = getCookie("Favourites");
     if (!(currCookieData === "")) {
         favArray = currCookieData.split(',');
-        if (pageNumber > 0) { //shift forward by the number of pages
-            var counter = pageNumber;
-            while (counter > 0 && favArray.length > 40) {
-                favArray = favArray.slice(40); //the number of results returned
-                counter -= 1;
-            }
-        }
         if (autoqueueButtonText != "") {
             document.getElementById("autoQueueButton").outerHTML="<button id='autoQueueButton' onclick='document.location.href=\"/autoqueue?songs="+favArray.join('%20')+'"\'>Autoqueue Favourites</button>'
         }
@@ -471,6 +463,13 @@ function favourites() {
         if (pageBackNum < 0) {pageBackNum = 0}
         document.getElementById("pgBackButton").outerHTML="<button id='pgBackButton' onclick='document.location.href=\"/?tab=Voting&votetab=Favourites&page="+pageBackNum+'"\'>Page Back</button>'
         document.getElementById("pgForwardButton").outerHTML="<button id='pgForwardButton' onclick='document.location.href=\"/?tab=Voting&votetab=Favourites&page="+(pageNumber + 1)+'"\'>Page Forward</button>'
+        if (pageNumber > 0) { //shift forward by the number of pages
+            var counter = pageNumber;
+            while (counter > 0 && favArray.length > 40) {
+                favArray = favArray.slice(40); //the number of results returned
+                counter -= 1;
+            }
+        }
         getJson("/db/music?id="+favArray.slice(0,40).join("%20"),_favourites,function(data){document.getElementById("listDiv").innerHTML = "Unable to load favourites table!";})
     } else {
         aqbElem = document.getElementById("autoQueueButton");
