@@ -379,10 +379,14 @@ function _queue(data) {
             }
         } //end of function
         var ids = [];
-        for (var n=0; n<data.length; n++) {
-            ids.push(data[n].s_id);
+        if (data.length > 0) {
+            for (var n=0; n<data.length; n++) {
+                ids.push(data[n].s_id);
+            }
+            getJson("/db/music?id="+ids.join("%20"),queueBuild,function(songsIdData){document.getElementById("currentSongReading").innerHTML = "Unable to load queue data!"});
+        } else {
+            queueBuild([]);
         }
-        getJson("/db/music?id="+ids.join("%20"),queueBuild,function(songsIdData){document.getElementById("currentSongReading").innerHTML = "Unable to load queue data!"});
     }//end of else
 }
 
@@ -393,9 +397,10 @@ function _updateCurrentSongReading() {
     getJson("/vote?=currentSong",function(data){
         if (typeof data == "string") {document.getElementById("currentSongReading").innerHTML="Error finding current song!";}
         else {
-            getJson("/db/music?id="+data[0].s_id,function(songdata){
+			// TODO deal with data being [] - return case of no song in history
+            getJson("/db/music?id="+data.s_id,function(songdata){
                 if (typeof songdata == "string") {
-                    document.getElementById("currentSongReading").innerHTML="Song with id "+data[0].s_id;
+                    document.getElementById("currentSongReading").innerHTML="Song with id "+data.s_id;
                 } else {
                     document.getElementById("currentSongReading").innerHTML="\""+songdata[0].name+"\" by "+songdata[0].artist;
                     setTimeout(_updateCurrentSongReading,1000*songdata[0].duration); //Can I work out a better way of doing this?
