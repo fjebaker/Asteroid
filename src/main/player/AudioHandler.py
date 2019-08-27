@@ -78,7 +78,6 @@ class AudioHandler(threading.Thread):
                 print("DEBUG -- get_path_from_database :: Exception = " + str(e))
                 return None
             else:
-                print(dir(song))
                 return song.file_path
         else:
             print("DEBUG -- get_path_from_database :: reached songs with under zero (0) votes")
