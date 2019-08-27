@@ -137,7 +137,7 @@ class MusicQuery(BaseQuery):
 
         # todo could probably merge these two
         # print("DEBUG -- sargs", self.s_arg)
-        s_arg = self.s_arg.split("%20")
+        s_arg = self.s_arg.split(" ")
         rowids = []
         for i in s_arg:
             try:

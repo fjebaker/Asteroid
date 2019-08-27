@@ -4,7 +4,7 @@ from src.main.web.flaskserv.Database import Playlist, History, MusicDB
 from queue import Queue
 import threading
 import os
-
+from src.main.databasebuilder.setupfuncs import db_path
 
 class AudioHandler(threading.Thread):
     """
@@ -59,24 +59,27 @@ class AudioHandler(threading.Thread):
         :rtype: str
         """
         pl = Playlist()
-        n_item = pl.get_most_voted().format()
+        n_item = pl.get_most_voted()
         if n_item == ():
             # TODO
             return None
-
-        n_item = n_item[0]
+        if n_item is None:
+            print("DEBUG -- get_path_from_database :: playlist returned None as get_most_voted")
+            return None
+#        n_item = n_item[0]
+        n_item = n_item.format()
         s_id = n_item["s_id"]
         pl.remove(s_id)
         if n_item["vote"] > 0: #Don't play songs which have downvotes >= upvotes
             History().add(n_item)
-
             try:
-                song = MusicDB(music_db_path()).get_by_rowid(s_id)[0]
+                song = MusicDB().get_by_id(s_id)[0]
             except Exception as e:
                 print("DEBUG -- get_path_from_database :: Exception = " + str(e))
                 return None
             else:
-                return song["file_path"]
+                print(dir(song))
+                return song.file_path
         else:
             print("DEBUG -- get_path_from_database :: reached songs with under zero (0) votes")
             return None
