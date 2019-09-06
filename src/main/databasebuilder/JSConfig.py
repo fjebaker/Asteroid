@@ -16,7 +16,7 @@ def build(config):
     path = "src/main/web/dynamic/jsconfig.js"
     config.pop('__name__','')
     json_string = json.dumps(config).replace("'","\\'")
-    print_string = "function getConfigJson() {\n  return JSON.parse('" + \
-        json_string+"');\n}\ncurrent_callback();"
+    print_string = "CONFIG = JSON.parse('" + \
+        json_string+"');\nLOADER.current_callback();"
     with open(path, "w") as my_file:
         my_file.write(print_string)

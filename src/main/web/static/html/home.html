@@ -4,28 +4,36 @@
 <head>
     <link rel="icon" type="image/x-icon" href="/resources/images/asteroid_proper.ico" />
     <link rel="apple-touch-icon" sizes="192x192" href="/resources/images/pixel.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>body {background-color: #000}</style>
 </head>
+<body onresize="TOOLS.fillByScreenSize('script/tabbar.js',function(){TAB_BAR.populateTabbar();})">
 <header>
-    <img src="/resources/images/asteroid_bubble_BLACK_LEGIT.png" style="width:50%"> 
 </header>
-<body>
-<div id="tabsDiv"></div>
+<nav id="tabsDiv"></nav>
 <div id="bodyDiv"></div>
-<script id="scriptFiller"></script>
+<footer></footer>
+</body>
 <script src="../script/dynamic_load.js"></script>
 <script language="JavaScript">
-insert_css("css/home.css");
-var current_callback = function(){}
-function final_callback() {
-    checkCookieValidity();
-    ensureKeyQuery('v',Math.random());
-    supplyTabButtons("tabsDiv");
-    includeQueryStringScript();
-    console.log("Done loading /");
-}
-var dependencies = ["../config/jsconfig.js","../script/json.js","../script/cookies.js","../script/queries.js","../script/post.js","../script/tabbar.js"]
-var scriptFiller = document.getElementById("scriptFiller");
-insert_all_before(scriptFiller,dependencies,final_callback);
+LOADER.insert_before("config/jsconfig.js",function() {
+    LOADER.insert_css("css/home.css");
+    LOADER.insert_before("script/tools.js",function() {
+        if (TOOLS.COOKIES.validateCookies(function() {
+            console.log("failure"); //What is to be done if cookies are invalid
+        })) {
+            if (CONFIG["non-cacheing"] == 1) {
+                var redirStr = TOOLS.QUERIES.ensureKeyQuery('v',Math.random());
+                if (redirStr !== false) {
+                    document.location.href = redirStr;
+                }
+            }
+            TOOLS.ensureValidId();
+            TOOLS.fillByScreenSize("script/tabbar.js",function(){
+                TAB_BAR.populateTabbar();
+            });
+        }
+    });
+});
 </script>
-</body>
 </html>

@@ -1,4 +1,11 @@
+"use strict"
+
+var AUTH = (function() {
+
+LOADER.loaded_scripts["script/auth.js"] = "AUTH";
+
 var bodyDiv = document.getElementById("bodyDiv"); //This is standard for all HTML files
+var astyImg = document.getElementsByTagName("IMG")[0];
 
 /**
  * Callback used for dealing with loaded 'getAllUsers' JSON data in the process of submitting a username for authorisation.
@@ -32,14 +39,17 @@ function _dealWithReceivedJson(data,submittedName,event){
                     messageSection.innerHTML = "404: Not found";
                 }
                 if (request.status == 201) {
-                    setCookie("id", JSON.parse(request.response).id,getCookieDuration());
-                    updateQuery({v:Math.random()});
+                    TOOLS.COOKIES.setCookie("id", JSON.parse(request.response).id,TOOLS.COOKIES.getCookieDuration());
+                    var redirStr = TOOLS.QUERIES.updateQuery({v:Math.random()});
+                    if (redirStr != false) {
+                        document.location.href = redirStr;
+                    }
                 }
             }
             function failure(request) {
                 messageSection.innerHTML = "Error sending POST request";
             }
-            postRequest(new FormData(event.target),"/register",success,failure);
+            TOOLS.postRequest(new FormData(event.target),"/register",success,failure);
             messageSection.innerHTML = "Username request sent";
         }
     }
@@ -60,25 +70,40 @@ function _submitClick(event) {
         messageSection.innerHTML = "Blank usernames are not valid"
         bodyDiv.appendChild(messageSection);
     } else {
-        getJson("/db/users?getAllUsers",function(data){_dealWithReceivedJson(data,submittedName,event);},function(data){messageSection.innerHTML = "Unable to load user data for uniqueness check";bodyDiv.appendChild(messageSection);});
+        TOOLS.getJson("/db/users?getAllUsers",function(data){_dealWithReceivedJson(data,submittedName,event);},function(data){messageSection.innerHTML = "Unable to load user data for uniqueness check";bodyDiv.appendChild(messageSection);});
     }
 }
 
+return {
+pageSize:"noSize",
+
 /**
  * Used to check if the user has a valid "id" auth cookie and creates a form if not
- * TODO: Make this so that it only works if a successful response comes through
+ *
+ * @alias AUTH~createAuth
  */
-function createAuth() {
-    var currId = getCookie("id");
+createAuth:function() {
+    if (AUTH.pageSize == "big") {
+        astyImg.style="width:50%";
+    } else {
+        astyImg.style="width:100%";
+    }
+    var currId = TOOLS.COOKIES.getCookie("id");
     function create_auth_form() {
         bodyDiv.innerHTML = "<p>Enter Username:</p>";
         const form = document.createElement('form');
+        form.class="auth_form_"+AUTH.pageSize;
         form.method = 'post';
         form.action = '/register';
         const usernameInput = document.createElement('input');
         usernameInput.type='text';
         usernameInput.name='name';
         usernameInput.id='usernameInput'
+        if (AUTH.pageSize == "small") {
+            usernameInput.size=40;
+        } else {
+            usernameInput.size=80;
+        }
         form.appendChild(usernameInput);
         const sendButton = document.createElement('input');
         sendButton.type='submit';
@@ -93,11 +118,15 @@ function createAuth() {
         bodyDiv.parentNode.insertBefore(em,bodyDiv)
         bodyDiv.innerHTML = "<button onclick='updateQuery(\"v\":Math.random())'>Refresh page</button>"
     }
-    if (getCookie("id") == "") {
+    if (currId == "") {
         create_auth_form();
     } else {
-        getJson('/db/users?id='+currId,function(data){if(typeof data == "string" || !data[0].hasOwnProperty("name")){authFailure(data);}else{document.location.href = "/?v="+Math.random();}});
+        TOOLS.getJson('/db/users?id='+currId,function(data){if(typeof data == "string" || !data[0].hasOwnProperty("name")){authFailure(data);}else{document.location.href = "/?v="+Math.random();}});
     }
 }
 
-current_callback();
+}
+
+})();
+
+LOADER.current_callback();

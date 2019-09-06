@@ -1,3 +1,9 @@
+"use strict"
+
+var BODY_CONTENT = (function(){
+
+LOADER.loaded_scripts["script/request.js"] = "BODY_CONTENT";
+
 var bodyDiv = document.getElementById("bodyDiv"); //This is standard for all HTML files
 
 function _requestURL() {
@@ -21,15 +27,21 @@ function _requestURL() {
     if (parser.host != "" && parser.host != window.location.host) {
         var formData = new FormData();
         formData.append("url",url)
-        postRequest(formData,"/request",success,failure)
+        TOOLS.postRequest(formData,"/request",success,failure)
     } else {
         document.getElementById("requestPostEm").innerHTML += "Please input a valid URL.<br>"
     }
 }
 
-function setupRequestArea() {
-    bodyDiv.innerHTML = "<br>URL to request: <input type='text' id='requestPostData'><br><button id='requestPostButton'>Request!</button><em id='requestPostEm'></em>";
-    document.getElementById("requestPostButton").onclick = _requestURL
+return {
+pageSize:"noSize",
+populateBody:function(){
+    bodyDiv.innerHTML = "<br>URL to request: <input type='text' id='requestPostData'><br><button class='request_post_button_"+BODY_CONTENT.pageSize+"' id='requestPostButton'>Request!</button><em id='requestPostEm'></em>";
+    document.getElementById("requestPostButton").onclick = _requestURL;
 }
 
-tab_callback();
+};
+
+})();
+
+LOADER.current_callback();
