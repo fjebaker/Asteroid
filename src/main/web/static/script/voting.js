@@ -321,6 +321,7 @@ function queue(callback) {
             var last_index = data.findIndex(function(song){return song.vote <= 0;});
             last_index = (last_index > 0) ? last_index + 1 : data.length;
             data = data.slice(0,last_index); //can't fully remember how this works, but ensures only positively voted songs are shown
+            if (data.length > 40) {data = data.slice(0,40);}
 
             function secondSuccess(secondData) {
                 if (typeof secondData == "string") {
