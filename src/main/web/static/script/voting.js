@@ -310,7 +310,7 @@ function _autoqueueCallback(array) {
  */
 function queue(callback) {
     TAB_BAR.reinsertDisposableButtons("Voting");
-    var columnList = ["Name","Artist","Duration","Requesting user","Votes","Favourite","Rating"]
+    var columnList = ["Name","Artist","Duration","Requesting user","Votes","Vote","Favourite","Rating"]
 
     function success(data) {
         if (typeof data == "string") {
