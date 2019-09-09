@@ -343,6 +343,7 @@ function queue(callback) {
             data.sort(function(a,b){return b.vote-a.vote;}) //sorting by vote order
             var last_index = data.findIndex(function(song){return song.vote <= 0;});
             last_index = (last_index > 0) ? last_index + 1 : data.length;
+            last_index = (data[last_index-1].vote <= 0) ? last_index - 1 : last_index;
             data = data.slice(0,last_index); //can't fully remember how this works, but ensures only positively voted songs are shown
             if (data.length > 40) {data = data.slice(0,40);}
 
