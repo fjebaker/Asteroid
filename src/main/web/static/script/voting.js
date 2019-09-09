@@ -487,6 +487,21 @@ function autoqueue(callback) {
         if (songsQuery === null || songsQuery == 0) {
             currRow.innerHTML = "Unable to find a valid autoQueueSongs query!";
         } else {
+            //Get current queue length, and set timeout based off that
+            function queueSuccess(data) {
+                if (typeof data == "string") {
+                    queueFailure(data);
+                } else {
+                    var newTimeout = 12000;
+                    newTimeout = newTimeout * data.length;
+                    setTimeout(autoAdd,newTimeout);
+                }
+            }
+
+            function queueFailure(data) {
+                setTimeout(autoAdd,180000);
+            }
+
             const songArr = songsQuery.split(",");
             var i=0;
             function autoAdd() {
@@ -515,9 +530,9 @@ function autoqueue(callback) {
                 }
 
                 TOOLS.getJson("/db/music?id="+indexToAdd,success,failure);
-                setTimeout(autoAdd,120000);
+                TOOLS.getJson("/vote",queueSuccess,queueFailure);
             }
-            setTimeout(autoAdd,30000);
+            TOOLS.getJson("/vote",queueSuccess,queueFailure);
         }
     }
 }
