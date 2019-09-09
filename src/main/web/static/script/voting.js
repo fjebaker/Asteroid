@@ -214,6 +214,19 @@ function _makeButtonDownvote(button,song_id) {
     button.onclick=_downvoteSong(song_id);
 }
 
+function toggleExtraInfo(row) {
+    return function() {
+        var nextRow = row.nextSibling;
+        if (BODY_CONTENT.pageSize == "small") {
+            const isVisible = (nextRow.style.display == '' || nextRow.style.display == null);
+            nextRow.style.display = isVisible ? 'None' : '';
+        }
+        nextRow = nextRow.nextSibling;
+        const isVisible = (nextRow.style.display == '' || nextRow.style.display == null);
+        nextRow.style.display = isVisible ? 'None' : '';
+    }
+}
+
 /**
  * Lookup table used to populate a table cell with the relevant contents
  *
@@ -229,13 +242,18 @@ function _cellInfo(column,cell,song,favArray,showColumnArray,index) {
     if (showColumnArray[1] != "1" && column == "Rating") {column = "";}
     switch(column) {
         case "Name":
-            cell.innerHTML = song.name;
+            if (BODY_CONTENT.pageSize == "big") {
+                cell.innerHTML += song.name;
+            } else {
+                cell.innerHTML += "<u>"+song.name+"</u>";
+                cell.onclick = toggleExtraInfo(cell.parentNode);
+            }
             break;
         case "Artist":
-            cell.innerHTML = song.artist;
+            cell.innerHTML += song.artist;
             break;
         case "Duration":
-            cell.innerHTML = songLengthFormat(song.duration);
+            cell.innerHTML += songLengthFormat(song.duration);
             break;
         case "Vote":
             var upvoteButton = document.createElement("BUTTON");
@@ -256,11 +274,11 @@ function _cellInfo(column,cell,song,favArray,showColumnArray,index) {
             cell.appendChild(innerButton);
             break;
         case "Requesting user":
-            cell.innerHTML = song.requesting_user;
+            //cell.innerHTML += song.requesting_user;
             cell.id = "queueVotingIDCellNo"+index;
             break;
         case "Votes":
-            cell.innerHTML = song.votes_for;
+            cell.innerHTML += song.votes_for;
             break;
         //case "Rating":
             //cell.appendChild(createRatingButtons(song.id));
@@ -311,6 +329,11 @@ function _autoqueueCallback(array) {
 function queue(callback) {
     TAB_BAR.reinsertDisposableButtons("Voting");
     var columnList = ["Name","Artist","Duration","Requesting user","Votes","Vote","Favourite","Rating"]
+    if (BODY_CONTENT.pageSize == "medium") {
+        columnList = ["Name","Artist","Duration","Votes","2Requesting user","2Vote","2Favourite","2Rating"];
+    } else if (BODY_CONTENT.pageSize == "small") {
+        columnList = ["Name","Artist","Votes","1Duration","1Requesting user","2Vote","2Favourite","1Rating"];
+    }
 
     function success(data) {
         if (typeof data == "string") {
@@ -345,7 +368,7 @@ function queue(callback) {
                             if(data[i].u_id === data[j].u_id) {
                                 var element = document.getElementById("queueVotingIDCellNo"+j);
                                 if (element !== null) {
-                                    element.innerHTML = string;
+                                    element.innerHTML += string;
                                 }
                             }
                         }
@@ -400,6 +423,11 @@ function queue(callback) {
  */
 function favourites(callback) {
     var columnList = ["Name","Artist","Duration","Vote","Favourite","Rating"];
+    if (BODY_CONTENT.pageSize == "medium") {
+        columnList = ["Name","Artist","Duration","2Vote","2Favourite","2Rating"];
+    } else if (BODY_CONTENT.pageSize == "small") {
+        columnList = ["Name","Artist","1Duration","2Vote","2Favourite","1Rating"];
+    }
 
     var pageNumber = _pageNumber();
     var favArray = TOOLS.COOKIES.getDecodedCookie("favourites");
@@ -430,6 +458,11 @@ function downloaded(callback) {
     TAB_BAR.reinsertDisposableButtons("Voting");
 
     var columnList = ["Name","Artist","Duration","Vote","Favourite","Rating"];
+    if (BODY_CONTENT.pageSize == "medium") {
+        columnList = ["Name","Artist","Duration","2Vote","2Favourite","2Rating"];
+    } else if (BODY_CONTENT.pageSize == "small") {
+        columnList = ["Name","Artist","1Duration","2Vote","2Favourite","1Rating"];
+    }
     //see if a search exists
     var searchQuery = "page=1"
     var searchRow = document.getElementById("downloadedSearchBarRow");
@@ -437,18 +470,22 @@ function downloaded(callback) {
         var queryObj = {};
         var refreshQuery = false;
         var cells = searchRow.cells;
+        var showColumnArray = TOOLS.COOKIES.getDecodedCookie("show_column_settings");
+        showColumnArray[1] = "0" //Rating temporarily non-functional
         for (var i=0; i<columnList.length; i++) {
-            var cell = cells[i];
-            var value = "";
-            if (cell.firstChild !== null) {
-                value = cell.firstChild.value;
-                if (value.includes("=") || value.includes("&")) {
-                    value = "";
+            if (!(showColumnArray[0] == "0" && columnList[i] == "Favourite") && !(showColumnArray[1] == "0" && columnList[i].substring(1) == "Rating") && columnList[i].charAt(0) != '1' && columnList[i].charAt(0) != '2') {
+                var cell = cells[i];
+                var value = "";
+                if (cell.firstChild !== null) {
+                    value = cell.firstChild.value;
+                    if (value.includes("=") || value.includes("&")) {
+                        value = "";
+                    }
                 }
-            }
-            if (value != "") {
-                refreshQuery = true;
-                queryObj[columnList[i].toLowerCase()] = value;
+                if (value != "") {
+                    refreshQuery = true;
+                    queryObj[columnList[i].toLowerCase()] = value;
+                }
             }
         }
         if (refreshQuery) {
@@ -537,6 +574,51 @@ function autoqueue(callback) {
     }
 }
 
+function _addSongs(tableData,songTable,insertionIndex,favArray,showColumnArray,columnList) {
+    for (var i=0; i<tableData.length; i++) {
+        var currSong = tableData[i];
+        var newRow = songTable.insertRow(insertionIndex);
+        if (insertionIndex !== -1) {
+            insertionIndex++;
+        }
+        for (var j=0; j<columnList.length; j++) {
+            if (!(showColumnArray[0] == "0" && columnList[j] == "Favourite") && !(showColumnArray[1] == "0" && columnList[j] == "Rating") && columnList[j].charAt(0) != '1' && columnList[j].charAt(0) != '2') {
+                var newCell = newRow.insertCell(-1);
+                _cellInfo(columnList[j],newCell,currSong,favArray,showColumnArray,i);
+            }
+        }
+        if (BODY_CONTENT.pageSize !== "big") {
+            var newRowTwo = songTable.insertRow(insertionIndex);
+            if (insertionIndex !== -1) {
+                insertionIndex++;
+            }
+            var newRowThree = songTable.insertRow(insertionIndex);
+            if (insertionIndex !== -1) {
+                insertionIndex++;
+            }
+            newRowTwo.style.display = 'None';
+            newRowThree.style.display = 'None';
+            newRowTwo.classText = "hidden_row_" + BODY_CONTENT.pageSize;
+            newRowThree.classText = "hidden_row_" + BODY_CONTENT.pageSize;
+            for (var j=0; j<columnList.length; j++) {
+                if (!(showColumnArray[0] == "0" && columnList[j].substring(1) == "Favourite") && !(showColumnArray[1] == "0" && columnList[j].substring(1) == "Rating") && (columnList[j].charAt(0) == '1' || columnList[j].charAt(0) == '2')) {
+                    var columnText = columnList[j].substring(1);
+                    var newCell = "";
+                    if (columnList[j].charAt(0) == "1") {
+                        var newCell = newRowTwo.insertCell(-1);
+                    } else {
+                        var newCell = newRowThree.insertCell(-1);
+                    }
+                    if (columnText !== "Favourite" && columnText !== "Vote") {
+                        newCell.innerHTML = "<em>"+columnText+": </em>";
+                    }
+                    _cellInfo(columnText,newCell,currSong,favArray,showColumnArray,i);
+                }
+            }
+        }
+    }
+}
+
 /**
  * upwards - bool, element - button row, caller - queue etc
  * only used for scrollin stuff
@@ -593,16 +675,8 @@ function updateTable(upwards,element,caller) {
             //add new songs
             var favArray = TOOLS.COOKIES.getDecodedCookie("favourites");
             var showColumnArray = TOOLS.COOKIES.getDecodedCookie("show_column_settings");
-            for (var i=0; i<tableData.length; i++) {
-                var currSong = tableData[i];
-                var newRow = songTable.insertRow(insertionIndex);
-                insertionIndex++;
-                for (var j=0; j<columnList.length; j++) {
-                    var newCell = newRow.insertCell(j);
-                    _cellInfo(columnList[j],newCell,currSong,favArray,showColumnArray,i);
-                }
-            }
-
+            showColumnArray[1] = "0" //Rating temporarily non-functional
+            _addSongs(tableData,songTable,insertionIndex,favArray,showColumnArray,columnList);
 
             if (!upwards) {
                 //replace bottom button
@@ -652,12 +726,12 @@ function constructTable(columnList,tableData,errorString,pages,search,caller) {
         while (songTable.firstChild) {songTable.removeChild(songTable.firstChild);}
     }
     var showColumnArray = TOOLS.COOKIES.getDecodedCookie("show_column_settings");
+    showColumnArray[1] = "0" //Rating temporarily non-functional
     //Creating the top row
     var topRow = songTable.insertRow(0);
     topRow.className = "title_row_big";
     for (var i=0; i<columnList.length; i++) {
-        showColumnArray[1] = "0" //Rating temporarily non-functional
-        if (!(showColumnArray[0] == "0" && columnList[i] == "Favourite") && !(showColumnArray[1] == "0" && columnList[i] == "Rating")) {
+        if (!(showColumnArray[0] == "0" && columnList[i] == "Favourite") && !(showColumnArray[1] == "0" && columnList[i] == "Rating") && columnList[i].charAt(0) != '1' && columnList[i].charAt(0) != '2') {
             var newCell = document.createElement('th');
             newCell.innerHTML = columnList[i];
             topRow.appendChild(newCell);
@@ -669,11 +743,13 @@ function constructTable(columnList,tableData,errorString,pages,search,caller) {
         newRow.className = "searchbar_row_big";
         newRow.id = "downloadedSearchBarRow";
         for (var i=0; i<columnList.length; i++) {
-            var newCell = newRow.insertCell(i);
-            if (search_bars.includes(columnList[i])) {
-                var input = document.createElement("INPUT");
-                input.onchange = refillTable(true,newRow,caller);
-                newCell.appendChild(input);
+            if (!(showColumnArray[0] == "0" && columnList[i] == "Favourite") && !(showColumnArray[1] == "0" && columnList[i] == "Rating") && columnList[i].charAt(0) != '1' && columnList[i].charAt(0) != '2') {
+                var newCell = newRow.insertCell(-1);
+                if (search_bars.includes(columnList[i])) {
+                    var input = document.createElement("INPUT");
+                    input.onchange = refillTable(true,newRow,caller);
+                    newCell.appendChild(input);
+                }
             }
         }
     }
@@ -704,14 +780,8 @@ function constructTable(columnList,tableData,errorString,pages,search,caller) {
         newCell.innerHTML = errorString;
         newCell.className = "song_table_error_multicell_big";
     } else {
-        for (var i=0; i<tableData.length; i++) {
-            var currSong = tableData[i];
-            var newRow = songTable.insertRow(-1);
-            for (var j=0; j<columnList.length; j++) {
-                var newCell = newRow.insertCell(j);
-                _cellInfo(columnList[j],newCell,currSong,favArray,showColumnArray,i);
-            }
-        }
+        //add new songs
+        _addSongs(tableData,songTable,-1,favArray,showColumnArray,columnList);
     }
     if (pages) {
         var newRow = songTable.insertRow(-1);
