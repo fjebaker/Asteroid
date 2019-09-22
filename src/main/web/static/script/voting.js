@@ -471,11 +471,13 @@ function downloaded(callback) {
         var queryObj = {};
         var refreshQuery = false;
         var cells = searchRow.cells;
+        var cellNo = 0;
         var showColumnArray = TOOLS.COOKIES.getDecodedCookie("show_column_settings");
         showColumnArray[1] = "0" //Rating temporarily non-functional
         for (var i=0; i<columnList.length; i++) {
-            if (!(showColumnArray[0] == "0" && columnList[i] == "Favourite") && !(showColumnArray[1] == "0" && columnList[i].substring(1) == "Rating") && columnList[i].charAt(0) != '1' && columnList[i].charAt(0) != '2') {
-                var cell = cells[i];
+            if (!(showColumnArray[0] == "0" && columnList[i] == "Favourite") && !(showColumnArray[1] == "0" && columnList[i] == "Rating") && columnList[i].charAt(0) != '1' && columnList[i].charAt(0) != '2') {
+                var cell = cells[cellNo];
+                cellNo++;
                 var value = "";
                 if (cell.firstChild !== null) {
                     value = cell.firstChild.value;
