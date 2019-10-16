@@ -5,6 +5,7 @@ $light-blue: #0dbcf9;
 $dark-green: #4f9e52;
 $dark-grey: #888;
 $light-grey: #ddd;
+$darker-grey: #111;
 
 /* Background Formatting */
 
@@ -38,7 +39,7 @@ button {
   }
 }
 
-#upvote {
+.upvote_button {
   font-size: 0px;
   background-color: $black;
   background: transparent url(/resources/images/up_arrow.png) no-repeat;
@@ -53,7 +54,7 @@ button {
   }
 }
 
-#downvote {
+.downvote_button {
   font-size: 0px;
   background-color: $black;
   background: transparent url(/resources/images/down_arrow.png) no-repeat;
@@ -67,7 +68,7 @@ button {
   }
 }
 
-#favourite {
+.favourite_button {
   font-size: 0px;
   background-color: #000;
   background: transparent url(/resources/images/empty_heart.png) no-repeat;
@@ -82,7 +83,7 @@ button {
   }
 }
 
-#unfavourite {
+.unfavourite_button {
   font-size: 0px;
   background-color: #000;
   background: transparent url(/resources/images/heart.png) no-repeat;
@@ -96,6 +97,72 @@ button {
     background-color: #ddd;
   }
 }
+
+.menu_button_small {
+  font-size: 0px;
+  background-color: #000;
+  background: transparent url(/resources/images/menu.png) no-repeat;
+  background-size: 100% 100%;
+  width: 35px;
+  height: 35px;
+  transition: all ease-in-out 0.2s;
+
+  &:hover {
+    border: 1px solid #888;
+    background-color: #ddd;
+  }
+}
+
+.home_button_small {
+  float: right;
+  font-size: 0px;
+  background-color: #000;
+  background: transparent url(/resources/images/home.png) no-repeat;
+  background-size: 100% 100%;
+  width: 35px;
+  height: 35px;
+  transition: all ease-in-out 0.2s;
+
+  &:hover {
+    border: 1px solid #888;
+    background-color: #ddd;
+  }
+}
+
+nav {
+ overflow: hidden;
+}
+
+.main_button_group_small {
+ width: 100%;
+ height: auto;
+ overflow: hidden;
+}
+
+.sub_button_group_small {
+ width: 100%;
+ height: auto;
+ overflow: hidden;
+}
+
+.main_tabbar_button_small {
+  background-color: $darker-grey;
+  width: auto;
+}
+
+.sub_tabbar_button_small {
+  background-color: #333;
+  width: auto;
+}
+
+.sub_tabbar_button_medium {
+  background-color: $darker-grey;
+}
+
+.sub_tabbar_button_big {
+  background-color: $darker-grey;
+}
+
 
 #favourite_gold {
   font-size: 0px;
@@ -139,7 +206,7 @@ td {
 }
 
 tr:nth-child(even) {
-  background-color: #111111;
+  background-color: $darker-grey;
   color: $light-blue;
   font-family: verdana;
 }

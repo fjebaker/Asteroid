@@ -1,8 +1,12 @@
+/* Descriptive color variables */
+/* Background Formatting */
 body {
   text-align: left;
   background-color: #000;
   color: #0dbcf9;
 }
+
+/* Button Formatting */
 button {
   background-color: #000;
   color: #4f9e52;
@@ -23,21 +27,22 @@ button:hover {
   background-color: #0dbcf9;
   color: #000;
 }
-#upvote {
+
+.upvote_button {
   font-size: 0px;
   background-color: #000;
   background: transparent url(/resources/images/up_arrow.png) no-repeat;
   background-size: 100% 100%;
   width: 35px;
   height: 35px;
-  -webkit-transition: all ease-in-out 0.2s;
   transition: all ease-in-out 0.2s;
 }
-#upvote:hover {
+.upvote_button:hover {
   border: 1px solid #888;
   background-color: #ddd;
 }
-#downvote {
+
+.downvote_button {
   font-size: 0px;
   background-color: #000;
   background: transparent url(/resources/images/down_arrow.png) no-repeat;
@@ -45,38 +50,102 @@ button:hover {
   width: 35px;
   height: 35px;
 }
-#downvote:hover {
+.downvote_button:hover {
   border: 1px solid #888;
   background-color: #ddd;
 }
-#favourite {
+
+.favourite_button {
   font-size: 0px;
   background-color: #000;
   background: transparent url(/resources/images/empty_heart.png) no-repeat;
   background-size: 100% 100%;
   width: 35px;
   height: 35px;
-  -webkit-transition: all ease-in-out 0.2s;
   transition: all ease-in-out 0.2s;
 }
-#favourite:hover {
+.favourite_button:hover {
   border: 1px solid #888;
   background-color: #ddd;
 }
-#unfavourite {
+
+.unfavourite_button {
   font-size: 0px;
   background-color: #000;
   background: transparent url(/resources/images/heart.png) no-repeat;
   background-size: 100% 100%;
   width: 35px;
   height: 35px;
-  -webkit-transition: all ease-in-out 0.2s;
   transition: all ease-in-out 0.2s;
 }
-#unfavourite:hover {
+.unfavourite_button:hover {
   border: 1px solid #888;
   background-color: #ddd;
 }
+
+.menu_button_small {
+  font-size: 0px;
+  background-color: #000;
+  background: transparent url(/resources/images/menu.png) no-repeat;
+  background-size: 100% 100%;
+  width: 35px;
+  height: 35px;
+  transition: all ease-in-out 0.2s;
+}
+.menu_button_small:hover {
+  border: 1px solid #888;
+  background-color: #ddd;
+}
+
+.home_button_small {
+  float: right;
+  font-size: 0px;
+  background-color: #000;
+  background: transparent url(/resources/images/home.png) no-repeat;
+  background-size: 100% 100%;
+  width: 35px;
+  height: 35px;
+  transition: all ease-in-out 0.2s;
+}
+.home_button_small:hover {
+  border: 1px solid #888;
+  background-color: #ddd;
+}
+
+nav {
+  overflow: hidden;
+}
+
+.main_button_group_small {
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+}
+
+.sub_button_group_small {
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+}
+
+.main_tabbar_button_small {
+  background-color: #111;
+  width: auto;
+}
+
+.sub_tabbar_button_small {
+  background-color: #333;
+  width: auto;
+}
+
+.sub_tabbar_button_medium {
+  background-color: #111;
+}
+
+.sub_tabbar_button_big {
+  background-color: #111;
+}
+
 #favourite_gold {
   font-size: 0px;
   background-color: #000;
@@ -84,13 +153,13 @@ button:hover {
   background-size: 100% 100%;
   width: 35px;
   height: 35px;
-  -webkit-transition: all ease-in-out 0.2s;
   transition: all ease-in-out 0.2s;
 }
 #favourite_gold:hover {
   border: 1px solid #888;
   background-color: #ddd;
 }
+
 #unfavourite_gold {
   font-size: 0px;
   background-color: #000;
@@ -98,13 +167,14 @@ button:hover {
   background-size: 100% 100%;
   width: 35px;
   height: 35px;
-  -webkit-transition: all ease-in-out 0.2s;
   transition: all ease-in-out 0.2s;
 }
 #unfavourite_gold:hover {
   border: 1px solid #888;
   background-color: #ddd;
 }
+
+/* Table Formatting*/
 table,
 td {
   border-collapse: collapse;
@@ -113,19 +183,24 @@ td {
   border: #0dbcf9;
   font-family: verdana;
 }
+
 tr:nth-child(even) {
-  background-color: #111111;
+  background-color: #111;
   color: #0dbcf9;
   font-family: verdana;
 }
+
 th {
   background-color: #555555;
   color: white;
   font-family: verdana;
 }
+
+/* Header Formatting */
 h1 {
   color: #0dbcf9;
 }
+
 hr {
   display: block;
   margin-before: 0.5em;
@@ -137,7 +212,11 @@ hr {
   border-width: 1px;
   border-color: #0dbcf9;
 }
+
+/* Search Bar Formatting */
 input.search-query {
   background-color: #f47443;
   color: white;
 }
+
+/*# sourceMappingURL=home.css.map */

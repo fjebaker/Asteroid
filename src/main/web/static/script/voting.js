@@ -90,7 +90,7 @@ function _upvoteSong(id,bypass) {
                     redirects = false;
                 }
                 if (redirects) {
-                    document.location.href = configJSON["on-vote-redirect-path"];
+                    document.location.href = CONFIG["on-vote-redirect-path"];
                 }
             } else {
                 console.log("Unexpected response code "+request.status);
@@ -512,9 +512,34 @@ function downloaded(callback) {
     }
 
     function failure(data) {
-        callback(columnList,[],"Error when trying to access downloaded songs!",true,downloaded);
+        callback(columnList,[],"Error when trying to access downloaded songs!",false,true,downloaded);
     }
     TOOLS.getJson("/db/music?"+searchQuery,success,failure);
+}
+
+function requested(callback) {
+    TAB_BAR.reinsertDisposableButtons("Voting");
+
+    var columnList = ["Name","Artist","Duration","Vote","Favourite","Rating"];
+    if (BODY_CONTENT.pageSize == "medium") {
+        columnList = ["Name","Artist","Duration","2Vote","2Favourite","2Rating"];
+    } else if (BODY_CONTENT.pageSize == "small") {
+        columnList = ["Name","Artist","1Duration","2Vote","2Favourite","1Rating"];
+    }
+
+    function success(data) {
+        if (typeof data == "string") {
+            callback(columnList,[],"Error - recently requested songs request returned invalid data!",false,false,downloaded)
+        } else {
+            callback(columnList,data,"The recently requested list is empty! Try refreshing, or request some songs with the request tab.",false,false,downloaded);
+            TAB_BAR.generateSubtabButton("Voting","Refresh",function(){window.location.href=window.location.href;});
+        }
+    }
+
+    function failure(data) {
+        callback(columnList,[],"Error when trying to access recently requested songs!",false,false,downloaded);
+    }
+    TOOLS.getJson("/db/music?page=1",success,failure);
 }
 
 function autoqueue(callback) {
@@ -836,7 +861,8 @@ var tabs_object = {
     Queue:queue,
     Favourites:favourites,
     Downloaded:downloaded,
-    Autoqueue:autoqueue
+    Autoqueue:autoqueue,
+    "Recently Requested":requested,
 };
 
 var search_bars = ["Artist","Name"]

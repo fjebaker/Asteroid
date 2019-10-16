@@ -53,7 +53,7 @@ function insertTabButton(elem, buttonText, callback, expand, classstr) {
  */
 
 var tabs_object = {
-    Voting:["Queue","Downloaded","Favourites","Playlists"],
+    Voting:["Queue","Recently Requested","Downloaded","Favourites","Playlists"],
     Settings:["Cookies","Tabs"],
     Request:["URL request"]
 }
@@ -172,7 +172,7 @@ populateTabbar:function(){
             button_holder.appendChild(main_button_group);
             button_holder.appendChild(sub_button_group);
             generateTabButton(tabbarElem,"Menu",menuButtonCallback,false,"menu_button_small");
-            generateTabButton(tabbarElem,"Home",function(){document.location.href="/?v="+Math.random();},false,"home_button_small");
+            generateTabButton(tabbarElem,"Home",function(){document.location.href="/?v="+Math.random()+"&menu=open";},false,"home_button_small");
         }
     }
     for (var key in tabs_object) {
