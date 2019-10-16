@@ -39,6 +39,8 @@ def get(url, type, music_path='src/main/music/', format='wav'):
             song_dict["artist"] = split_title[0].strip(" ")
         dbinst = MusicDB()
         dbinst.add_song(song_dict)
+    else:
+        raise TypeError("{} is not a valid request type".format(type))
 
 def handle(request):
     """Handle a new song request.
