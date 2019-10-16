@@ -27,6 +27,7 @@ function _requestURL() {
     if (parser.host != "" && parser.host != window.location.host) {
         var formData = new FormData();
         formData.append("url",url)
+        formData.append("type","url")
         TOOLS.postRequest(formData,"/request",success,failure)
     } else {
         document.getElementById("requestPostEm").innerHTML += "Please input a valid URL.<br>"

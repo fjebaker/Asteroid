@@ -3,9 +3,9 @@ import requests
 import flask
 import pydub
 import os
+from src.main.web.flaskserv.Database import MusicDB
 
-
-def get(url, music_path='src/main/music/', format='wav'):
+def get(url, type, music_path='src/main/music/', format='wav'):
     """Add the audio file at the url to the server.
 
     :param url: url of the song to be downloaded
@@ -14,19 +14,31 @@ def get(url, music_path='src/main/music/', format='wav'):
     :raises requests.exceptions.ConnectionError: Failed to connect to URL
     :raises TypeError: URL is not an audio file
     """
-    song_name = url.rsplit('/', 1)[-1]
-    song_path = "".join([music_path, song_name])
-    response = requests.get(url)
-    mime_type = response.headers['Content-Type']
-    if 'audio' not in mime_type:
-        raise TypeError('{url} is not an audio file'.format(url=url))
-    with open(song_path, 'wb') as file:
-        file.write(response.content)
-    new_song_path = ".".join([song_path.rsplit('.', 1)[0], format])
-    pydub.AudioSegment.from_file(song_path).export(new_song_path,
-                                                   format=format)
-    os.remove(song_path)
-
+    if (type == "url"):
+        song_name = url.rsplit('/', 1)[-1]
+        song_path = "".join([music_path, song_name])
+        response = requests.get(url)
+        mime_type = response.headers['Content-Type']
+        if 'audio' not in mime_type:
+            raise TypeError('{url} is not an audio file'.format(url=url))
+        with open(song_path, 'wb') as file:
+            file.write(response.content)
+        new_song_path = ".".join([song_path.rsplit('.', 1)[0], format])
+        segment = pydub.AudioSegment.from_file(song_path)
+        segment.export(new_song_path,format=format)
+        os.remove(song_path)
+        song_dict = {"name":song_name.rsplit('.',1)[0],"artist":"Unknown","duration":len(segment)/1000,"file_path":new_song_path,"meta_dat":""}
+        #Try to work out song name and artist
+        split_title = []
+        if " - " in song_dict["name"]:
+            split_title = song_dict["name"].split(" - ")
+        elif " ~ " in song_dict["name"]:
+            split_title = song_dict["name"].split(" ~ ")
+        if len(split_title) == 2:
+            song_dict["name"] = split_title[1].strip(" ")
+            song_dict["artist"] = split_title[0].strip(" ")
+        dbinst = MusicDB()
+        dbinst.add_song(song_dict)
 
 def handle(request):
     """Handle a new song request.
@@ -45,7 +57,10 @@ def handle(request):
         url = body['url']
         if not isinstance(url, str):
             return flask.Response(status=400)
-        get(url)
+        type = body['type']
+        if not isinstance(type, str):
+            return flask.Response(status=400)
+        get(url,type)
         status = 201
     except TypeError as e:
         status = 400
