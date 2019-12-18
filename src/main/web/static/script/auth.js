@@ -121,7 +121,7 @@ createAuth:function() {
     if (currId == "") {
         create_auth_form();
     } else {
-        TOOLS.getJson('/db/users?id='+currId,function(data){if(typeof data == "string" || !data[0].hasOwnProperty("name")){authFailure(data);}else{document.location.href = "/?v="+Math.random();}});
+        TOOLS.getJson('/db/users?id='+currId,function(data){if(typeof data == "string" || !data[0].hasOwnProperty("name")){authFailure(data);}else{document.location.href = "/?menu=open&v="+Math.random();}});
     }
 }
 

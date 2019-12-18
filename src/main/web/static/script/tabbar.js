@@ -53,10 +53,18 @@ function insertTabButton(elem, buttonText, callback, expand, classstr) {
  */
 
 var tabs_object = {
-    Voting:["Queue","Recently Requested","Downloaded","Favourites","Playlists"],
+    Voting:["Queue","Recently Requested","Downloaded","Favourites"],//Playlists
     Settings:["Cookies","Tabs"],
-    Request:["URL request"]
+    Request:["URL request"]//Note: plans to make it such that request stuff is chosen by admin. Placeholder for now.
 }
+
+var admin_ids = ""
+if (CONFIG.hasOwnProperty("admin-ids")) { admin_ids = CONFIG["admin-ids"];}
+admin_ids = admin_ids.split(",");
+if (admin_ids.includes(TOOLS.COOKIES.getCookie("id"))) {
+    tabs_object["Admin"] = ["Skip"];
+}
+//Note: when a more secure admin system is implemented, this hacky admin bit should be removed, and admin accounts created from server side.
 
 var disposable_buttons = []; //big
 
@@ -150,6 +158,15 @@ populateTabbar:function(){
         var headerElem = document.getElementsByTagName("HEADER")[0];
         if (headerElem.innerHTML == "" || headerElem.firstChild.nodeName == "#text") {
             headerElem.innerHTML = '<img src="/resources/images/asteroid_bubble_BLACK_LEGIT.png" style="width:50%">';
+        } else {
+            document.getElementsByTagName("IMG")[0].style.width="50%";
+        }
+    } else if (TAB_BAR.pageSize == "medium") {
+        var headerElem = document.getElementsByTagName("HEADER")[0];
+        if (headerElem.innerHTML == "" || headerElem.firstChild.nodeName == "#text") {
+            headerElem.innerHTML = '<img src="/resources/images/asteroid_bubble_BLACK_LEGIT.png" style="width:490px">';
+        } else {
+            document.getElementsByTagName("IMG")[0].style.width="700px";
         }
     } else {
         document.getElementsByTagName("HEADER")[0].innerHTML = "";
@@ -172,7 +189,15 @@ populateTabbar:function(){
             button_holder.appendChild(main_button_group);
             button_holder.appendChild(sub_button_group);
             generateTabButton(tabbarElem,"Menu",menuButtonCallback,false,"menu_button_small");
+            var myDiv = document.createElement("div");
+            myDiv.style.margin = "auto";
+            myDiv.style.width = "66%";
             generateTabButton(tabbarElem,"Home",function(){document.location.href="/?v="+Math.random()+"&menu=open";},false,"home_button_small");
+            tabbarElem.appendChild(myDiv);
+            var image = document.createElement("img");
+            image.src = "/resources/images/asteroid_bubble_BLACK_LEGIT.png";
+            image.style.width="100%";
+            myDiv.appendChild(image);
         }
     }
     for (var key in tabs_object) {

@@ -69,7 +69,10 @@ function _upvoteSong(id,bypass) {
         requestData.set("s_id",id);
         requestData.set("u_id",uid);
         //TODO: get vote no from settings
-        requestData.set("vote",1);
+        var upvotePower = 1
+        if (CONFIG.hasOwnProperty("upvote-power")) {upvotePower = parseInt(CONFIG["upvote-power"]);}
+        if (isNaN(upvotePower)) {upvotePower = 1;}
+        requestData.set("vote",Math.abs(upvotePower));
         //Favourite if want to
         var autoFavourite = TOOLS.COOKIES.getDecodedCookie("vote_favourite_settings")[0];
         if (autoFavourite == 1) {
@@ -112,7 +115,10 @@ function _downvoteSong(id) {
         requestData.set("s_id",id);
         requestData.set("u_id",uid);
         //TODO: get vote no from settings
-        requestData.set("vote",-1);
+        var downvotePower = 1
+        if (CONFIG.hasOwnProperty("downvote-power")) {downvotePower = parseInt(CONFIG["downvote-power"]);}
+        if (isNaN(downvotePower)) {downvotePower = 1;}
+        requestData.set("vote",-1*Math.abs(downvotePower));
         //Favourite if want to
         var autoUnfavourite = TOOLS.COOKIES.getDecodedCookie("vote_favourite_settings")[1];
         if (autoUnfavourite == 1) {
@@ -131,7 +137,7 @@ function _downvoteSong(id) {
                     redirects = false;
                 }
                 if (redirects) {
-                    document.location.href = configJSON["on-vote-redirect-path"];
+                    document.location.href = CONFIG["on-vote-redirect-path"];
                 }
             } else {
                 console.log("Unexpected response code "+request.status);
@@ -278,7 +284,11 @@ function _cellInfo(column,cell,song,favArray,showColumnArray,index) {
             cell.id = "queueVotingIDCellNo"+index;
             break;
         case "Votes":
-            cell.innerHTML += song.votes_for;
+            var upvotePower = 1
+            if (CONFIG.hasOwnProperty("upvote-power")) {upvotePower = parseInt(CONFIG["upvote-power"]);}
+            if (isNaN(upvotePower)) {upvotePower = 1;}
+            upvotePower = Math.abs(upvotePower);
+            cell.innerHTML += song.votes_for/upvotePower;
             break;
         //case "Rating":
             //cell.appendChild(createRatingButtons(song.id));
@@ -340,12 +350,15 @@ function queue(callback) {
             callback(columnList,[],"Error - current play queue request returned invalid data!",false,false,queue);
         } else {
             var usernameLookupTable = {};
-            data.sort(function(a,b){return b.vote-a.vote;}) //sorting by vote order
-            var last_index = data.findIndex(function(song){return song.vote <= 0;});
-            last_index = (last_index > 0) ? last_index + 1 : data.length;
-            last_index = (data[last_index-1].vote <= 0) ? last_index - 1 : last_index;
-            data = data.slice(0,last_index); //can't fully remember how this works, but ensures only positively voted songs are shown
-            if (data.length > 40) {data = data.slice(0,40);}
+            if (data.length > 0) {
+                data.sort(function(a,b){return b.vote-a.vote;}) //sorting by vote order
+                var last_index = data.findIndex(function(song){return song.vote <= 0;});
+                last_index = (last_index > 0) ? last_index + 1 : data.length;
+                last_index = (data[last_index-1].vote <= 0) ? last_index - 1 : last_index;
+                data = data.slice(0,last_index); //can't fully remember how this works, but ensures only positively voted songs are shown
+                if (data.length > 40) {data = data.slice(0,40);}
+                if (data[0].vote == 0) {data = [];}
+            }
 
             function secondSuccess(secondData) {
                 if (typeof secondData == "string") {
@@ -357,6 +370,7 @@ function queue(callback) {
                         sortedSongData.push(secondData[secondData.findIndex(function(song){return song.id == song_id})]);
                     }
                     //done sorting the data
+                    sortedSongData = sortedSongData.filter(Boolean);
                     for (var i=0; i<sortedSongData.length; i++) {
                         sortedSongData[i].requesting_user = 1;
                         sortedSongData[i].votes_for = data[i].vote;
@@ -380,7 +394,7 @@ function queue(callback) {
                             usernameLookupTable[data[i].u_id.toString()] = 1;
                             TOOLS.getJson("/db/users?id="+data[i].u_id,function(usrdata){
                                 var setStr = "UNKNOWN";
-                                if (typeof usrdata !== "string") {setStr = usrdata[0].name;}
+                                if (!((typeof usrdata === "string") || (typeof usrdata[0] === "undefined"))) {setStr = usrdata[0].name;}
                                 replaceHTML(data,k,setStr);
                             },function(usrdata){
                                 replaceHTML(data,k,"UNKNOWN");
@@ -441,7 +455,11 @@ function favourites(callback) {
             callback(columnList,data,"The favourites list is empty! Favourite more songs in one of the other voting tabs!",true,false,favourites);
             //Find out if autoqueueing is allowed
             TAB_BAR.reinsertDisposableButtons("Voting");
-            if (true) {
+            var canWeAutoqueue = false;
+            if (CONFIG.hasOwnProperty("allow-autoqueue")) {
+                canWeAutoqueue = (CONFIG["allow-autoqueue"] == 1);
+            }
+            if (canWeAutoqueue) {
                 var favArray = TOOLS.COOKIES.getDecodedCookie("favourites");
                 TAB_BAR.generateSubtabButton("Voting","Autoqueue Favourites",_autoqueueCallback(favArray));
             }
@@ -884,8 +902,15 @@ showPlayingSong:function(){
                 if (typeof songdata == "string") {
                     containerElem.innerHTML="Error identifying song with id "+data.s_id;
                 } else {
-                    containerElem.innerHTML="\""+songdata[0].name+"\" by "+songdata[0].artist;
-                    setTimeout(BODY_CONTENT.showPlayingSong,1000*songdata[0].duration); //Can I work out a better way of doing this?
+                    TOOLS.getJson("/db/users?id="+data.u_id,function(usrdata){
+                        var setStr = "UNKNOWN";
+                        if (typeof usrdata !== "string") {setStr = usrdata[0].name;}
+                        containerElem.innerHTML="\""+songdata[0].name+"\" by "+songdata[0].artist + ". Requested by: "+setStr;
+                        setTimeout(BODY_CONTENT.showPlayingSong,1000*songdata[0].duration); //Can I work out a better way of doing this?
+                    },function(usrdata){
+                        containerElem.innerHTML="\""+songdata[0].name+"\" by "+songdata[0].artist + ". Requested by: UNKNOWN";
+                        setTimeout(BODY_CONTENT.showPlayingSong,1000*songdata[0].duration); //Can I work out a better way of doing this?
+                    })
                 }
             },function(songdata){
                 document.getElementById("currentSongReading").innerHTML="Error identifying song with id "+data[0].s_id;
