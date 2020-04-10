@@ -4,6 +4,7 @@ import flask
 import pydub
 import os
 from src.main.web.flaskserv.Database import MusicDB
+import subprocess
 
 def get(url, type, music_path='src/main/music/', format='wav'):
     """Add the audio file at the url to the server.
@@ -20,7 +21,7 @@ def get(url, type, music_path='src/main/music/', format='wav'):
         response = requests.get(url)
         mime_type = response.headers['Content-Type']
         if 'audio' not in mime_type:
-            raise TypeError('{url} is not an audio file'.format(url=url))
+            return 415
         with open(song_path, 'wb') as file:
             file.write(response.content)
         new_song_path = ".".join([song_path.rsplit('.', 1)[0], format])
@@ -39,8 +40,27 @@ def get(url, type, music_path='src/main/music/', format='wav'):
             song_dict["artist"] = split_title[0].strip(" ")
         dbinst = MusicDB()
         dbinst.add_song(song_dict)
+        return 201
+    elif (type == "yt") :
+        process = subprocess.Popen('python2.7 ~/Documents/PyTubeForAsty/run.py "{}"'.format(url),shell=True,stdin=None,stdout=subprocess.PIPE,stderr=None)
+        listenBool = False
+        while (process.poll() is None):
+            out,err = process.communicate()
+            out = out.decode()
+            if ("LISTEN::" in out):
+                listenBool = True
+            if listenBool:
+                if ("Song already exists!" in out):
+                    process.kill()
+                    return 409
+                if ("Song is too long!" in out):
+                    process.kill()
+                    return 413
+            if ("UNHEAR::" in out):
+                listenBool = False
+        return 201
     else:
-        raise TypeError("{} is not a valid request type".format(type))
+        return 400
 
 def handle(request):
     """Handle a new song request.
@@ -62,8 +82,7 @@ def handle(request):
         type = body['type']
         if not isinstance(type, str):
             return flask.Response(status=400)
-        get(url,type)
-        status = 201
+        status = get(url,type)
     except TypeError as e:
         status = 400
     except FileNotFoundError as e:

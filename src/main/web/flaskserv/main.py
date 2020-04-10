@@ -30,6 +30,9 @@ def styles(name):
 def scripts(name):
     return send_from_directory('../../web/static/script', name+'.js')
 
+@app.route("/tabs/<name>.js")
+def tabs(name):
+    return send_from_directory('../../web/static/script/tabs', name+'.js')
 
 @app.route("/config/jsconfig.js")
 def jsconfig():
@@ -83,3 +86,16 @@ def request_song():
 
 def admin():
     pass
+
+#Botched shizznae for da partayyyyy
+import socket
+@app.route("/skip",methods=["POST"])
+def skip_song():
+    if request.__dict__["environ"]["REQUEST_METHOD"] == "POST" and "skip" in request.form:
+        if request.form["skip"] == "42069":
+            s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+            s.connect(("localhost",6666))
+            s.send("resume".encode())
+            s.close()
+            return "201"
+    return "404"

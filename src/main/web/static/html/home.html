@@ -7,33 +7,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>body {background-color: #000}</style>
 </head>
-<body onresize="TOOLS.fillByScreenSize('script/tabbar.js',function(){TAB_BAR.populateTabbar();})">
+<body onresize="TOOLS.onResize()">
 <header>
 </header>
 <nav id="tabsDiv"></nav>
 <div id="bodyDiv"></div>
 <footer></footer>
 </body>
-<script src="../script/dynamic_load.js"></script>
-<script language="JavaScript">
-LOADER.insert_before("config/jsconfig.js",function() {
-    LOADER.insert_css("css/home.css");
-    LOADER.insert_before("script/tools.js",function() {
-        if (TOOLS.COOKIES.validateCookies(function() {
-            console.log("failure"); //What is to be done if cookies are invalid
-        })) {
-            if (CONFIG["non-cacheing"] == 1) {
-                var redirStr = TOOLS.QUERIES.ensureKeyQuery('v',Math.random());
-                if (redirStr !== false) {
-                    document.location.href = redirStr;
-                }
-            }
-            TOOLS.ensureValidId();
-            TOOLS.fillByScreenSize("script/tabbar.js",function(){
-                TAB_BAR.populateTabbar();
-            });
-        }
-    });
-});
+<script src="../script/home.js"></script>
 </script>
 </html>
