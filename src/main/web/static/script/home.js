@@ -142,6 +142,7 @@ var SETTINGS = {
 };
 
 var PLAYLISTS = {
+    playlistNames:[],
     playlistData:{"favourites":[]}
 };
 
