@@ -270,19 +270,110 @@ getUid:function(){
 
 PLAYLISTS:{
 
+/**
+ * Used to add a particular song to a particular playlist
+ *
+ * @alias TOOLS~PLAYLISTS~pushSongToPlaylist
+ * @param {number} songId - the id number of the song to add
+ * @param {string} playlistName - the name of the playlist to push to
+ */
 pushSongToPlaylist:function(songId,playlistName){
     PLAYLISTS.playlistData[playlistName].push(songId);
     //TODO server request
 },
 
+/**
+ * Used to add multiple songs to a particular playlist
+ *
+ * @alias TOOLS~PLAYLISTS~pushSongsToPlaylist
+ * @param {array} songIds - array of song id numbers for the songs to add
+ * @param {string} playlistName - the name of the playlist to push to
+ */
+pushSongsToPlaylist:function(songIds,playlistName){
+    for (var i = 0; i < songIds.length; i++) {
+        PLAYLISTS.playlistData[playlistName].push(songIds[i]);
+    }
+    //TODO server request
+},
+
+/**
+ * Used to remove a particular song from a particular playlist
+ *
+ * @alias TOOLS~PLAYLISTS~removeSongFromPlaylist
+ * @param {number} songId - the id number of the song to remove
+ * @param {string} playlistName - the name of the playlist remove from
+ */
 removeSongFromPlaylist:function(songId,playlistName){
     var index = PLAYLISTS.playlistData[playlistName].indexOf(songId);
     PLAYLISTS.playlistData[playlistName].splice(index,1);
     //TODO server request
 },
 
+/**
+ * Used to remove multiple songs from a particular playlist
+ *
+ * @alias TOOLS~PLAYLISTS~removeSongsFromPlaylist
+ * @param {array} songIds - array of song id numbers for the songs to remove
+ * @param {string} playlistName - the name of the playlist toremove from
+ */
+removeSongsFromPlaylist:function(songIds,playlistName){
+    for (var i = 0; i < songIds.length; i++) {
+        var index = PLAYLISTS.playlistData[playlistName].indexOf(songIds[i]);
+        PLAYLISTS.playlistData[playlistName].splice(index,1);
+    }
+    //TODO server request
+},
+
+
+
+/**
+ * Used to give the name of the currently opened playlist, if valid
+ *
+ * @alias TOOLS~PLAYLISTS~getCurrentPlaylistName
+ * @returns {string} name - the name of the currently opened playlist
+ */
 getCurrentPlaylistName:function(){
     return _getQueryItem("playlist");
+},
+
+/**
+ * Used to duplicate a particular playlist
+ *
+ * @alias TOOLS~PLAYLISTS~duplicatePlaylist
+ * @param {string} playlistName - the name of the playlist to remove from
+ */
+clonePlaylist:function(playlistName) {
+    var newName = playlistName;
+    var endExtractor = /\(\d*\)/g
+    var endValue = newName.match(endExtractor);
+    console.log(endValue);
+    if (endValue === null) {
+        newName = newName + " (2)";
+    } else {
+        var lastMatch = endValue[endValue.length - 1];
+        lastMatch = lastMatch.substring(1,lastMatch.length - 1);
+        endValue[endValue.length - 1] = "(" + (parseInt(lastMatch) + 1).toString() + ")";
+        var i = -1;
+        var strFunc = function(){
+            i += 1;
+            return endValue[i];
+        };
+        newName = newName.replace(endExtractor,strFunc);
+    }
+    TOOLS.PLAYLISTS.createPlaylist(newName,"placeholder");
+    TOOLS.PLAYLISTS.pushSongsToPlaylist(PLAYLISTS.playlistData[playlistName],newName);
+},
+
+/**
+ * Used to create a fresh playlist
+ *
+ * @alias TOOLS~PLAYLISTS~createPlaylist
+ * @param {string} playlistName - the name of the playlist to create
+ * @param {string} privacyStatus - what privacy status the playlist should have
+ */
+createPlaylist:function(playlistName,privacyStatus) {
+    PLAYLISTS.playlistNames.push(playlistName);
+    PLAYLISTS.playlistData[playlistName] = [];
 }
 
 },
