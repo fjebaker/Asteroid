@@ -107,7 +107,9 @@ expandSubtab:function(key) {
 closeSubtabs:function() {
     if (MISC_INFO.screen_size == "big") {
         for (var n = 0; n < disposable_buttons.length; n++) {
-            disposable_buttons[n].parentNode.removeChild(disposable_buttons[n]);
+            if (disposable_buttons[n] !== null && disposable_buttons[n].parentNode !== null) {
+                disposable_buttons[n].parentNode.removeChild(disposable_buttons[n]);
+            }
         }
         disposable_buttons = [];
     } else {
