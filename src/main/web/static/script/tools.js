@@ -184,7 +184,7 @@ populateSettings:function(callback){
                 "Requesting User":SETTINGS.showColumnArray[0]||1,
                 "Votes":SETTINGS.showColumnArray[1]||1,
                 "Favourite":SETTINGS.showColumnArray[2]||1,
-                "Rating":SETTINGS.showColumnArray[3]||0
+                "Add To Playlist":SETTINGS.showColumnArray[3]||1
             };
             SETTINGS.tabsOpenSettings = object['default-tab-activation'].split(',');
             SETTINGS.tabsOpenSettings = {
@@ -346,7 +346,6 @@ clonePlaylist:function(playlistName) {
     var newName = playlistName;
     var endExtractor = /\(\d*\)/g
     var endValue = newName.match(endExtractor);
-    console.log(endValue);
     if (endValue === null) {
         newName = newName + " (2)";
     } else {
@@ -374,6 +373,20 @@ clonePlaylist:function(playlistName) {
 createPlaylist:function(playlistName,privacyStatus) {
     PLAYLISTS.playlistNames.push(playlistName);
     PLAYLISTS.playlistData[playlistName] = [];
+},
+
+/**
+ * Used to delete a playlist
+ *
+ * @alias TOOLS~PLAYLISTS~deletePlaylist
+ * @param {string} playlistName - the name of the playlist to delete
+ */
+deletePlaylist:function(playlistName) {
+    var index = PLAYLISTS.playlistNames.indexOf(playlistName);
+    if (index !== -1) {
+        PLAYLISTS.playlistNames.splice(index,1);
+        delete PLAYLISTS.playlistData[playlistName];
+    }
 }
 
 },

@@ -59,11 +59,15 @@ function _makePrivacyInput(select) {
     var privateOpt = document.createElement("option");
     privateOpt.innerText = "Private";
     privateOpt.value = "private";
-    var publicOpt = document.createElement("option");
-    publicOpt.innerText = "Public";
-    publicOpt.value = "public";
+    var viewableOpt = document.createElement("option");
+    viewableOpt.innerText = "Publically Viewable";
+    viewableOpt.value = "viewable";
+    var editableOpt = document.createElement("option");
+    editableOpt.innerText = "Publically Editable";
+    editableOpt.value = "editable";
     select.appendChild(privateOpt);
-    select.appendChild(publicOpt);
+    select.appendChild(viewableOpt);
+    select.appendChild(editableOpt);
 }
 
 return {
@@ -72,7 +76,7 @@ populateBody:function(){
     if (subtab === "View Playlists") {
         playlist_table = document.createElement("table");
         var newRow = playlist_table.insertRow(0);
-        var labels = ["Name","View","Clone","Privacy","Remove"];
+        var labels = ["Name","Size","View","Clone","Privacy","Remove"];
         for (var i = 0; i < labels.length; i++) {
             var newCell = document.createElement("th");
             newCell.innerText = labels[i];
@@ -80,24 +84,26 @@ populateBody:function(){
         }
         for (var i = 0; i < PLAYLISTS.playlistNames.length; i++) {
             var newRow = playlist_table.insertRow(-1);
-            var nameCell = newRow.insertCell(0);
+            var nameCell = newRow.insertCell(-1);
             nameCell.innerText = PLAYLISTS.playlistNames[i];
             nameCell.onclick = _makeNameInput(nameCell);
-            var viewCell = newRow.insertCell(1);
+            var sizeCell = newRow.insertCell(-1);
+            sizeCell.innerText = PLAYLISTS.playlistData[PLAYLISTS.playlistNames[i]].length;
+            var viewCell = newRow.insertCell(-1);
             var viewButton = document.createElement("button");
             viewButton.innerText = "View";
             viewButton.onclick = _viewPlaylist(i);
             viewCell.appendChild(viewButton);
-            var cloneCell = newRow.insertCell(2);
+            var cloneCell = newRow.insertCell(-1);
             var cloneButton = document.createElement("button");
             cloneButton.innerText = "Clone";
             cloneButton.onclick = _clonePlaylist(i);
             cloneCell.appendChild(cloneButton);
-            var privacyCell = newRow.insertCell(3);
+            var privacyCell = newRow.insertCell(-1);
             var privacyInput = document.createElement("select");
             _makePrivacyInput(privacyInput);
             privacyCell.appendChild(privacyInput);
-            var removeCell = newRow.insertCell(4);
+            var removeCell = newRow.insertCell(-1);
             var removeButton = document.createElement("button");
             removeButton.innerText = "Delete";
             removeButton.onclick = _deletePlaylist(i);

@@ -9,11 +9,42 @@ var song_table;
 var song_table_head;
 var song_table_body;
 var song_table_foot;
+var playlist_adding_selector;
 
 var user_id_waiting = {};
 var user_id_names = {};
 
 const searchableColumns = ["Artist","Name"];
+
+function _addSongToPlaylist(id) {
+    return function() {
+        if (playlist_adding_selector.value != "Choose playlist...") {
+            TOOLS.PLAYLISTS.pushSongToPlaylist(id,playlist_adding_selector.value);
+        }
+    }
+}
+
+function _removeSongFromPlaylist(row,id) {
+    return function() {
+        TOOLS.PLAYLISTS.removeSongFromPlaylist(id,playlist_adding_selector.value);
+        row.parentNode.removeChild(row);
+    }
+}
+
+function _dropdownPlaylistAdd(cell,id) {
+
+    function adding_onchange() {
+        _addSongToPlaylist(id)();
+        playlist_adding_selector.onchange = function() {};
+        playlist_adding_selector.parentNode.removeChild(playlist_adding_selector);
+    }
+
+    return function() {
+        cell.appendChild(playlist_adding_selector);
+        playlist_adding_selector.value = "Choose playlist...";
+        playlist_adding_selector.onchange = adding_onchange;
+    }
+}
 
 function _searchTable(row) {
     return function() {
@@ -43,6 +74,19 @@ function _clearSongTable() {
     song_table_body = document.createElement("tbody");
     song_table.appendChild(song_table_body);
     song_table_foot = song_table.createTFoot();
+    playlist_adding_selector = document.createElement("select");
+    var initOption = document.createElement("option");
+    initOption.innerText = "Choose playlist...";
+    playlist_adding_selector.appendChild(initOption);
+    var favOption = document.createElement("option");
+    favOption.innerText = "Favourites";
+    favOption.value = "favourites";
+    playlist_adding_selector.appendChild(favOption);
+    for (var j = 0; j < PLAYLISTS.playlistNames.length; j++) {
+        var option = document.createElement("option");
+        option.innerText = PLAYLISTS.playlistNames[j];
+        playlist_adding_selector.appendChild(option);
+    }
 }
 
 function _addTopRow() {
@@ -53,6 +97,9 @@ function _addTopRow() {
         if (!SETTINGS.showColumnArray.hasOwnProperty(columnKey) || SETTINGS.showColumnArray[columnKey]) {
             var newCell = document.createElement('th');
             newCell.innerText = columnList[i];
+            if (columnKey == "Add To Playlist") {
+                newCell.appendChild(playlist_adding_selector);
+            }
             topRow.appendChild(newCell);
         }
     }
@@ -219,6 +266,27 @@ function _addSong(songData,index) {
                     if (CONFIG.hasOwnProperty("upvote-power")) {upvotePower = parseInt(CONFIG["upvote-power"]);}
                     if (isNaN(upvotePower)) {upvotePower = 1;}
                     newCell.innerText = songData.votes_for/upvotePower;
+                    break;
+                case "Add To Playlist":
+                    var addButton = document.createElement("button");
+                    addButton.innerText = "Add to playlist";
+                    addButton.title = "Add to playlist";
+                    if (playlist_adding_selector.parentNode !== null) {
+                        addButton.className = "play_add_button";
+                        addButton.onclick = _addSongToPlaylist(songData.id);
+                    } else {
+                        addButton.className = "play_add_dropdown_button";
+                        addButton.onclick = _dropdownPlaylistAdd(newCell,songData.id);
+                    }
+                    newCell.appendChild(addButton);
+                    break;
+                case "Remove From Playlist":
+                    var removeButton = document.createElement("button");
+                    removeButton.innerText = "Remove from playlist";
+                    removeButton.title = "Remove from playlist";
+                    removeButton.className = "play_remove_button";
+                    removeButton.onclick = _removeSongFromPlaylist(currRow,songData.id);
+                    newCell.appendChild(removeButton);
                 default:
                     break;
             }
@@ -255,16 +323,16 @@ function _addBottomMessage(message) {
 function _recentlyRequested() {
     BODY_CONTENT.appendNode(song_table);
     if (MISC_INFO.screen_size == "big") {
-        columnList = ["Name","Artist","Duration","Vote","Favourite","Rating"];
+        columnList = ["Name","Artist","Duration","Vote","Favourite","Add To Playlist"];
         expansionColumns = [];
         doubleExpansionColumns = [];
     } else if (MISC_INFO.screen_size == "medium") {
         columnList = ["Name","Artist","Duration"];
-        doubleExpansionColumns = ["Vote","Favourite","Rating"];
+        doubleExpansionColumns = ["Vote","Favourite","Add To Playlist"];
         expansionColumns = [];
     } else {
         columnList = ["Name","Artist"];
-        expansionColumns = ["Duration","Rating"];
+        expansionColumns = ["Duration","Add To Playlist"];
         doubleExpansionColumns = ["Vote","Favourite"];
     }
     _addTopRow();
@@ -322,19 +390,20 @@ function _addAfterButton(data) {
 }
 
 function _playlist(playlist) {
+    playlist_adding_selector.value = playlist;
     BODY_CONTENT.appendNode(song_table);
     if (PLAYLISTS.playlistData.hasOwnProperty(playlist) && PLAYLISTS.playlistData[playlist].length > 0) {
         if (MISC_INFO.screen_size == "big") {
-            columnList = ["Name","Artist","Duration","Vote","Favourite","Rating"];
+            columnList = ["Name","Artist","Duration","Vote","Favourite","Remove From Playlist"];
             expansionColumns = [];
             doubleExpansionColumns = [];
         } else if (MISC_INFO.screen_size == "medium") {
             columnList = ["Name","Artist","Duration"];
-            doubleExpansionColumns = ["Vote","Favourite","Rating"];
+            doubleExpansionColumns = ["Vote","Favourite","Remove From Playlist"];
             expansionColumns = [];
         } else {
             columnList = ["Name","Artist"];
-            expansionColumns = ["Duration","Rating"];
+            expansionColumns = ["Duration","Remove From Playlist"];
             doubleExpansionColumns = ["Vote","Favourite"];
         }
         _addTopRow();
@@ -359,16 +428,16 @@ function _playlist(playlist) {
 function _downloaded(query) {
     BODY_CONTENT.appendNode(song_table);
     if (MISC_INFO.screen_size == "big") {
-        columnList = ["Name","Artist","Duration","Vote","Favourite","Rating"];
+        columnList = ["Name","Artist","Duration","Vote","Favourite","Add To Playlist"];
         expansionColumns = [];
         doubleExpansionColumns = [];
     } else if (MISC_INFO.screen_size == "medium") {
         columnList = ["Name","Artist","Duration"];
-        doubleExpansionColumns = ["Vote","Favourite","Rating"];
+        doubleExpansionColumns = ["Vote","Favourite","Add To Playlist"];
         expansionColumns = [];
     } else {
         columnList = ["Name","Artist"];
-        expansionColumns = ["Duration","Rating"];
+        expansionColumns = ["Duration","Add To Playlist"];
         doubleExpansionColumns = ["Vote","Favourite"];
     }
     _addTopRow();
@@ -409,16 +478,16 @@ function _downloaded(query) {
 function _queue() {
     BODY_CONTENT.appendNode(song_table);
     if (MISC_INFO.screen_size == "big") {
-        columnList = ["Name","Artist","Duration","Requesting User","Votes","Vote","Favourite","Rating"];
+        columnList = ["Name","Artist","Duration","Requesting User","Votes","Vote","Favourite","Add To Playlist"];
         expansionColumns = [];
         doubleExpansionColumns = [];
     } else if (MISC_INFO.screen_size == "medium") {
         columnList = ["Name","Artist","Duration","Votes"];
-        doubleExpansionColumns = ["Requesting User","Vote","Favourite","Rating"];
+        doubleExpansionColumns = ["Requesting User","Vote","Favourite","Add To Playlist"];
         expansionColumns = [];
     } else {
         columnList = ["Name","Artist","Votes"];
-        expansionColumns = ["Duration","Requesting User","Rating"];
+        expansionColumns = ["Duration","Requesting User","Add To Playlist"];
         doubleExpansionColumns = ["Vote","Favourite"];
     }
     _addTopRow();
