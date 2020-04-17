@@ -344,23 +344,38 @@ getCurrentPlaylistName:function(){
  */
 clonePlaylist:function(playlistName) {
     var newName = playlistName;
-    var endExtractor = /\(\d*\)/g
-    var endValue = newName.match(endExtractor);
-    if (endValue === null) {
-        newName = newName + " (2)";
-    } else {
-        var lastMatch = endValue[endValue.length - 1];
-        lastMatch = lastMatch.substring(1,lastMatch.length - 1);
-        endValue[endValue.length - 1] = "(" + (parseInt(lastMatch) + 1).toString() + ")";
-        var i = -1;
-        var strFunc = function(){
-            i += 1;
-            return endValue[i];
-        };
-        newName = newName.replace(endExtractor,strFunc);
+    while (PLAYLISTS.playlistNames.includes(newName) || newName == "favourites") {
+        var endExtractor = /\(\d*\)/g
+        var endValue = newName.match(endExtractor);
+        if (endValue === null) {
+            newName = newName + " (2)";
+        } else {
+            var lastMatch = endValue[endValue.length - 1];
+            lastMatch = lastMatch.substring(1,lastMatch.length - 1);
+            endValue[endValue.length - 1] = "(" + (parseInt(lastMatch) + 1).toString() + ")";
+            var i = -1;
+            var strFunc = function(){
+                i += 1;
+                return endValue[i];
+            };
+            newName = newName.replace(endExtractor,strFunc);
+        }
     }
-    TOOLS.PLAYLISTS.createPlaylist(newName,"placeholder");
+    TOOLS.PLAYLISTS.createPlaylist(newName,"placeholder"); //Proper privacy stuff will be sorted once server storage sorted
     TOOLS.PLAYLISTS.pushSongsToPlaylist(PLAYLISTS.playlistData[playlistName],newName);
+},
+
+/**
+ * Used to rename a particular playlist
+ *
+ * @alias TOOLS~PLAYLISTS~renamePlaylist
+ * @param {string} oldPlaylistName - the name of the playlist to rename
+ * @param {string} newPlaylistName - the new name of the playlist
+ */
+renamePlaylist:function(oldPlaylistName,newPlaylistName) {
+    TOOLS.PLAYLISTS.createPlaylist(newPlaylistName,"placeholder");
+    TOOLS.PLAYLISTS.pushSongsToPlaylist(PLAYLISTS.playlistData[oldPlaylistName],newPlaylistName);
+    TOOLS.PLAYLISTS.deletePlaylist(oldPlaylistName);
 },
 
 /**
@@ -372,6 +387,9 @@ clonePlaylist:function(playlistName) {
  */
 createPlaylist:function(playlistName,privacyStatus) {
     PLAYLISTS.playlistNames.push(playlistName);
+    if (privacyStatus === "viewable" || privacyStatus === "editable") {
+        PLAYLISTS.publicPlaylistNames.push(playlistName);
+    }
     PLAYLISTS.playlistData[playlistName] = [];
 },
 
@@ -386,6 +404,26 @@ deletePlaylist:function(playlistName) {
     if (index !== -1) {
         PLAYLISTS.playlistNames.splice(index,1);
         delete PLAYLISTS.playlistData[playlistName];
+    }
+    var pubIndex = PLAYLISTS.publicPlaylistNames.indexOf(playlistName);
+    if (pubIndex !== -1) {
+        PLAYLISTS.publicPlaylistNames.splice(pubIndex,1);
+    }
+},
+
+/**
+ * Used to change the privacy setting of a playlist
+ *
+ * @alias TOOLS~PLAYLISTS~changePlaylistPrivacy
+ * @param {string} playlistName - the name of the playlist to delete
+ * @param {string} privacyStatus - the privacy to set to
+ */
+changePlaylistPrivacy:function(playlistName,privacyStatus) {
+    if ((privacyStatus === "viewable" || privacyStatus == "editable") && !PLAYLISTS.publicPlaylistNames.includes(playlistName)) {
+        PLAYLISTS.publicPlaylistNames.push(playlistName);
+    } else if (privacyStatus === "private" && PLAYLISTS.publicPlaylistNames.includes(playlistNames)) {
+        var index = PLAYLISTS.publicPlaylistNames.indexOf(playlistName);
+        PLAYLISTS.publicPlaylistNames.splice(index,1);
     }
 }
 
