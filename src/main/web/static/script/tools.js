@@ -73,14 +73,14 @@ songLengthFormat:function(seconds) {
  *
  * @alias TOOLS~jsonGetRequest
  * @param {string} filename - the file to GET
- * @param {function} successCallback - a callback taking (Object responseObject, string statusCode) to call upon success
+ * @param {function} successCallback - a callback taking (XMLHttpRequest response) to call upon success
  * @param {function} failureCallback - a callback to call upon failure
  */
 jsonGetRequest:function(filename,successCallback,failureCallback) {
     var httpRequest = new XMLHttpRequest();
     httpRequest.overrideMimeType("application/json");
     httpRequest.open("GET",filename,true);
-    httpRequest.onload = function(){successCallback(JSON.parse(httpRequest.response),httpRequest.status.toString());};
+    httpRequest.onload = function(){successCallback(httpRequest);};
     httpRequest.onerror = failureCallback;
     httpRequest.ontimeout = failureCallback;
     httpRequest.send();
@@ -205,14 +205,6 @@ populateSettings:function(callback){
     TOOLS.AUTH.passAccountSettings(callbackGenerator,CONFIG);
 },
 
-/**
- * Called to populate the PLAYLISTS object from user data
- *
- * @alias TOOLS~populatePlaylists
- */
-populatePlaylists:function(){
-},
-
 //START OF AUTH FUNCTIONS
 
 AUTH:{
@@ -233,9 +225,9 @@ validateAuth:function(){
  */
 passAccountSettings(callbackGenerator,defaultObj) {
 
-    function success(object,status) {
-        if (status == "200") {
-            callbackGenerator(object)();
+    function success(request) {
+        if (request.status == "200") {
+            callbackGenerator(JSON.parse(request.response))();
         } else {
             callbackGenerator(defaultObj)();
         }
@@ -262,6 +254,16 @@ getAuthKey:function(){
  */
 getUid:function(){
     return _getCookie("id");
+},
+
+/**
+ * Used to access the user name stored in cookies
+ *
+ * @alias TOOLS~AUTH~getUsername
+ * @returns {string} Username - the user's username
+ */
+getUsername:function(){
+    return _getCookie("id");
 }
 
 },
@@ -275,10 +277,17 @@ PLAYLISTS:{
  *
  * @alias TOOLS~PLAYLISTS~pushSongToPlaylist
  * @param {number} songId - the id number of the song to add
- * @param {string} playlistName - the name of the playlist to push to
+ * @param {string} hashkey - the hash key of the playlist
  */
-pushSongToPlaylist:function(songId,playlistName){
-    PLAYLISTS.playlistData[playlistName].push(songId);
+pushSongToPlaylist:function(songId,hashkey){
+    if (PLAYLISTS.userPlaylistInfo.hasOwnProperty(hashkey)) {
+        PLAYLISTS.userPlaylistInfo[hashkey]["Size"] += 1;
+        if (PLAYLISTS.userPlaylistInfo[hashkey]["StoreSIDs"]) {
+            PLAYLISTS.userPlaylistInfo[hashkey]["SIDData"].push(songId);
+        }
+    } else if (PLAYLISTS.publicPlaylistInfo.hasOwnProperty(hashkey) && PLAYLISTS.publicPlaylistInfo[hashkey]["Privacy"] == "editable"){
+        PLAYLISTS.publicPlaylistInfo[hashkey]["Size"] += 1;
+    }
     //TODO server request
 },
 
@@ -287,11 +296,19 @@ pushSongToPlaylist:function(songId,playlistName){
  *
  * @alias TOOLS~PLAYLISTS~pushSongsToPlaylist
  * @param {array} songIds - array of song id numbers for the songs to add
- * @param {string} playlistName - the name of the playlist to push to
+ * @param {string} hashkey - the hash key of the playlist
  */
-pushSongsToPlaylist:function(songIds,playlistName){
-    for (var i = 0; i < songIds.length; i++) {
-        PLAYLISTS.playlistData[playlistName].push(songIds[i]);
+pushSongsToPlaylist:function(songIds,hashkey){
+    if (PLAYLISTS.userPlaylistInfo.hasOwnProperty(hashkey)) {
+        if (hashkey === "(favourites)") {hashkey = PLAYLISTS.userPlaylistInfo[hashkey]["HashID"];}
+        PLAYLISTS.userPlaylistInfo[hashkey]["Size"] += songIds.length;
+        if (PLAYLISTS.userPlaylistInfo[hashkey]["StoreSIDs"]) {
+            for (var i = 0; i < songIds.length; i++) {
+                PLAYLISTS.userPlaylistInfo[hashkey]["SIDData"].push(songIds[i]);
+            }
+        }
+    } else if (PLAYLISTS.publicPlaylistInfo.hasOwnProperty(hashkey) && PLAYLISTS.publicPlaylistInfo[hashkey]["Privacy"] == "editable"){
+        PLAYLISTS.publicPlaylistInfo[hashkey]["Size"] += songIds.length;
     }
     //TODO server request
 },
@@ -301,11 +318,18 @@ pushSongsToPlaylist:function(songIds,playlistName){
  *
  * @alias TOOLS~PLAYLISTS~removeSongFromPlaylist
  * @param {number} songId - the id number of the song to remove
- * @param {string} playlistName - the name of the playlist remove from
+ * @param {string} hashkey - the hash key of the playlist
  */
-removeSongFromPlaylist:function(songId,playlistName){
-    var index = PLAYLISTS.playlistData[playlistName].indexOf(songId);
-    PLAYLISTS.playlistData[playlistName].splice(index,1);
+removeSongFromPlaylist:function(songId,hashkey){
+    if (PLAYLISTS.userPlaylistInfo.hasOwnProperty(hashkey)) {
+        PLAYLISTS.userPlaylistInfo[hashkey]["Size"] -= 1;
+        if (PLAYLISTS.userPlaylistInfo[hashkey]["StoreSIDs"]) {
+            var index = PLAYLISTS.userPlaylistInfo[hashkey]["SIDData"].indexOf(songId);
+            PLAYLISTS.userPlaylistInfo[hashkey]["SIDData"].splice(index,1);
+        }
+    } else if (PLAYLISTS.publicPlaylistInfo.hasOwnProperty(hashkey) && PLAYLISTS.publicPlaylistInfo[hashkey]["Privacy"] == "editable"){
+        PLAYLISTS.publicPlaylistInfo[hashkey]["Size"] -= 1;
+    }
     //TODO server request
 },
 
@@ -314,12 +338,19 @@ removeSongFromPlaylist:function(songId,playlistName){
  *
  * @alias TOOLS~PLAYLISTS~removeSongsFromPlaylist
  * @param {array} songIds - array of song id numbers for the songs to remove
- * @param {string} playlistName - the name of the playlist toremove from
+ * @param {string} hashkey - the hash key of the playlist
  */
-removeSongsFromPlaylist:function(songIds,playlistName){
-    for (var i = 0; i < songIds.length; i++) {
-        var index = PLAYLISTS.playlistData[playlistName].indexOf(songIds[i]);
-        PLAYLISTS.playlistData[playlistName].splice(index,1);
+removeSongsFromPlaylist:function(songIds,hashkey){
+    if (PLAYLISTS.userPlaylistInfo.hasOwnProperty(hashkey)) {
+        PLAYLISTS.userPlaylistInfo[hashkey]["Size"] -= songIds.length;
+        if (PLAYLISTS.userPlaylistInfo[hashkey]["StoreSIDs"]) {
+            for (var i = 0; i < songIds.length; i++) {
+                var index = PLAYLISTS.userPlaylistInfo[hashkey]["SIDData"].indexOf(songIds[i]);
+                PLAYLISTS.userPlaylistInfo[hashkey]["SIDData"].splice(index,1);
+            }
+        }
+    } else if (PLAYLISTS.publicPlaylistInfo.hasOwnProperty(hashkey) && PLAYLISTS.publicPlaylistInfo[hashkey]["Privacy"] == "editable"){
+        PLAYLISTS.publicPlaylistInfo[hashkey]["Size"] -= songIds.length;
     }
     //TODO server request
 },
@@ -339,43 +370,41 @@ getCurrentPlaylistName:function(){
 /**
  * Used to duplicate a particular playlist
  *
- * @alias TOOLS~PLAYLISTS~duplicatePlaylist
- * @param {string} playlistName - the name of the playlist to remove from
+ * @alias TOOLS~PLAYLISTS~clonePlaylist
+ * @param {string} hashkey - the hash key of the playlist
+ * @param {string} privacy - the privacy status to give the new playlist
  */
-clonePlaylist:function(playlistName) {
-    var newName = playlistName;
-    while (PLAYLISTS.playlistNames.includes(newName) || newName == "favourites") {
-        var endExtractor = /\(\d*\)/g
-        var endValue = newName.match(endExtractor);
-        if (endValue === null) {
-            newName = newName + " (2)";
-        } else {
-            var lastMatch = endValue[endValue.length - 1];
-            lastMatch = lastMatch.substring(1,lastMatch.length - 1);
-            endValue[endValue.length - 1] = "(" + (parseInt(lastMatch) + 1).toString() + ")";
-            var i = -1;
-            var strFunc = function(){
-                i += 1;
-                return endValue[i];
-            };
-            newName = newName.replace(endExtractor,strFunc);
-        }
+clonePlaylist:function(hashkey,privacy) {
+    var newName;
+    var size;
+    if (PLAYLISTS.userPlaylistInfo.hasOwnProperty(hashkey)) {
+        newName = PLAYLISTS.userPlaylistInfo[hashkey]["Name"];
+        size = PLAYLISTS.userPlaylistInfo[hashkey]["Size"];
+    } else {
+        newName = PLAYLISTS.publicPlaylistInfo[hashkey]["Name"];
+        size = PLAYLISTS.publicPlaylistInfo[hashkey]["Size"];
     }
-    TOOLS.PLAYLISTS.createPlaylist(newName,"placeholder"); //Proper privacy stuff will be sorted once server storage sorted
-    TOOLS.PLAYLISTS.pushSongsToPlaylist(PLAYLISTS.playlistData[playlistName],newName);
+    while (PLAYLISTS.userPlaylistInfo.hasOwnProperty(newName)) {
+        newName = "copy of "+newName;
+    }
+    TOOLS.PLAYLISTS.createPlaylist(newName,privacy);
+    PLAYLISTS.userPlaylistInfo[newName]["Size"] = size;
+    //Should be updated to independent clone func
+    //TODO server request
 },
 
 /**
  * Used to rename a particular playlist
  *
  * @alias TOOLS~PLAYLISTS~renamePlaylist
- * @param {string} oldPlaylistName - the name of the playlist to rename
+ * @param {string} hashkey - the hash key of the playlist
  * @param {string} newPlaylistName - the new name of the playlist
  */
-renamePlaylist:function(oldPlaylistName,newPlaylistName) {
-    TOOLS.PLAYLISTS.createPlaylist(newPlaylistName,"placeholder");
-    TOOLS.PLAYLISTS.pushSongsToPlaylist(PLAYLISTS.playlistData[oldPlaylistName],newPlaylistName);
-    TOOLS.PLAYLISTS.deletePlaylist(oldPlaylistName);
+renamePlaylist:function(hashkey,newPlaylistName) {
+    if (PLAYLISTS.userPlaylistInfo.hasOwnProperty(hashkey)) {
+        PLAYLISTS.userPlaylistInfo[hashkey]["Name"] = newPlaylistName;
+    }
+    //TODO server request
 },
 
 /**
@@ -386,28 +415,34 @@ renamePlaylist:function(oldPlaylistName,newPlaylistName) {
  * @param {string} privacyStatus - what privacy status the playlist should have
  */
 createPlaylist:function(playlistName,privacyStatus) {
-    PLAYLISTS.playlistNames.push(playlistName);
-    if (privacyStatus === "viewable" || privacyStatus === "editable") {
-        PLAYLISTS.publicPlaylistNames.push(playlistName);
+    if (!PLAYLISTS.userPlaylistInfo.hasOwnProperty(playlistName)) {
+        var ownerName = TOOLS.AUTH.getUsername();
+        PLAYLISTS.userPlaylistInfo[playlistName] = {
+            "HashID":playlistName,
+            "Name":playlistName,
+            "OwnerName":ownerName,
+            "Privacy":privacyStatus,
+            "Size":0,
+            "StoreSIDs":false
+        };
+        if (privacyStatus !== "private") {
+            PLAYLISTS.publicPlaylistInfo[playlistName] = PLAYLISTS.userPlaylistInfo[playlistName];
+        }
     }
-    PLAYLISTS.playlistData[playlistName] = [];
 },
 
 /**
  * Used to delete a playlist
  *
  * @alias TOOLS~PLAYLISTS~deletePlaylist
- * @param {string} playlistName - the name of the playlist to delete
+ * @param {string} hashkey - the hash key of the playlist
  */
-deletePlaylist:function(playlistName) {
-    var index = PLAYLISTS.playlistNames.indexOf(playlistName);
-    if (index !== -1) {
-        PLAYLISTS.playlistNames.splice(index,1);
-        delete PLAYLISTS.playlistData[playlistName];
-    }
-    var pubIndex = PLAYLISTS.publicPlaylistNames.indexOf(playlistName);
-    if (pubIndex !== -1) {
-        PLAYLISTS.publicPlaylistNames.splice(pubIndex,1);
+deletePlaylist:function(hashkey) {
+    if (PLAYLISTS.userPlaylistInfo.hasOwnProperty(hashkey)) {
+        delete PLAYLISTS.userPlaylistInfo[hashkey];
+        if (PLAYLISTS.publicPlaylistInfo.hasOwnProperty(hashkey)) {
+            delete PLAYLISTS.publicPlaylistInfo[hashkey];
+        }
     }
 },
 
@@ -415,15 +450,17 @@ deletePlaylist:function(playlistName) {
  * Used to change the privacy setting of a playlist
  *
  * @alias TOOLS~PLAYLISTS~changePlaylistPrivacy
- * @param {string} playlistName - the name of the playlist to delete
+ * @param {string} hashkey - the hash key of the playlist
  * @param {string} privacyStatus - the privacy to set to
  */
-changePlaylistPrivacy:function(playlistName,privacyStatus) {
-    if ((privacyStatus === "viewable" || privacyStatus == "editable") && !PLAYLISTS.publicPlaylistNames.includes(playlistName)) {
-        PLAYLISTS.publicPlaylistNames.push(playlistName);
-    } else if (privacyStatus === "private" && PLAYLISTS.publicPlaylistNames.includes(playlistNames)) {
-        var index = PLAYLISTS.publicPlaylistNames.indexOf(playlistName);
-        PLAYLISTS.publicPlaylistNames.splice(index,1);
+changePlaylistPrivacy:function(hashkey,privacyStatus) {
+    if (PLAYLISTS.userPlaylistInfo.hasOwnProperty(hashkey)) {
+        PLAYLISTS.userPlaylistInfo[hashkey]["Privacy"] = privacyStatus;
+        if ((privacyStatus === "viewable" || privacyStatus == "editable") && !PLAYLISTS.publicPlaylistInfo.hasOwnProperty(hashkey)) {
+            PLAYLISTS.publicPlaylistInfo[hashkey] = PLAYLISTS.userPlaylistInfo[hashkey];
+        } else if (privacyStatus === "private" && PLAYLISTS.publicPlaylistInfo.hasOwnProperty(hashkey)) {
+            delete PLAYLISTS.publicPlaylistInfo[hashkey];
+        }
     }
 }
 
@@ -450,10 +487,6 @@ getCurrentTabName:function(){
  */
 getCurrentSubtabName:function(){
     return _getQueryItem("subtab");
-},
-
-getPageQuery:function(){
-    return _getQueryItem("page");
 },
 
 getDownloadedSearchQuery:function(){

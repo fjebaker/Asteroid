@@ -129,7 +129,7 @@ var MISC_INFO = {
         Voting:["Queue","Recently Requested","Downloaded","Favourites"],
         Settings:["Account","Tabs"],
         Request:["YouTube Request"],
-        Playlists:["View Playlists","Add Playlist"],
+        Playlists:["Public Playlists","My Playlists","Add Playlist"],
         About:["Credits","Cookie Policy"]
     },
     //Current screen size, for reference
@@ -142,8 +142,17 @@ var SETTINGS = {
 };
 
 var PLAYLISTS = {
-    playlistNames:[],
-    playlistData:{"favourites":[]}
+    userPlaylistInfo:{
+        "(favourites)":{
+            HashID:"(favourites)",
+            Name:"Favourites",
+            Privacy:"private",
+            StoreSIDs:true,
+            Size:0,
+            SIDData:[]
+        }
+    },
+    publicPlaylistInfo:{}
 };
 
 LOADER.loading_callback();
