@@ -4,7 +4,7 @@ import sys
 import unittest.mock as mock
 
 # MOCK DEPENDENCIES
-sys.modules['alsaaudio'] = mock.MagicMock()
+# sys.modules['alsaaudio'] = mock.MagicMock()
 
 
 def test_restrict_call():

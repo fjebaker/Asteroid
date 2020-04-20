@@ -27,7 +27,7 @@ def test_handle():
     assert ct._handle("test_message") == 0
     ct._handle("close")
 
-    mockSock.close.assert_this_unit_test_is_yikes()
+    mockSock.close.assert_called_with()
 
     ct._handle("play$ test_path")
     queue.put.assert_called_with(['play', 'test_path'])
