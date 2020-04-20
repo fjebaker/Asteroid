@@ -50,8 +50,13 @@ class BaseQuery(metaclass=abc.ABCMeta):
                 mimetype='application/json'
             )
         else:
+            formatter = lambda x: {k:v for k,v in x.items() if k != '_id'}
+            if type(result) == list:
+                result = [formatter(i) for i in result]
+            else:
+                result = formatter(result)
             return Response(
-                json.dumps([item.format() for item in result]),
+                json.dumps(result),
                 status=200,
                 mimetype='application/json'
             )

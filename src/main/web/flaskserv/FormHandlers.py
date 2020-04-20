@@ -29,15 +29,19 @@ class UserHandler():
         :type name: str
         """
         udb = UserDB()
-        udb.add_user({'name':name, 'hash_pw': 0, 'meta_dat':''})
-        return udb.get_latest_user().id
+        try:
+            val = udb.add_user({'name':name, 'hash_pw': 0, 'meta_dat':''})
+        except:
+            return -1
+        return val
 
     def __call__(self):
         if "name" in self.form and self.request.__dict__["environ"]["REQUEST_METHOD"] == 'POST':
             new_id = self.add_user(self.form["name"])
-            json_s = {"id": new_id}
-            http_s = 201
-        else:
-            json_s = {}             # TODO, error message of what went wrong
-            http_s = 400
+            if new_id != -1:
+                json_s = {"id": new_id}
+                http_s = 201
+                return Response(json.dumps(json_s), status=http_s, mimetype='application/json')
+        json_s = {}             # TODO, error message of what went wrong
+        http_s = 400
         return Response(json.dumps(json_s), status=http_s, mimetype='application/json')

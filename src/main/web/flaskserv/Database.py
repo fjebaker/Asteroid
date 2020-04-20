@@ -1,124 +1,211 @@
-from src.main.web.flaskserv._Tables import User, Song, SItem, dBase, HItem
-from sqlalchemy import create_engine
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import sessionmaker
-from src.main.databasebuilder.setupfuncs import db_path
+from pymongo import MongoClient
+from src.main.databasebuilder.setupfuncs import db_address
+
+from functools import wraps
+from types import FunctionType
+
+def toList(method):
+    @wraps(method)
+    def wrapped(*args, **kwargs):
+        return list(method(*args, **kwargs))
+    return wrapped
 
 
-def init_database_session():
-    global engine, Session
-    try:
-        del Session
-        del engine
-    except:
-        pass
-    engine = create_engine('sqlite:///{}'.format(db_path()), echo=False)
-    dBase.metadata.create_all(engine)
-    Session = sessionmaker(bind=engine)
+class TranslationMeta(type):
+    def __new__(meta, classname, bases, classDict):
+        newClassDict = {}
+        for attributeName, attribute in classDict.items():
+            if isinstance(attribute, FunctionType) and 'get' in attributeName:
+                attribute = toList(attribute)
+            newClassDict[attributeName] = attribute
+        return type.__new__(meta, classname, bases, newClassDict)
 
-class MusicDB():
 
+class MusicDB(metaclass=TranslationMeta):
+    
     def __init__(self):
-        self.session = Session()
+        addr, port = db_address()
+        self._client = MongoClient(addr, port=port)
+        self.session = self._client.asteroid.songs
 
     def add_song(self, song):
-        self.session.add(Song(**song))
-        try:
-            self.session.commit()
-        except IntegrityError as err:
-            self.session.rollback()
-            raise Exception("'file_path' uniqueness condition failed.")
-
+        s = self.get_page(n=1)
+        if len(s) == 0:
+            s_id = 0
+        else:
+            s_id = s[0].get('s_id') + 1
+        self.session.insert_one({**song, **{"s_id":s_id}})
 
     def get_by_name(self, name):
-        return self.session.query(Song).filter(Song.name.like('%{}%'.format(name))).limit(40).all()
+        return self.session.find(
+            { "name":
+                {
+                    "$regex": name,
+                    "$options": "-i"
+                }
+            },
+            limit=40
+        )
 
     def get_by_artist(self, artist):
-        return self.session.query(Song).filter(Song.artist.like('%{}%'.format(artist))).limit(40).all()
+        return self.session.find(
+            { "artist":
+                {
+                    "$regex": artist,
+                    "$options": "-i"
+                }
+            },
+            limit=40
+        )
 
     def get_by_name_and_artist(self, name, artist):
-        return self.session.query(Song).filter(
-                Song.name.like('%{}%'.format(name)),
-                Song.artist.like('%{}%'.format(artist))
-            ).limit(40).all()
-
+        return self.session.find(
+            { "name":
+                {
+                    "$regex": name,
+                    "$options": "-i"
+                },
+              "artist":
+                {
+                    "$regex": artist,
+                    "$options": '-i'
+                }
+            },
+            limit=40
+        )
+        
     def get_by_id(self, *args):
-        return self.session.query(Song).filter(
-                Song.id.in_(args)
-            ).limit(40).all()
+        return self.session.find(
+            { "s_id":
+                {
+                    "$in": args,
+                }
+            },
+            limit=40
+        )    
 
-    def get_page(self):
-        return self.session.query(Song).order_by(Song.id.desc()).limit(40).all()
-
+    def get_page(self, n=40):
+        return self.session.find(
+            { "$query": {}, 
+              "$orderby": 
+                { 
+                    "s_id" : -1 
+                } 
+            },
+            limit=n
+        )
+        
     def get_all_songs(self):
-        return self.session.query(Song).all()
+        return self.session.find({})
 
     def __del__(self):
-        self.session.close()
+        self._client.close()
 
-
-class UserDB():
+class UserDB(metaclass=TranslationMeta): 
 
     def __init__(self):
-        self.session = Session()
+        addr, port = db_address()
+        self._client = MongoClient(addr, port=port)
+        self.session = self._client.asteroid.users
 
     def add_user(self, user):
-        self.session.add(User(**user))
-        self.session.commit()
+        u = self.get_latest_user()
+        if len(u) == 0:
+            u_id = 0
+        else:
+            u_id = u[0].get("u_id") + 1
+        print("NEW UID = ", u_id)
+        self.session.insert_one({**user, **{"u_id":u_id}})
+        return u_id
 
     def get_by_id(self, *args):
-        return self.session.query(User).filter(
-                User.id.in_(args)
-            ).limit(40).all()
-
+        return self.session.find(
+            { "u_id":
+                {
+                    "$in": args,
+                }
+            },
+            limit=40
+        )
+        
     def get_all_users(self):
-        return self.session.query(User).all()
-
+        return self.session.find({})
+        
     def get_latest_user(self):
-        return self.session.query(User).order_by(User.id.desc()).first()
-
+        return self.session.find(
+            { "$query": {}, 
+              "$orderby": 
+                { 
+                    "u_id" : -1 
+                } 
+            },
+            limit=1 
+        )
+        
     def __del__(self):
-        self.session.close()
+        self._client.close()
 
-class Playlist():
+class Playlist(metaclass=TranslationMeta): 
 
     def __init__(self):
-        self.session = Session()
+        addr, port = db_address()
+        self._client = MongoClient(addr, port=port)
+        self.session = self._client.asteroid.playlist
 
     def add(self, item):
-        self.session.add(SItem(**item))
-        self.session.commit()
+        self.session.insert_one(item)
 
     def get_playlist(self):
-        return self.session.query(SItem).all()
+        return self.session.find({})
+        
 
     def update_vote(self, s_id, vote):
-        self.session.query(SItem).filter(SItem.s_id == s_id).update(
-                {SItem.vote : vote + SItem.vote}, synchronize_session = False
-            )
-        self.session.commit()
-
+        self.session.update_one({
+                "s_id": s_id
+            },
+            {
+                "$inc": { "vote":vote }
+            }
+        )
+        
     def get_most_voted(self):
-        return self.session.query(SItem).order_by(SItem.vote.desc()).first()
+        return self.session.find(
+            { "$query": {}, 
+              "$orderby": 
+                { 
+                    "vote" : -1 
+                } 
+            },
+            limit=1 
+        )
 
     def remove(self, s_id):
-        self.session.query(SItem).filter(SItem.s_id == s_id).delete()
-        self.session.commit()
+        self.session.delete_one({'s_id':s_id})
 
     def __del__(self):
-        self.session.close()
+        self._client.close()
 
-class History():
+class History(): 
 
     def __init__(self):
-        self.session = Session()
+        addr, port = db_address()
+        self._client = MongoClient(addr, port=port)
+        self.session = self._client.asteroid.history
 
     def add(self, item):
-        self.session.add(HItem(**item))
-        self.session.commit()
-
+        self.session.insert_one(item)
+    
     def get_current_song(self):
-        return self.session.query(HItem).order_by(HItem.id.desc()).first()
+        return self.session.find(
+            { "$query": {}, 
+              "$orderby": 
+                { 
+                    "h_id" : -1 
+                } 
+            },
+            limit=1 
+        )
+        
 
     def __del__(self):
-        self.session.close()
+        self._client.close()

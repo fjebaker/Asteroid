@@ -1,6 +1,29 @@
 from src.main.web.flaskserv.Database import MusicDB
+from src.main.databasebuilder.setupfuncs import db_address
 import os
 import exiftool
+from pymongo import MongoClient
+
+
+def configure_databases():
+    addr, port = db_address()
+    print(addr, port)
+    client = MongoClient(addr, port=port)
+    db = client.asteroid
+
+    # musicdb
+    db.songs.create_index('file_path', unique=True)
+    db.songs.create_index('s_id', unique=True)
+
+    # usersdb
+    db.users.create_index('name', unique=True)
+    db.users.create_index('u_id', unique=True)
+
+    # playlistdb
+    db.playlist.create_index('s_id', unique=True)
+
+    # history_item
+    db.history.create_index('h_id', unique=True)
 
 
 def clear(path):

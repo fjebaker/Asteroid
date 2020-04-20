@@ -8,6 +8,12 @@ def db_path():
     path = Config().getval("Databases", "db-path")
     return path
 
+@lru_cache(None)
+def db_address():
+	addr = Config().getval("Databases", "db-address")
+	port = Config().getval("Databases", "db-port")
+	return addr, int(port)
+
 
 @lru_cache(None)
 def get_flask_port():

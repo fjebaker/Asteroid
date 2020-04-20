@@ -15,16 +15,13 @@ def index():
 def auth():
     return send_from_directory('../../web/static/html', 'auth.html')
 
-
 @app.route("/autoqueue")
 def autoqueue():
     return send_from_directory('../../web/static/html', 'autoqueue.html')
 
-
 @app.route("/css/<name>.css")
 def styles(name):
     return send_from_directory('../../web/static/css', name + '.css')
-
 
 @app.route("/script/<name>.js")
 def scripts(name):
@@ -38,32 +35,26 @@ def tabs(name):
 def jsconfig():
     return send_from_directory('../../web/dynamic', 'jsconfig.js')
 
-
 @app.route("/resources/images/<name>")
 def images(name):
     return send_from_directory('../../web/static/resources/images', name)
-
 
 @app.route("/register", methods=["POST"])
 def register_user():
     return UserHandler(request)()
 
-
 @app.route("/vote", methods=["GET", "POST"])
 def vote():
     return Vote(request)()
-
 
 @app.route("/rate", methods=["POST"])
 def rate():
     return "TODO"
 
-
 @app.route("/db/music", methods=["GET", "POST"])
 def music_db():
     query = request.args.to_dict()
     return MusicQuery(query)()
-
 
 @app.route("/db/users", methods=["GET", "POST"])
 def user_db():
