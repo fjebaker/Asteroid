@@ -78,10 +78,6 @@ function _clearSongTable() {
     var initOption = document.createElement("option");
     initOption.innerText = "Choose playlist...";
     playlist_adding_selector.appendChild(initOption);
-    var favOption = document.createElement("option");
-    favOption.innerText = "Favourites";
-    favOption.value = "favourites";
-    playlist_adding_selector.appendChild(favOption);
     for (var hashkey in PLAYLISTS.userPlaylistInfo) {
         if (PLAYLISTS.userPlaylistInfo.hasOwnProperty(hashkey) && PLAYLISTS.userPlaylistInfo[hashkey].HashID === hashkey) {
             var option = document.createElement("option");
@@ -125,7 +121,7 @@ function _addTopRow() {
     topRow.className = "song_table_title_row";
     for (var i = 0; i < columnList.length; i++) {
         var columnKey = columnList[i];
-        if (!SETTINGS.showColumnArray.hasOwnProperty(columnKey) || SETTINGS.showColumnArray[columnKey]) {
+        if (!SETTINGS.showColumnArray.hasOwnProperty(columnKey) || SETTINGS.showColumnArray[columnKey] == 1) {
             var newCell = document.createElement('th');
             newCell.innerText = columnList[i];
             if (columnKey == "Add To Playlist") {
@@ -242,7 +238,7 @@ function _addSong(songData,index) {
     for (var i = 0; i < fullColumnList.length; i++) {
         var columnKey = fullColumnList[i];
         var currRow = currRowList[i];
-        if (!SETTINGS.showColumnArray.hasOwnProperty(columnKey) || SETTINGS.showColumnArray[columnKey]) {
+        if (!SETTINGS.showColumnArray.hasOwnProperty(columnKey) || SETTINGS.showColumnArray[columnKey] == 1) {
             var newCell = currRow.insertCell(-1);
             switch(columnKey) {
                 case "Name":
@@ -330,7 +326,7 @@ function _addSearchBar(query) {
     topRow.className = "song_table_search_row";
     for (var i = 0; i < columnList.length; i++) {
         var columnKey = columnList[i];
-        if (!SETTINGS.showColumnArray.hasOwnProperty(columnKey) || SETTINGS.showColumnArray[columnKey]) {
+        if (!SETTINGS.showColumnArray.hasOwnProperty(columnKey) || SETTINGS.showColumnArray[columnKey] == 1) {
             var newCell = topRow.insertCell(-1);
             if (searchableColumns.includes(columnKey)) {
                 var input = document.createElement("input");
