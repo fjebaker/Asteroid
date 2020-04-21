@@ -19,6 +19,11 @@ def flaskclient(mongodb):
 
 		from src.main import init
 		app = init("config.TestAPI")
+		from src.main.databasebuilder.SetupBuild import _config_database
+		try: 
+			_config_database(mongodb)
+		except:
+			pass
 		return app
 
 	app = setup()

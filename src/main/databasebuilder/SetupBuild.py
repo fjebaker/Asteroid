@@ -12,10 +12,8 @@ def check_database_connection(app):
         print("FAULTY DATABASE CONNECTION")
         exit(1)
 
-def configure_database(app):
-    client = MongoClient(app.config['MONGO_URI'])
-    db = client.asteroid
-
+def _config_database(db):
+    """ for ease of testing, seperated these steps """
     # musicdb
     db.songs.create_index('file_path', unique=True)
     db.songs.create_index('s_id', unique=True)
@@ -29,6 +27,11 @@ def configure_database(app):
 
     # history_item
     db.history.create_index('h_id', unique=True)
+
+def configure_database(app):
+    client = MongoClient(app.config['MONGO_URI'])
+    db = client.asteroid
+    _config_database(db)
 
 
 def clear(app, songs=True, users=True, playlist=True):

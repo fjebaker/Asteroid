@@ -19,6 +19,7 @@ new_vote_parser.add_argument('vote', type=int, required=False)
 new_vote_parser.add_argument('u_id', type=int, required=False)
 new_vote_parser.add_argument('s_id', type=int, required=False)
 
+
 class PlaylistDB(Resource):
 	""" Class for handling interactions with fetching from playlist database """
 
@@ -26,6 +27,7 @@ class PlaylistDB(Resource):
 	def get(self):
 		""" GET endpoint; performs database query depending on the parsed arguments """
 		return list(mongo.db.playlist.find().sort('vote', -1).limit(40))
+
 
 class Vote(Resource):
 	""" Class for handling interactions for adding to playlist """

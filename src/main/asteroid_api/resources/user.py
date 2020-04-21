@@ -47,7 +47,10 @@ class UserRegister(Resource):
 		except:
 			u_id = 1
 		user['u_id'] = u_id
-		mongo.db.users.insert_one(user)
-		return u_id
+		try:
+			mongo.db.users.insert_one(user)
+		except:
+			return "BAD NAME", 400
+		return {'u_id': u_id}
 
 

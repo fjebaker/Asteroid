@@ -31,6 +31,41 @@ class TestUserEndpoint():
 		assert decoder(req) == []
 
 
+class TestPlaylistEndpoint():
+
+	def test_getPlaylist(self, flaskclient, playlist_model):
+		req = flaskclient.get('/db/playlist')
+		assert req.status_code == 200
+		assert len(decoder(req)) == len(playlist_model())
+
+class TestVoteEndpoint():
+
+	def test_sendVote(self, flaskclient):
+		req = flaskclient.post('/vote', data={'vote':10, 'u_id':1, 's_id':2})
+		assert req.status_code == 200
+		# library limitations seem to prevent us from checking
+		# if the user is actually in the db now (?)
+		assert decoder(req) == {'song': {'name': 'The Flower', 'artist': 'Leite', 's_id': 2}, 'u_id': 1, 'vote': 10}
+
+class TestRegisterEndpoint():
+
+	def test_addingUser(self, flaskclient, mongodb):
+		req = flaskclient.post('/register', data={"name" : "Alice"})
+		assert req.status_code == 200
+		assert decoder(req) == {'u_id':5}
+		# library limitations seem to prevent us from checking
+		# if the user is actually in the db now (?)
+
+	def test_badContent(self, flaskclient):
+		req = flaskclient.post('/register', data={"nae" : "Alice"})
+		assert req.status_code == 400
+
+	def test_duplicateName(self, flaskclient):
+		req = flaskclient.post('/register', data={"name" : "Edwin"})
+		assert req.status_code == 400
+		assert 'BAD NAME' in req.data.decode()
+
+
 class TestMusicEndpoint():
 
 	def test_getAll(self, flaskclient, songs_model):
