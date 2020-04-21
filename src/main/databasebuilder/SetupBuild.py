@@ -41,9 +41,6 @@ def clear(app, songs=True, users=True, playlist=True):
 
 
 def get_song_item(song_path):
-    """
-    TODO
-    """
     with exiftool.ExifTool() as et:
         metadata = et.get_metadata(song_path)
 
@@ -56,18 +53,12 @@ def get_song_item(song_path):
 
 
 def list_wav(path):
-    """
-    TODO
-    """
     files = [os.path.join(path, f) for f in os.listdir(
         path) if os.path.isfile(os.path.join(path, f)) and '.mp3' in f]
     return files
 
 
 def build_music(folder_location, app):
-    """
-    TODO
-    """
     client = MongoClient(app.config['MONGO_URI'])
     db = client.asteroid
 
