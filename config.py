@@ -10,7 +10,8 @@ class Prod(Config):
 
 class Dev(Config):
 	DEBUG = True
-	MONGO_URI = "mongodb://192.168.0.96:8934/asteroid"
+	#MONGO_URI = "mongodb://192.168.0.96:8934/asteroid"
+	MONGO_URI = "mongodb://192.168.0.12:27017/asteroid"
 	SERVE_FILES = True
 
 """

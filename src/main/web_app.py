@@ -4,8 +4,6 @@ from flask_restful import Api
 from src.main.asteroid_api import api_bp
 from src.main.file_fetcher import fetcher_bp
 from src.main.asteroid_api.common.__database import mongo
-
-
 CONFIG_FILE = "config.Dev"
 
 print("\n* CONFIG_FILE = {}\n".format(CONFIG_FILE))

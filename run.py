@@ -3,7 +3,8 @@ os.environ["ASTEROID_CONFIG_PATH"] = './config.ini'
 import sys
 import argparse
 from src import Config, JSConfig
-from src.main.databasebuilder.SetupBuild import configure_databases
+from src.main.web_app import app as WEBapp
+from src.main.databasebuilder.SetupBuild import configure_database, check_database_connection
 HEADER = r"""     _       _                 _     _ 
     /_\  ___| |_ ___ _ __ ___ (_) __| |
    //_\\/ __| __/ _ \ '__/ _ \| |/ _` |
@@ -14,10 +15,13 @@ HEADER = r"""     _       _                 _     _
  developed by Fergus Baker, JR Mitchell, Sam Hollow, Ben Shellswell
 """
 
-# configure_databases()
+check_database_connection(WEBapp)
+try:
+    configure_database(WEBapp)
+except:
+    print("databases already configured (?)")
 
 def run_flask(host="", port=""):
-    from src.main import web_app
     cfg = Config()
     if host == "":
         host = cfg.get("FlaskServer", "hostname")
@@ -25,7 +29,7 @@ def run_flask(host="", port=""):
         port = cfg.get("FlaskServer", "port")
     JSConfig.build(cfg._sections['JSConfig'])
     print("[*] Starting flask HTTP server...")
-    web_app.app.run(host, port)
+    WEBapp.run(host, port)
 
 
 def run_player(host="", port=""):
@@ -80,22 +84,22 @@ class databases:
 
     @staticmethod
     def load(db, path):
-        if db == 'all':
-            databases.build_all()
-        elif db == 'music':
+        #if db == 'all':
+        #    databases.build_all()
+        if db == 'music':
             databases.build_music(path)
 
     @staticmethod
     def build_music(loc):
-        print("[+] adding '{}' table in '{}'...".format("songs", db_path()))
+        print("[+] adding '{}' collection in '{}'...".format("songs", WEBapp.config['MONGO_URI']))
         from src.main.databasebuilder import build_music
-        build_music(loc)
+        build_music(loc, WEBapp)
         print("[*] Done building Music.")
 
     @staticmethod
     def build_all():
         print("\n[*] Building all tables in database...")
-        databases.build_music(None)
+        #databases.build_music(None)
 
     @staticmethod
     def clear(database):
@@ -103,9 +107,9 @@ class databases:
         TODO
         at the moment just deletes the current database
         """
-        from src.main.databasebuilder import clear
+        #from src.main.databasebuilder import clear
         print("\n[-] Deleting old database...")
-        clear('./test.db')
+        #clear('./test.db')
 
 
 def run(args):
