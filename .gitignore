@@ -239,4 +239,4 @@ venv/
 *__pycache__/
 .vscode/
 .coverage
-src/main/web/dynamic/jsconfig\.js
+src/static/jsconfig.js
