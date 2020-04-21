@@ -51,7 +51,7 @@ class Vote(Resource):
 
 	@marshal_with(mSong)
 	def post(self):
-		args = new_vote_parser.parse_args()
+		args = new_vote_parser.parse_args(strict=True)
 		s_id = args['s_id']
 		try:
 			song = self._find_song(s_id)

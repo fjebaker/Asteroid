@@ -35,7 +35,7 @@ class SongDB(Resource):
 		""" GET endpoint; performs database query depending on the parsed arguments """
 		try:
 			args = self._format_query(
-				search_song_parser.parse_args()
+				search_song_parser.parse_args(strict=True)
 			)
 		except:
 			return {}, 200

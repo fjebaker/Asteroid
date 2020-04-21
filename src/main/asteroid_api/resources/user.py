@@ -1,5 +1,5 @@
 from flask import request
-from flask_restful import Resource, reqparse, fields, marshal_with
+from flask_restful import Resource, fields, marshal_with, reqparse
 
 from src.main.asteroid_api.common.__database import mongo
 
@@ -24,7 +24,8 @@ class UserDB(Resource):
 	@marshal_with(mUser)
 	def get(self):
 		""" GET endpoint; performs database query depending on the parsed arguments """
-		args = search_user_parser.parse_args()
+		args = search_user_parser.parse_args(strict=True)
+
 		result = list(mongo.db.users.find(
 			# HACKY
 			{k:{'$in':v} if type(v) == list else v for k,v in args.items() if v is not None}
@@ -38,7 +39,7 @@ class UserRegister(Resource):
 
 	def post(self):
 		""" POST endpoint; adds new user with incremental u_id """
-		user = {**new_user_parser.parse_args(), **self.template}
+		user = {**new_user_parser.parse_args(strict=True), **self.template}
 		try: u_id = mongo.db.users.find() \
 				.sort('_id', -1) \
 				.limit(1) \
