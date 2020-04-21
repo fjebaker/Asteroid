@@ -23,7 +23,7 @@ def _config_database(db):
     db.users.create_index('u_id', unique=True)
 
     # playlistdb
-    db.queue.create_index('s_id', unique=True)
+    db.queue.create_index('song.s_id', unique=True)
 
     # history_item
     db.history.create_index('h_id', unique=True)
