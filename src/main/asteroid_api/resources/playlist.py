@@ -8,6 +8,7 @@ mSong = {
 		'name':	fields.String,
 		'artist': fields.String,
 		's_id': fields.Integer,
+        'duration': fields.Float
 	}),
 	'u_id': fields.Integer,
 	'vote': fields.Integer

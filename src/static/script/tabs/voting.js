@@ -183,9 +183,9 @@ function _voteSong(id,upBool,parentRow) {
             if (columnList.includes("Favourite")) {
                 button = parentRow.cells[columnList.indexOf("Favourite")].firstElementChild;
             } else if (expansionColumns.includes("Favourite")) {
-                button = parentRow.nextSibling.cells[columnList.indexOf("Favourite")].firstElementChild;
+                button = parentRow.nextSibling.cells[expansionColumns.indexOf("Favourite")].firstElementChild;
             } else if (doubleExpansionColumns.includes("Favourite")) {
-                button = parentRow.nextSibling.nextSibling.cells[columnList.indexOf("Favourite")].firstElementChild;
+                button = parentRow.nextSibling.nextSibling.cells[doubleExpansionColumns.indexOf("Favourite")].firstElementChild;
             }
             if (button !== "") {
                 _toggleFavouriteButton(button,upBool,id)();
@@ -262,19 +262,19 @@ function _addSong(songData,index) {
                     upvoteButton.innerText = "Upvote";
                     upvoteButton.className = "upvote_button";
                     upvoteButton.title = "Upvote song";
-                    upvoteButton.onclick = _voteSong(songData.id,true,newRow);
+                    upvoteButton.onclick = _voteSong(songData.s_id,true,newRow);
                     newCell.appendChild(upvoteButton);
                     var downvoteButton = document.createElement("button");
                     downvoteButton.innerText = "Downvote";
                     downvoteButton.className = "downvote_button";
                     downvoteButton.title = "Downvote song";
-                    downvoteButton.onclick = _voteSong(songData.id,false,newRow);
+                    downvoteButton.onclick = _voteSong(songData.s_id,false,newRow);
                     newCell.appendChild(downvoteButton);
                     break;
                 case "Favourite":
                     var favouriteButton = document.createElement("button");
-                    var favouritedStatus = PLAYLISTS.userPlaylistInfo["(favourites)"]["SIDData"].includes(songData.id);
-                    _toggleFavouriteButton(favouriteButton,favouritedStatus,songData.id)();
+                    var favouritedStatus = PLAYLISTS.userPlaylistInfo["(favourites)"]["SIDData"].includes(songData.s_id);
+                    _toggleFavouriteButton(favouriteButton,favouritedStatus,songData.s_id)();
                     newCell.appendChild(favouriteButton);
                     break;
                 case "Requesting User":
@@ -300,10 +300,10 @@ function _addSong(songData,index) {
                     addButton.title = "Add to playlist";
                     if (playlist_adding_selector.parentNode !== null) {
                         addButton.className = "play_add_button";
-                        addButton.onclick = _addSongToPlaylist(songData.id);
+                        addButton.onclick = _addSongToPlaylist(songData.s_id);
                     } else {
                         addButton.className = "play_add_dropdown_button";
-                        addButton.onclick = _dropdownPlaylistAdd(newCell,songData.id);
+                        addButton.onclick = _dropdownPlaylistAdd(newCell,songData.s_id);
                     }
                     newCell.appendChild(addButton);
                     break;
@@ -312,7 +312,7 @@ function _addSong(songData,index) {
                     removeButton.innerText = "Remove from playlist";
                     removeButton.title = "Remove from playlist";
                     removeButton.className = "play_remove_button";
-                    removeButton.onclick = _removeSongFromPlaylist(currRow,songData.id);
+                    removeButton.onclick = _removeSongFromPlaylist(currRow,songData.s_id);
                     newCell.appendChild(removeButton);
                 default:
                     break;
@@ -511,44 +511,6 @@ function _queue() {
     }
     _addTopRow();
 
-    function getUid(request) {
-        if (request.status == "200") {
-            var data = JSON.parse(request);
-            var currid = data.id;
-            user_id_names[currid] = data.name;
-            for (i = 0; i < user_id_waiting[currid].length; i++) {
-                user_id_waiting[currid][i].innerText = data.name;
-            }
-            delete user_id_waiting[currid];
-        }
-    }
-
-    function getQueueSongs(data) {
-        return function(request) {
-            if (request.status == "200") {
-                var newData = JSON.parse(request.response);
-                var newDataSidStruct = {};
-                var sortedSongData = [];
-                for (var i = 0; i < newData.length; i++) {
-                    newDataSidStruct[newData[i].id] = newData[i];
-                }
-                for (var i = 0; i < data.length; i++) {
-                    sortedSongData.push(newDataSidStruct[data[i].s_id]);
-                    sortedSongData[i].requesting_user = data[i].u_id;
-                    sortedSongData[i].votes_for = data[i].vote;
-                    _addSong(sortedSongData[i],-1);
-                }
-                for (var uid in user_id_waiting) {
-                    if (user_id_waiting.hasOwnProperty(uid)) {
-                        TOOLS.jsonGetRequest("/db/users?id="+uid,getUid,function(){})
-                    }
-                }
-            } else {
-                _addBottomMessage("Request for queue songs returned unexpected response code ("+request.status+")");
-            }
-        };
-    }
-
     function getQueueSongsFailure() {
         _addBottomMessage("Request for queue songs failed unexpectedly");
     }
@@ -562,15 +524,14 @@ function _queue() {
                 last_index = (last_index > 0) ? last_index + 1 : data.length;
                 last_index = (data[last_index-1].vote <= 0) ? last_index-1 : last_index;
                 data = data.slice(0,last_index);
-                if (data.length > 40) {data = data.slice(0,40);}
                 if (data[0].vote == 0) {data = [];}
-            }
-            var songIds = [];
-            if (data.length > 0) {
                 for (var i = 0; i < data.length; i++) {
-                    songIds.push(data[i].s_id);
+                    data[i].song.requesting_user = data[i].u_id;
+                    data[i].song.votes_for = data[i].vote;
+                    _addSong(data[i].song,-1);
                 }
-                TOOLS.jsonGetRequest("/db/songs?id="+songIds.join("%20"),getQueueSongs(data),getQueueSongsFailure)
+            } else {
+                _addBottomMessage("No songs found in the queue! Go to other tabs and get upvoting!");
             }
         } else {
             _addBottomMessage("Request for queue data returned unexpected response code ("+request.status+")");
