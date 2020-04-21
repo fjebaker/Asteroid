@@ -1,5 +1,4 @@
 from src.main.databasebuilder.pyConfig import Config
-from src.main.databasebuilder.setupfuncs import *
 import src.main.databasebuilder.JSConfig as JSConfig
 import unittest.mock as mock
 import sys

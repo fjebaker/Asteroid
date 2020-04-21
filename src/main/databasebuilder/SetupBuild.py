@@ -1,5 +1,3 @@
-from src.main.web.flaskserv.Database import MusicDB
-from src.main.databasebuilder.setupfuncs import db_address
 import os
 import exiftool
 from pymongo import MongoClient

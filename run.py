@@ -2,29 +2,22 @@ import os
 os.environ["ASTEROID_CONFIG_PATH"] = './config.ini'
 import sys
 import argparse
-from src import Config, db_path, JSConfig
-from src.main.web.flaskserv.Database import init_database_session
-HEADER = r"""               _       _                 _     _ 
- _ __  _   _  /_\  ___| |_ ___ _ __ ___ (_) __| |
-| '_ \| | | |//_\\/ __| __/ _ \ '__/ _ \| |/ _` |
-| |_) | |_| /  _  \__ \ ||  __/ | | (_) | | (_| |
-| .__/ \__, \_/ \_/___/\__\___|_|  \___/|_|\__,_|
-|_|    |___/                   v0.0.0
-             ?:~j  github.com/Moontemple/Asteroid
+from src import Config, JSConfig
+from src.main.databasebuilder.SetupBuild import configure_databases
+HEADER = r"""     _       _                 _     _ 
+    /_\  ___| |_ ___ _ __ ___ (_) __| |
+   //_\\/ __| __/ _ \ '__/ _ \| |/ _` |
+  /  _  \__ \ ||  __/ | | (_) | | (_| |
+  \_/ \_/___/\__\___|_|  \___/|_|\__,_|
+                  v0.0.0
+               github.com/Moontemple/Asteroid
  developed by Fergus Baker, JR Mitchell, Sam Hollow, Ben Shellswell
 """
 
-"""
-    TODO
-    ====
-    -- it's fecking SQLINJECTION vulnerable
-    -- use less environment variables
-    -- all databases should have id
-"""
-
-init_database_session()
+# configure_databases()
 
 def run_flask(host="", port=""):
+    from src.main import web_app
     cfg = Config()
     if host == "":
         host = cfg.get("FlaskServer", "hostname")
@@ -32,8 +25,7 @@ def run_flask(host="", port=""):
         port = cfg.get("FlaskServer", "port")
     JSConfig.build(cfg._sections['JSConfig'])
     print("[*] Starting flask HTTP server...")
-    import src.main.web.flaskserv.main as main
-    main.app.run(host, port)
+    web_app.app.run(host, port)
 
 
 def run_player(host="", port=""):
@@ -200,7 +192,7 @@ if __name__ == '__main__':
 
     parser_db.add_argument('--fresh', dest='fresh', action='store_const',
                            const=True, default=False,
-                           help='clear the database and make empty tables')
+                           help='clear the database')
 
     parser_db.add_argument('--load', dest='path', action='store', type=str,
                            help='load directory into database')

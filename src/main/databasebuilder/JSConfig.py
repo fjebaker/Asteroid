@@ -13,7 +13,7 @@ def build(config):
     """
     if not isinstance(config, dict):
         raise TypeError
-    path = "src/main/web/dynamic/jsconfig.js"
+    path = "src/static/jsconfig.js"
     config.pop('__name__','')
     json_string = json.dumps(config).replace("'","\\'")
     print_string = "var CONFIG = JSON.parse('" + \
