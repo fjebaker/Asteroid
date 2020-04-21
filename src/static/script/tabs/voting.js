@@ -379,7 +379,7 @@ function _recentlyRequested() {
         _addBottomMessage("Request for recently requested songs failed unexpectedly");
     }
 
-    TOOLS.jsonGetRequest("/db/music?page=1",getRecent,getRecentFailure);
+    TOOLS.jsonGetRequest("/db/songs",getRecent,getRecentFailure);
 }
 
 function _playlist(playlistInfo) {
@@ -480,7 +480,7 @@ function _downloaded(query) {
         _addBottomMessage("Request for recently requested songs failed unexpectedly");
     }
 
-    var queryStr = "page=1";
+    var queryStr = "";  // EMPTIED
     if (query !== null) {
         queryStr = "";
         for (var key in query) {
@@ -491,7 +491,7 @@ function _downloaded(query) {
         queryStr = queryStr.substr(1);
     }
 
-    TOOLS.jsonGetRequest("/db/music?"+queryStr,downloadSuccess,downloadFailure);
+    TOOLS.jsonGetRequest("/db/songs?"+queryStr,downloadSuccess,downloadFailure);
 }
 
 function _queue() {
@@ -570,7 +570,7 @@ function _queue() {
                 for (var i = 0; i < data.length; i++) {
                     songIds.push(data[i].s_id);
                 }
-                TOOLS.jsonGetRequest("/db/music?id="+songIds.join("%20"),getQueueSongs(data),getQueueSongsFailure)
+                TOOLS.jsonGetRequest("/db/songs?id="+songIds.join("%20"),getQueueSongs(data),getQueueSongsFailure)
             }
         } else {
             _addBottomMessage("Request for queue data returned unexpected response code ("+request.status+")");

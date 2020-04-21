@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, Response
 import os
 
 STATIC_FOLDER = "src/static/"
@@ -21,13 +21,13 @@ def index(): return _from_dir('html', 'home.html')
 def auth(): return _from_dir('html', 'auth.html')
 
 @fetcher_bp.route("/css/<name>.css")
-def styles(name): return _from_dir('css', name + '.css')
+def styles(name): return Response(_from_dir('css', name + '.css'), mimetype='text/css')
 
 @fetcher_bp.route("/script/<name>.js")
 def scripts(name): return _from_dir('script', name+'.js')
 
 @fetcher_bp.route("/tabs/<name>.js")
-def scripts(name): return _from_dir('script/tabs', name+'.js')
+def tabs(name): return _from_dir('script/tabs', name+'.js')
 
 @fetcher_bp.route("/config/jsconfig.js")
 def jsconfig(): return _from_dir('', 'jsconfig.js')

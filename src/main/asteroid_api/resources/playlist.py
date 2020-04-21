@@ -20,17 +20,17 @@ new_vote_parser.add_argument('u_id', type=int, required=False)
 new_vote_parser.add_argument('s_id', type=int, required=False)
 
 
-class PlaylistDB(Resource):
-	""" Class for handling interactions with fetching from playlist database """
+class QueueDB(Resource):
+	""" Class for handling interactions with fetching from queue database """
 
 	@marshal_with(mSong)
 	def get(self):
 		""" GET endpoint; performs database query depending on the parsed arguments """
-		return list(mongo.db.playlist.find().sort('vote', -1).limit(40))
+		return list(mongo.db.queue.find().sort('vote', -1).limit(40))
 
 
 class Vote(Resource):
-	""" Class for handling interactions for adding to playlist """
+	""" Class for handling interactions for adding to queue """
 
 	def _find_song(self, s_id):
 		""" find the song with s_id in the songs database """
@@ -39,10 +39,10 @@ class Vote(Resource):
 	def _update(self, s_id, vote):
 		""" if already in database, update vote and return item, else return None """
 		try:
-			res = mongo.db.playlist.find({'song.s_id':s_id}).next()
+			res = mongo.db.queue.find({'song.s_id':s_id}).next()
 		except StopIteration:
 			return None
-		mongo.db.playlist.update(
+		mongo.db.queue.update(
 			{'_id' : res.get('_id')}, 
 			{'$inc':{'vote':vote}}
 		)
@@ -65,7 +65,7 @@ class Vote(Resource):
 			return in_playist
 
 		item = {'song':song, **args}
-		mongo.db.playlist.insert_one(item)
+		mongo.db.queue.insert_one(item)
 
 		return item
 		

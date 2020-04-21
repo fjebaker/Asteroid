@@ -62,8 +62,8 @@ def songs_model(dbpath):
 	yield choice
 
 @pytest.fixture
-def playlist_model(dbpath):
-	data = read_file(dbpath, 'playlist.json')
+def queue_model(dbpath):
+	data = read_file(dbpath, 'queue.json')
 	def choice(field=None, value=None):
 		if field == None:
 			return data

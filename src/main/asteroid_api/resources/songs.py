@@ -7,6 +7,7 @@ mSong = {
 	'name':	fields.String,
 	'artist': fields.String,
 	's_id': fields.Integer,
+	'duration': fields.Float
 }
 
 search_song_parser = reqparse.RequestParser()
@@ -20,7 +21,6 @@ class SongDB(Resource):
 	def _format_query(self, _dict):
 		""" Formatter for fascilitating regex and in expressions """
 		res = {}
-		print(_dict)
 		for k,v in _dict.items():
 			if v is None:
 				continue
@@ -39,7 +39,6 @@ class SongDB(Resource):
 			)
 		except:
 			return {}, 200
-		print(args)
 		return list(mongo.db.songs.find(args).limit(40))
 
 

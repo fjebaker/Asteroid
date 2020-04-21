@@ -30,15 +30,12 @@ class TestUserEndpoint():
 		assert req.status_code == 200
 		assert decoder(req) == []
 
-
-class TestPlaylistEndpoint():
-
-	def test_getPlaylist(self, flaskclient, playlist_model):
-		req = flaskclient.get('/db/playlist')
-		assert req.status_code == 200
-		assert len(decoder(req)) == len(playlist_model())
-
 class TestVoteEndpoint():
+
+	def test_getQueue(self, flaskclient, queue_model):
+		req = flaskclient.get('/vote')
+		assert req.status_code == 200
+		assert len(decoder(req)) == len(queue_model())
 
 	def test_sendVote(self, flaskclient):
 		req = flaskclient.post('/vote', data={'vote':10, 'u_id':1, 's_id':2})
@@ -86,7 +83,7 @@ class TestMusicEndpoint():
 	def test_byManyBadId(self, flaskclient):
 		req = flaskclient.get('/db/songs?s_id=3 4as 5')
 		assert req.status_code == 200
-		assert decoder(req) == {'artist':None, 'name':None, 's_id':0}
+		assert decoder(req) == {'artist':None, 'name':None, 's_id':0, 'duration': None}
 
 	def test_byExactName(self, flaskclient):
 		req = flaskclient.get('/db/songs?name=Sound and Sweat')
@@ -118,5 +115,5 @@ class TestMusicEndpoint():
 	def test_returnedFields(self, flaskclient):
 		req = flaskclient.get('/db/songs')
 		assert req.status_code == 200
-		assert list(decoder(req)[0].keys()) == ['name', 'artist', 's_id']
+		assert list(decoder(req)[0].keys()) == ['name', 'artist', 's_id', 'duration']
 
