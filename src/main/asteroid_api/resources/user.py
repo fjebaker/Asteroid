@@ -26,7 +26,8 @@ class UserDB(Resource):
 		""" GET endpoint; performs database query depending on the parsed arguments """
 		args = search_user_parser.parse_args()
 		result = list(mongo.db.users.find(
-			{k:{'$in':v} for k,v in args.items() if v is not None}
+			# HACKY
+			{k:{'$in':v} if type(v) == list else v for k,v in args.items() if v is not None}
 		))
 		return result
 
@@ -37,7 +38,6 @@ class UserRegister(Resource):
 
 	def post(self):
 		""" POST endpoint; adds new user with incremental u_id """
-		print("POST")
 		user = {**new_user_parser.parse_args(), **self.template}
 		try: u_id = mongo.db.users.find() \
 				.sort('_id', -1) \

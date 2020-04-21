@@ -15,7 +15,6 @@ def init(CONFIG_FILE):
 		print("SERVING FILES")
 		app.register_blueprint(fetcher_bp)
 
-
 	app.register_blueprint(api_bp)
 	mongo.init_app(app)
 	return app

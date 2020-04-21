@@ -16,5 +16,5 @@ class Dev(Config):
 
 class TestAPI(Config):
 	TESTING = True
-	MONGO_URI = False
-	SERVE_FILES = False
+	MONGO_URI = ""
+	SERVE_FILES = True

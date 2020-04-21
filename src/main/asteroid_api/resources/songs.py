@@ -38,7 +38,7 @@ class SongDB(Resource):
 				search_song_parser.parse_args()
 			)
 		except:
-			return {}, 400
+			return {}, 200
 		print(args)
 		return list(mongo.db.songs.find(args).limit(40))
 

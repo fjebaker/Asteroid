@@ -7,15 +7,21 @@ import os
 
 @pytest.fixture
 def flaskclient(mongodb):
-	# mock the database
-	module = type(sys)('src.main.asteroid_api.common.__database')
-	module.mongo = mock.MagicMock()
-	module.mongo.init_app = mock.MagicMock()
-	module.mongo.db = mongodb
-	sys.modules['src.main.asteroid_api.common.__database'] = module
 
-	from src.main import init
-	app = init("config.TestAPI")
+	@functools.lru_cache(None)
+	def setup():
+		# mock the database
+		module = type(sys)('src.main.asteroid_api.common.__database')
+		module.mongo = mock.MagicMock()
+		module.mongo.init_app = mock.MagicMock()
+		module.mongo.db = mongodb
+		sys.modules['src.main.asteroid_api.common.__database'] = module
+
+		from src.main import init
+		app = init("config.TestAPI")
+		return app
+
+	app = setup()
 	with app.test_client() as client:
 		yield client
 
@@ -35,5 +41,26 @@ def read_file(dirpath, name):
 @pytest.fixture
 def user_model(dbpath):
 	data = read_file(dbpath, 'users.json')
-	yield data
+	def choice(field=None, value=None):
+		if field == None:
+			return data
+		return [i for i in data if i[field] == value]
+	yield choice
 
+@pytest.fixture
+def songs_model(dbpath):
+	data = read_file(dbpath, 'songs.json')
+	def choice(field=None, value=None):
+		if field == None:
+			return data
+		return [i for i in data if i[field] == value]
+	yield choice
+
+@pytest.fixture
+def playlist_model(dbpath):
+	data = read_file(dbpath, 'playlist.json')
+	def choice(field=None, value=None):
+		if field == None:
+			return data
+		return [i for i in data if i[field] == value]
+	yield choice
