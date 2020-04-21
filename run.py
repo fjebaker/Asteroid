@@ -2,8 +2,11 @@ import os
 os.environ["ASTEROID_CONFIG_PATH"] = './config.ini'
 import sys
 import argparse
-from src import Config, JSConfig
-from src.main.web_app import app as WEBapp
+from src.main.databasebuilder import Config, JSConfig
+from src.main import init as WEBinit
+
+WEBapp = WEBinit("config.Dev")
+
 from src.main.databasebuilder.SetupBuild import configure_database, check_database_connection
 HEADER = r"""     _       _                 _     _ 
     /_\  ___| |_ ___ _ __ ___ (_) __| |

@@ -1,2 +1,3 @@
-from src.main.databasebuilder.pyConfig import Config
-import src.main.databasebuilder.JSConfig as JSConfig
+"""
+MUST BE LEFT BLANK FOR UNIT TESTING
+"""

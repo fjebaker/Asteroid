@@ -25,7 +25,6 @@ class UserDB(Resource):
 	def get(self):
 		""" GET endpoint; performs database query depending on the parsed arguments """
 		args = search_user_parser.parse_args()
-		print("DEBUG", args)
 		result = list(mongo.db.users.find(
 			{k:{'$in':v} for k,v in args.items() if v is not None}
 		))

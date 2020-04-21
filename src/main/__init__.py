@@ -1,1 +1,1 @@
-from src.main.web_app import app
+from src.main.web_app import init

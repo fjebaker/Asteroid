@@ -1,0 +1,130 @@
+[
+    {
+        "s_id": 1,
+        "name": "From This Room",
+        "artist": "Leite",
+        "duration": 392.124,
+        "file_path": "/Users/minerva/Music/BadTube/Leite_From_This_Room/From This Room.mp3",
+        "meta_dat": ""
+    },
+    {
+        "s_id": 2,
+        "name": "The Flower",
+        "artist": "Leite",
+        "duration": 149.6031875,
+        "file_path": "/Users/minerva/Music/BadTube/Leite_From_This_Room/The Flower.mp3",
+        "meta_dat": ""
+    },
+    {
+        "s_id": 3,
+        "name": "Sound and Sweat",
+        "artist": "Leite",
+        "duration": 203.8595,
+        "file_path": "/Users/minerva/Music/BadTube/Leite_From_This_Room/Sound and Sweat.mp3",
+        "meta_dat": ""
+    },
+    {
+        "s_id": 4,
+        "name": "The Circle",
+        "artist": "Leite",
+        "duration": 290.4554375,
+        "file_path": "/Users/minerva/Music/BadTube/Leite_From_This_Room/The Circle.mp3",
+        "meta_dat": ""
+    },
+    {
+        "s_id": 5,
+        "name": "Streets",
+        "artist": "Leite",
+        "duration": 278.4651875,
+        "file_path": "/Users/minerva/Music/BadTube/Leite_From_This_Room/Streets.mp3",
+        "meta_dat": ""
+    },
+    {
+        "s_id": 6,
+        "name": "Home",
+        "artist": "Leite",
+        "duration": 274.233375,
+        "file_path": "/Users/minerva/Music/BadTube/Leite_From_This_Room/Home.mp3",
+        "meta_dat": ""
+    },
+    {
+        "s_id": 7,
+        "name": "Rising",
+        "artist": "Leite",
+        "duration": 322.0113125,
+        "file_path": "/Users/minerva/Music/BadTube/Leite_From_This_Room/Rising.mp3",
+        "meta_dat": ""
+    },
+    {
+        "s_id": 8,
+        "name": "Reverse The Ghost (Your Obsession)",
+        "artist": "Trevor Something",
+        "duration": 243.38275,
+        "file_path": "/Users/minerva/Music/BadTube/Trevor_Something_microwaves/Reverse The Ghost (Your Obsession).mp3",
+        "meta_dat": ""
+    },
+    {
+        "s_id": 9,
+        "name": "No One Cares",
+        "artist": "Trevor Something",
+        "duration": 180.2448125,
+        "file_path": "/Users/minerva/Music/BadTube/Trevor_Something_microwaves/No One Cares.mp3",
+        "meta_dat": ""
+    },
+    {
+        "s_id": 10,
+        "name": "You're So Ugly",
+        "artist": "Trevor Something",
+        "duration": 202.1093125,
+        "file_path": "/Users/minerva/Music/BadTube/Trevor_Something_microwaves/You're So Ugly.mp3",
+        "meta_dat": ""
+    },
+    {
+        "s_id": 11,
+        "name": "Living To Die",
+        "artist": "Trevor Something",
+        "duration": 208.796625,
+        "file_path": "/Users/minerva/Music/BadTube/Trevor_Something_microwaves/Living To Die.mp3",
+        "meta_dat": ""
+    },
+    {
+        "s_id": 12,
+        "name": "Microwaves",
+        "artist": "Trevor Something",
+        "duration": 51.0431875,
+        "file_path": "/Users/minerva/Music/BadTube/Trevor_Something_microwaves/Microwaves.mp3",
+        "meta_dat": ""
+    },
+    {
+        "s_id": 13,
+        "name": "Playin' Me",
+        "artist": "Trevor Something",
+        "duration": 312.1109375,
+        "file_path": "/Users/minerva/Music/BadTube/Trevor_Something_microwaves/Playin' Me.mp3",
+        "meta_dat": ""
+    },
+    {
+        "s_id": 14,
+        "name": "You Are My Obsession",
+        "artist": "Trevor Something",
+        "duration": 218.8538125,
+        "file_path": "/Users/minerva/Music/BadTube/Trevor_Something_microwaves/You Are My Obsession.mp3",
+        "meta_dat": ""
+    },
+    {
+        "s_id": 15,
+        "name": "False Reality",
+        "artist": "Trevor Something",
+        "duration": 237.8970625,
+        "file_path": "/Users/minerva/Music/BadTube/Trevor_Something_microwaves/False Reality.mp3",
+        "meta_dat": ""
+    },
+    {
+        "s_id": 16,
+        "name": "Do It To Me",
+        "artist": "Trevor Something",
+        "duration": 200.5941875,
+        "file_path": "/Users/minerva/Music/BadTube/Trevor_Something_microwaves/Do It To Me.mp3",
+        "meta_dat": ""
+    }
+]

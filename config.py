@@ -13,3 +13,8 @@ class Dev(Config):
 	#MONGO_URI = "mongodb://192.168.0.96:8934/asteroid"
 	MONGO_URI = "mongodb://192.168.0.12:27017/asteroid"
 	SERVE_FILES = True
+
+class TestAPI(Config):
+	TESTING = True
+	MONGO_URI = False
+	SERVE_FILES = False
