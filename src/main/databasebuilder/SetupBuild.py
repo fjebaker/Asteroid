@@ -48,8 +48,8 @@ def get_song_item(song_path):
         metadata = et.get_metadata(song_path)
 
     #print(metadata)
-    artist = metadata["ID3:Artist"]
-    title = metadata["ID3:Title"]
+    artist = metadata["RIFF:Artist"]
+    title = metadata["RIFF:Title"]
     duration = metadata["Composite:Duration"]
 
     return {'name': title, 'artist': artist, 'duration': duration, 'file_path': song_path, 'meta_dat': ''}
@@ -57,7 +57,7 @@ def get_song_item(song_path):
 
 def list_wav(path):
     files = [os.path.join(path, f) for f in os.listdir(
-        path) if os.path.isfile(os.path.join(path, f)) and '.mp3' in f]
+        path) if os.path.isfile(os.path.join(path, f)) and '.wav' in f]
     return files
 
 
