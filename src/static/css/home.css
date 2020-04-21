@@ -28,48 +28,6 @@ button:hover {
   color: #000;
 }
 
-.play_remove_button {
-  font-size: 0px;
-  background-color: #000;
-  background: transparent url(/resources/images/minusbutton.png) no-repeat;
-  background-size: 100% 100%;
-  width: 35px;
-  height: 35px;
-  transition: all ease-in-out 0.2s;
-}
-.play_remove_button:hover {
-  border: 1px solid #888;
-  background-color: #ddd;
-}
-
-.play_add_button {
-  font-size: 0px;
-  background-color: #000;
-  background: transparent url(/resources/images/plusbutton.png) no-repeat;
-  background-size: 100% 100%;
-  width: 35px;
-  height: 35px;
-  transition: all ease-in-out 0.2s;
-}
-.play_add_button:hover {
-  border: 1px solid #888;
-  background-color: #ddd;
-}
-
-.play_add_dropdown_button {
-  font-size: 0px;
-  background-color: #000;
-  background: transparent url(/resources/images/plusdropdownbutton.png) no-repeat;
-  background-size: 100% 100%;
-  width: 35px;
-  height: 35px;
-  transition: all ease-in-out 0.2s;
-}
-.play_add_dropdown_button:hover {
-  border: 1px solid #888;
-  background-color: #ddd;
-}
-
 .upvote_button {
   font-size: 0px;
   background-color: #000;

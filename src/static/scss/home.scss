@@ -39,51 +39,6 @@ button {
   }
 }
 
-.play_remove_button {
-  font-size: 0px;
-  background-color: $black;
-  background: transparent url(/resources/images/minusbutton.png) no-repeat;
-  background-size: 100% 100%;
-  width: 35px;
-  height: 35px;
-  transition: all ease-in-out 0.2s;
-
-  &:hover {
-    border: 1px solid $dark-grey;
-    background-color: $light-grey;
-  }
-}
-
-.play_add_button {
-  font-size: 0px;
-  background-color: $black;
-  background: transparent url(/resources/images/plusbutton.png) no-repeat;
-  background-size: 100% 100%;
-  width: 35px;
-  height: 35px;
-  transition: all ease-in-out 0.2s;
-
-  &:hover {
-    border: 1px solid $dark-grey;
-    background-color: $light-grey;
-  }
-}
-
-.play_add_dropdown_button {
-  font-size: 0px;
-  background-color: $black;
-  background: transparent url(/resources/images/plusdropdownbutton.png) no-repeat;
-  background-size: 100% 100%;
-  width: 35px;
-  height: 35px;
-  transition: all ease-in-out 0.2s;
-
-  &:hover {
-    border: 1px solid $dark-grey;
-    background-color: $light-grey;
-  }
-}
-
 .upvote_button {
   font-size: 0px;
   background-color: $black;
