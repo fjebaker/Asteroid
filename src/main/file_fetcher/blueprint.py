@@ -26,6 +26,9 @@ def styles(name): return _from_dir('css', name + '.css')
 @fetcher_bp.route("/script/<name>.js")
 def scripts(name): return _from_dir('script', name+'.js')
 
+@fetcher_bp.route("/tabs/<name>.js")
+def scripts(name): return _from_dir('script/tabs', name+'.js')
+
 @fetcher_bp.route("/config/jsconfig.js")
 def jsconfig(): return _from_dir('', 'jsconfig.js')
 
