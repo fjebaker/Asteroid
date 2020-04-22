@@ -40,7 +40,7 @@ new_vote_parser.add_argument('s_id', type=int, required=False)
 new_playlist_parser = reqparse.RequestParser()
 new_playlist_parser.add_argument('name', type=str, required=True)
 new_playlist_parser.add_argument('owner', type=str, required=True)
-new_playlist_parser.add_argument('privacy', type=str, required=True)
+new_playlist_parser.add_argument('privacy', type=str, required=True, choices=("viewable", "editable", "private"))
 new_playlist_parser.add_argument('clone_target', type=str, required=False)
 
 playlist_patch_parser = reqparse.RequestParser()
@@ -57,30 +57,33 @@ class PlaylistsDB(Resource):
     @marshal_with(mPlayInfo)
     def post(self):
         args = new_playlist_parser.parse_args(strict=True)
-        is_public = False
-        if (args["privacy"] == "viewable" or args["privacy"] == "editable"):
-            is_public = True
-        elif (args["privacy"] != "private"):
-            return {},400
+        #is_public = False
+        #if args.privacy is not "private":
+        #    return {}, 400
+        #if (args["privacy"] == "viewable" or args["privacy"] == "editable"):
+        #    is_public = True
+        #elif (args["privacy"] != "private"):
+        #    return {},400
         if (args["clone_target"] is not None):
             try:
                 clone_target = mongo.db.playlists.find({'_id':ObjectId(args["clone_target"])}).next()
             except StopIteration:
-                return {},400
+                return {}, 400
             args["songs"] = clone_target["songs"]
         else:
             args["songs"]=[]
         del args["clone_target"]
-        args["unchecked_songs"]=[]
+        args["new_songs"]=[]
         args["_id"] = mongo.db.playlists.insert_one(args).inserted_id
-        if (is_public):
+        if args.privacy is not 'private':
             mongo.db.publicplaylists.insert_one(args)
         args["_id"] = str(args["_id"])
-        del args["songs"]
+        #del args["songs"]
         return args
 
 class PlaylistDB(Resource):
     """ Class for handling interactions relating to a particular playlist """
+    template = ['name', 'artist', 's_id', 'duration']
 
     @marshal_with(mPlay)
     def get(self,hashkey,s_id=None):
@@ -89,24 +92,26 @@ class PlaylistDB(Resource):
         try:
             playlist = mongo.db.playlists.find({'_id':_id}).next()
         except StopIteration:
-            return {},400
-        #Update with unchecked songs
-        if len(playlist["unchecked_songs"]) > 0:
-            adding_songs = mongo.db.songs.find({'$or':[{'s_id':song_id} for song_id in playlist["unchecked_songs"]]})
-            adding_songs = [{
-                'name': adding_song['name'],
-                'artist': adding_song['artist'],
-                's_id': adding_song['s_id'],
-                'duration': adding_song['duration']
-                } for adding_song in adding_songs ]
-            mongo.db.playlists.update({'_id':_id},{'$push':{'songs':{'$each': adding_songs}}})
-            mongo.db.playlists.update({'_id':_id},{'$set':{'unchecked_songs':[]}})
+            return {}, 400
+        #Update with new songs
+        if len(playlist["new_songs"]) > 0:
+            #adding_songs = mongo.db.songs.find({'$or':[{'s_id':song_id} for song_id in playlist["new_songs"]]})
+            adding_songs = mongo.db.songs.find({'s_id':{'$in', playlist["new_songs"]}})
+            #adding_songs = [{
+            #    'name': adding_song['name'],
+            #    'artist': adding_song['artist'],
+            #    's_id': adding_song['s_id'],
+            #    'duration': adding_song['duration']
+            #    } for adding_song in adding_songs ]
+            adding_songs = [{k:v for k,v in i.items() if k in self.template} for i in adding_songs]
+            mongo.db.playlists.update({'_id':_id},{'$push':{'songs':{'$each': adding_songs}}})  # MARK
+            mongo.db.playlists.update({'_id':_id},{'$set':{'new_songs':[]}})
         else:
             adding_songs = []
         item = {}
         item['songs'] = playlist.pop('songs')+adding_songs
         playlist['_id'] = hashkey
-        playlist['size'] = len(item['songs'])+len(adding_songs)
+        playlist['size'] = len(item['songs']) # +len(adding_songs)
         item['info'] = playlist
         return item
 
@@ -124,7 +129,7 @@ class PlaylistDB(Resource):
         """ PUT endpoint; adds song with id s_id to playlist specified by hashkey """
         _id = ObjectId(hashkey)
         try:
-            mongo.db.playlists.update({'_id':_id},{'$push':{'unchecked_songs':int(s_id)}})
+            mongo.db.playlists.update({'_id':_id},{'$push':{'new_songs':int(s_id)}})
         except TypeError:
             return {},400
 
