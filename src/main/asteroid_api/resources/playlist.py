@@ -12,11 +12,7 @@ mSongInfo = {
 }
 
 mSong = {
-    'song': fields.Nested({
-        'name': fields.String,
-        'artist': fields.String,
-        's_id': fields.Integer,
-    }),
+    'song': fields.Nested(mSongInfo),
     'u_id': fields.Integer,
     'vote': fields.Integer
 }

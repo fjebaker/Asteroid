@@ -42,7 +42,7 @@ class TestVoteEndpoint():
         assert req.status_code == 200
         # library limitations seem to prevent us from checking
         # if the user is actually in the db now (?)
-        assert decoder(req) == {'song': {'name': 'The Flower', 'artist': 'Leite', 's_id': 2}, 'u_id': 1, 'vote': 10}
+        assert decoder(req) == {'song': {'artist': 'Leite', 'duration': 149.6031875, 'name': 'The Flower', 's_id': 2}, 'u_id': 1, 'vote':10}
 
 class TestRegisterEndpoint():
 
