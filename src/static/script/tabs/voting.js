@@ -79,9 +79,9 @@ function _clearSongTable() {
     initOption.innerText = "Choose playlist...";
     playlist_adding_selector.appendChild(initOption);
     for (var hashkey in PLAYLISTS.userPlaylistInfo) {
-        if (PLAYLISTS.userPlaylistInfo.hasOwnProperty(hashkey) && PLAYLISTS.userPlaylistInfo[hashkey].HashID === hashkey) {
+        if (PLAYLISTS.userPlaylistInfo.hasOwnProperty(hashkey) && PLAYLISTS.userPlaylistInfo[hashkey]["_id"] === hashkey) {
             var option = document.createElement("option");
-            option.innerText = PLAYLISTS.userPlaylistInfo[hashkey]["Name"];
+            option.innerText = PLAYLISTS.userPlaylistInfo[hashkey]["name"];
             option.value = hashkey
             playlist_adding_selector.appendChild(option);
         }
@@ -90,7 +90,7 @@ function _clearSongTable() {
     const ownUsername = TOOLS.AUTH.getUsername();
     for (var hashkey in PLAYLISTS.publicPlaylistInfo) {
         if (PLAYLISTS.publicPlaylistInfo.hasOwnProperty(hashkey)) {
-            var ownerName = PLAYLISTS.publicPlaylistInfo[hashkey]["OwnerName"];
+            var ownerName = PLAYLISTS.publicPlaylistInfo[hashkey]["owner"];
             if (ownerName !== ownUsername) {
                 if (!sortedPublicData.hasOwnProperty(ownerName)) {
                     sortedPublicData[ownerName] = [];
@@ -108,7 +108,7 @@ function _clearSongTable() {
             for (var i = 0; i < sortedPublicData[userName].length; i++) {
                 var hashkey = sortedPublicData[userName][i];
                 var option = document.createElement("option");
-                option.innerText = PLAYLISTS.publicPlaylistInfo[hashkey]["Name"];
+                option.innerText = PLAYLISTS.publicPlaylistInfo[hashkey]["name"];
                 option.value = hashkey
                 playlist_adding_selector.appendChild(option);
             }
@@ -148,14 +148,14 @@ function _toggleExtraInfo(row) {
 function _toggleFavouriteButton(button,favouritedStatus,songId) {
     return function(){
         //Push the new favourites array to the server TODO
-        var itemIndex = PLAYLISTS.userPlaylistInfo["(favourites)"]["SIDData"].indexOf(songId);
+        var itemIndex = PLAYLISTS.userPlaylistInfo["(favourites)"]["sid_data"].indexOf(songId);
         if (favouritedStatus && itemIndex === -1) {
             TOOLS.PLAYLISTS.pushSongToPlaylist(songId,"(favourites)");
         } else if (!favouritedStatus && itemIndex !== -1) {
             TOOLS.PLAYLISTS.removeSongFromPlaylist(songId,"(favourites)");
         }
         //Reformat button
-        var newFavouritedStatus = PLAYLISTS.userPlaylistInfo["(favourites)"]["SIDData"].includes(songId);
+        var newFavouritedStatus = PLAYLISTS.userPlaylistInfo["(favourites)"]["sid_data"].includes(songId);
         button.innerText = newFavouritedStatus ? "Unfavourite" : "Favourite";
         button.className = newFavouritedStatus ? "unfavourite_button" : "favourite_button";
         button.title = newFavouritedStatus ? "Remove from favourites" : "Add to favourites";
@@ -273,7 +273,7 @@ function _addSong(songData,index) {
                     break;
                 case "Favourite":
                     var favouriteButton = document.createElement("button");
-                    var favouritedStatus = PLAYLISTS.userPlaylistInfo["(favourites)"]["SIDData"].includes(songData.s_id);
+                    var favouritedStatus = PLAYLISTS.userPlaylistInfo["(favourites)"]["sid_data"].includes(songData.s_id);
                     _toggleFavouriteButton(favouriteButton,favouritedStatus,songData.s_id)();
                     newCell.appendChild(favouriteButton);
                     break;
@@ -382,64 +382,80 @@ function _recentlyRequested() {
     TOOLS.jsonGetRequest("/db/songs",getRecent,getRecentFailure);
 }
 
-function _playlist(playlistInfo) {
-    var ownerName = TOOLS.AUTH.getUsername();
-    playlist_adding_selector.value = playlistInfo["Name"];
-    if (playlistInfo["Owner"] !== ownerName) {
-        playlist_adding_selector.value = playlistInfo["Name"] + " (Public)";
-    }
+function _playlist(hashkey) {
     BODY_CONTENT.appendNode(song_table);
-    if (playlistInfo["Size"] === 0) {
-        _addBottomMessage("Playlist empty.");
-    } else {
-        if (MISC_INFO.screen_size == "big") {
-            columnList = ["Name","Artist","Duration","Vote","Favourite"];
-            if (playlistInfo["Privacy"] === "editable" || playlistInfo["Owner"] === ownerName) {
-                columnList.push("Remove From Playlist")
-            }
-            expansionColumns = [];
-            doubleExpansionColumns = [];
-        } else if (MISC_INFO.screen_size == "medium") {
-            columnList = ["Name","Artist","Duration"];
-            doubleExpansionColumns = ["Vote","Favourite"];
-            if (playlistInfo["Privacy"] === "editable" || playlistInfo["Owner"] === ownerName) {
-                doubleExpansionColumns.push("Remove From Playlist")
-            }
-            expansionColumns = [];
-        } else {
-            columnList = ["Name","Artist"];
-            expansionColumns = ["Duration"];
-            if (playlistInfo["Privacy"] === "editable" || playlistInfo["Owner"] === ownerName) {
-                expansionColumns.push("Remove From Playlist")
-            }
-            doubleExpansionColumns = ["Vote","Favourite"];
-        }
-        _addTopRow();
-        //Do requests to get this page of songs
+    var ownerName = TOOLS.AUTH.getUid();
+    //Do requests to get this page of songs
 
-        function getPlaylistSongs(request) {
-            if (request.status == "200") {
-                var data = JSON.parse(request.response);
-                for (var i = 0; i < data.length; i++) {
-                    _addSong(data[i],-1);
+    function getPlaylistSongs(request) {
+        if (request.status == "200") {
+            var data = JSON.parse(request.response);
+            var playlistInfo = data["info"];
+            var songData = data["songs"];
+            playlist_adding_selector.value = playlistInfo["_id"];
+            if (MISC_INFO.screen_size == "big") {
+                columnList = ["Name","Artist","Duration","Vote","Favourite"];
+                if (playlistInfo["privacy"] === "editable" || playlistInfo["owner"] === ownerName) {
+                    columnList.push("Remove From Playlist")
                 }
-            } else if (request.status == "401") {
-                _addBottomMessage("Request for playlist songs returned code 401: you do not have valid authorisation to view it.");
+                expansionColumns = [];
+                doubleExpansionColumns = [];
+            } else if (MISC_INFO.screen_size == "medium") {
+                columnList = ["Name","Artist","Duration"];
+                doubleExpansionColumns = ["Vote","Favourite"];
+                if (playlistInfo["privacy"] === "editable" || playlistInfo["owner"] === ownerName) {
+                    doubleExpansionColumns.push("Remove From Playlist")
+                }
+                expansionColumns = [];
             } else {
-                _addBottomMessage("Request for playlist songs returned unexpected response code ("+request.status+")");
+                columnList = ["Name","Artist"];
+                expansionColumns = ["Duration"];
+                if (playlistInfo["privacy"] === "editable" || playlistInfo["owner"] === ownerName) {
+                    expansionColumns.push("Remove From Playlist")
+                }
+                doubleExpansionColumns = ["Vote","Favourite"];
             }
-        }
-
-        function getPlaylistSongsFailure() {
-            _addBottomMessage("Request for playlist songs failed unexpectedly");
-        }
-
-        if (playlistInfo["Privacy"] !== "private") {
-            TOOLS.jsonGetRequest("/db/playlists?name="+playlistInfo["Name"]+"&owner="+playlistInfo["Owner"],getPlaylistSongs,getPlaylistSongsFailure);
+            if (playlistInfo["owner"] === ownerName) {
+                if (PLAYLISTS.userPlaylistInfo.hasOwnProperty(playlistInfo["_id"])) {
+                    for (var key in playlistInfo) {
+                        if (PLAYLISTS.userPlaylistInfo[playlistInfo["_id"]].hasOwnProperty(key)) {
+                            PLAYLISTS.userPlaylistInfo[playlistInfo["_id"]][key] = playlistInfo[key];
+                        }
+                    }
+                } else {
+                    PLAYLISTS.userPlaylistInfo[playlistInfo["_id"]] = playlistInfo;
+                }
+            }
+            if (playlistInfo["privacy"] !== "private"){
+                if (PLAYLISTS.publicPlaylistInfo.hasOwnProperty(playlistInfo["_id"])) {
+                    for (var key in playlistInfo) {
+                        if (PLAYLISTS.publicPlaylistInfo[playlistInfo["_id"]].hasOwnProperty(key)) {
+                            PLAYLISTS.publicPlaylistInfo[playlistInfo["_id"]][key] = playlistInfo[key];
+                        }
+                    }
+                } else {
+                    PLAYLISTS.publicPlaylistInfo[playlistInfo["_id"]] = playlistInfo;
+                }
+            }
+            _addTopRow();
+            for (var i = 0; i < songData.length; i++) {
+                _addSong(songData[i],-1);
+            }
+        } else if (request.status == "401") {
+            _addBottomMessage("Request for playlist songs returned code 401: you do not have valid authorisation to view it.");
         } else {
-            TOOLS.jsonGetRequest("/db/playlists?name="+playlistInfo["Name"]+"&owner="+playlistInfo["Owner"]+"&hash="+"placeholder",getPlaylistSongs,getPlaylistSongsFailure);
+            _addBottomMessage("Request for playlist songs returned unexpected response code ("+request.status+")");
         }
+    }
 
+    function getPlaylistSongsFailure() {
+        _addBottomMessage("Request for playlist songs failed unexpectedly");
+    }
+
+    if (PLAYLISTS.publicPlaylistInfo.hasOwnProperty(hashkey)) {
+        TOOLS.jsonGetRequest("/db/playlists/"+hashkey,getPlaylistSongs,getPlaylistSongsFailure);
+    } else { //TODO make request secure
+        TOOLS.jsonGetRequest("/db/playlists/"+hashkey,getPlaylistSongs,getPlaylistSongsFailure);
     }
 }
 
@@ -482,7 +498,6 @@ function _downloaded(query) {
 
     var queryStr = "";  // EMPTIED
     if (query !== null) {
-        queryStr = "";
         for (var key in query) {
             if (query.hasOwnProperty(key) && query[key] != "") {
                 queryStr += "&" + key + "=" + query[key];
@@ -561,11 +576,11 @@ populateBody:function(){
     } else if (subtab === "Recently Requested") {
         _recentlyRequested();
     } else if (subtab === "Favourites") {
-        _playlist(PLAYLISTS.userPlaylistInfo["(favourites)"]);
+        _playlist(PLAYLISTS.userPlaylistInfo["(favourites)"]["_id"]);
     } else if (subtab === "Downloaded") {
         _downloaded(TOOLS.QUERIES.getDownloadedSearchQuery());
     } else if (subtab === "Playlist") {
-        _playlist(TOOLS.PLAYLISTS.getCurrentPlaylistInfo());
+        _playlist(TOOLS.PLAYLISTS.getCurrentPlaylistName());
     } else {
         BODY_CONTENT.appendText("Press a subtab button to open a subtab!");
     }

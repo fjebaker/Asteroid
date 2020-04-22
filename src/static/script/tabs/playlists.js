@@ -43,7 +43,7 @@ function _setNameFromInput(cell,hashkey) {
             cell.innerText = newName;
             TOOLS.PLAYLISTS.renamePlaylist(hashkey,newName);
         } else {
-            cell.innerText = PLAYLISTS.userPlaylistInfo[hashkey]["Name"];
+            cell.innerText = PLAYLISTS.userPlaylistInfo[hashkey]["name"];
         }
         cell.onclick = _makeNameInput(cell,hashkey);
     };
@@ -94,13 +94,13 @@ populateBody:function(){
             newCell.innerText = labels[i];
             newRow.appendChild(newCell);
         }
-        var favHash = PLAYLISTS.userPlaylistInfo["(favourites)"].HashID;
+        var favHash = PLAYLISTS.userPlaylistInfo["(favourites)"]["_id"];
         {
             var newRow = playlist_table.insertRow(-1);
             var nameCell = newRow.insertCell(-1);
             nameCell.innerText = "Favourites";
             var sizeCell = newRow.insertCell(-1);
-            sizeCell.innerText = PLAYLISTS.userPlaylistInfo["(favourites)"]["Size"];
+            sizeCell.innerText = PLAYLISTS.userPlaylistInfo["(favourites)"]["size"];
             var viewCell = newRow.insertCell(-1);
             var viewButton = document.createElement("button");
             viewButton.innerText = "View";
@@ -116,10 +116,10 @@ populateBody:function(){
             if (hashkey !== favHash && PLAYLISTS.userPlaylistInfo.hasOwnProperty(hashkey)) {
                 var newRow = playlist_table.insertRow(-1);
                 var nameCell = newRow.insertCell(-1);
-                nameCell.innerText = PLAYLISTS.userPlaylistInfo[hashkey]["Name"];
+                nameCell.innerText = PLAYLISTS.userPlaylistInfo[hashkey]["name"];
                 nameCell.onclick = _makeNameInput(nameCell,hashkey);
                 var sizeCell = newRow.insertCell(-1);
-                sizeCell.innerText = PLAYLISTS.userPlaylistInfo[hashkey]["Size"];
+                sizeCell.innerText = PLAYLISTS.userPlaylistInfo[hashkey]["size"];
                 var viewCell = newRow.insertCell(-1);
                 var viewButton = document.createElement("button");
                 viewButton.innerText = "View";
@@ -172,11 +172,11 @@ populateBody:function(){
             if (PLAYLISTS.publicPlaylistInfo.hasOwnProperty(hashkey)) {
                 var newRow = playlist_table.insertRow(-1);
                 var nameCell = newRow.insertCell(-1);
-                nameCell.innerText = PLAYLISTS.publicPlaylistInfo[hashkey]["Name"];
+                nameCell.innerText = PLAYLISTS.publicPlaylistInfo[hashkey]["name"];
                 var ownerCell = newRow.insertCell(-1);
-                ownerCell.innerText = PLAYLISTS.publicPlaylistInfo[hashkey]["OwnerName"];
+                ownerCell.innerText = PLAYLISTS.publicPlaylistInfo[hashkey]["owner"];
                 var sizeCell = newRow.insertCell(-1);
-                sizeCell.innerText = PLAYLISTS.publicPlaylistInfo[hashkey]["Size"]
+                sizeCell.innerText = PLAYLISTS.publicPlaylistInfo[hashkey]["size"]
                 var viewCell = newRow.insertCell(-1);
                 var viewButton = document.createElement("button");
                 viewButton.innerText = "View";

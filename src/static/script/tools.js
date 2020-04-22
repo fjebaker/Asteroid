@@ -288,7 +288,9 @@ pushSongToPlaylist:function(songId,hashkey){
     } else if (PLAYLISTS.publicPlaylistInfo.hasOwnProperty(hashkey) && PLAYLISTS.publicPlaylistInfo[hashkey]["Privacy"] == "editable"){
         PLAYLISTS.publicPlaylistInfo[hashkey]["Size"] += 1;
     }
-    //TODO server request
+    var request = new XMLHttpRequest();
+    request.open("PUT","/db/playlists/"+hashkey+"/songs/"+songId,true);
+    request.send();
 },
 
 /**
@@ -310,7 +312,9 @@ pushSongsToPlaylist:function(songIds,hashkey){
     } else if (PLAYLISTS.publicPlaylistInfo.hasOwnProperty(hashkey) && PLAYLISTS.publicPlaylistInfo[hashkey]["Privacy"] == "editable"){
         PLAYLISTS.publicPlaylistInfo[hashkey]["Size"] += songIds.length;
     }
-    //TODO server request
+    var request = new XMLHttpRequest();
+    request.open("PUT","/db/playlists/"+hashkey+"/songs/"+songIds.join("%20"),true);
+    request.send();
 },
 
 /**
@@ -330,7 +334,9 @@ removeSongFromPlaylist:function(songId,hashkey){
     } else if (PLAYLISTS.publicPlaylistInfo.hasOwnProperty(hashkey) && PLAYLISTS.publicPlaylistInfo[hashkey]["Privacy"] == "editable"){
         PLAYLISTS.publicPlaylistInfo[hashkey]["Size"] -= 1;
     }
-    //TODO server request
+    var request = new XMLHttpRequest();
+    request.open("DELETE","/db/playlists/"+hashkey+"/songs/"+songId,true);
+    request.send();
 },
 
 /**
@@ -352,7 +358,9 @@ removeSongsFromPlaylist:function(songIds,hashkey){
     } else if (PLAYLISTS.publicPlaylistInfo.hasOwnProperty(hashkey) && PLAYLISTS.publicPlaylistInfo[hashkey]["Privacy"] == "editable"){
         PLAYLISTS.publicPlaylistInfo[hashkey]["Size"] -= songIds.length;
     }
-    //TODO server request
+    var request = new XMLHttpRequest();
+    request.open("DELETE","/db/playlists/"+hashkey+"/songs/"+songIds.join("%20"),true);
+    request.send();
 },
 
 
@@ -378,19 +386,38 @@ clonePlaylist:function(hashkey,privacy) {
     var newName;
     var size;
     if (PLAYLISTS.userPlaylistInfo.hasOwnProperty(hashkey)) {
-        newName = PLAYLISTS.userPlaylistInfo[hashkey]["Name"];
-        size = PLAYLISTS.userPlaylistInfo[hashkey]["Size"];
+        newName = PLAYLISTS.userPlaylistInfo[hashkey]["name"];
+        size = PLAYLISTS.userPlaylistInfo[hashkey]["size"];
     } else {
-        newName = PLAYLISTS.publicPlaylistInfo[hashkey]["Name"];
-        size = PLAYLISTS.publicPlaylistInfo[hashkey]["Size"];
+        newName = PLAYLISTS.publicPlaylistInfo[hashkey]["name"];
+        size = PLAYLISTS.publicPlaylistInfo[hashkey]["size"];
     }
     while (PLAYLISTS.userPlaylistInfo.hasOwnProperty(newName)) {
         newName = "copy of "+newName;
     }
-    TOOLS.PLAYLISTS.createPlaylist(newName,privacy);
-    PLAYLISTS.userPlaylistInfo[newName]["Size"] = size;
-    //Should be updated to independent clone func
-    //TODO server request
+
+    function cloneSuccess(request) {
+        return function() {
+            if (request.status == "200") {
+                var data = JSON.parse(request.response);
+                data["store_sids"] = false;
+                PLAYLISTS.userPlaylistInfo[data["_id"]] = data;
+                if (data["privacy"] !== "private") {
+                    PLAYLISTS.publicPlaylistInfo[data["_id"]] = PLAYLISTS.userPlaylistInfo[data["_id"]];
+                }
+            }
+        }
+    }
+
+    var request = new XMLHttpRequest();
+    var requestData = new FormData();
+    requestData.set("name",newName);
+    requestData.set("owner",TOOLS.AUTH.getUid());
+    requestData.set("privacy",privacy);
+    requestData.set("clone_target",hashkey);
+    request.open("POST","/db/playlists",true);
+    request.onload = cloneSuccess(request);
+    request.send(requestData);
 },
 
 /**
@@ -402,9 +429,13 @@ clonePlaylist:function(hashkey,privacy) {
  */
 renamePlaylist:function(hashkey,newPlaylistName) {
     if (PLAYLISTS.userPlaylistInfo.hasOwnProperty(hashkey)) {
-        PLAYLISTS.userPlaylistInfo[hashkey]["Name"] = newPlaylistName;
+        PLAYLISTS.userPlaylistInfo[hashkey]["name"] = newPlaylistName;
     }
-    //TODO server request
+    var request = new XMLHttpRequest();
+    var requestData = new FormData();
+    requestData.set("name",newPlaylistName);
+    request.open("PATCH","/db/playlists/"+hashkey,true)
+    request.send(requestData);
 },
 
 /**
@@ -415,19 +446,30 @@ renamePlaylist:function(hashkey,newPlaylistName) {
  * @param {string} privacyStatus - what privacy status the playlist should have
  */
 createPlaylist:function(playlistName,privacyStatus) {
+    console.log(privacyStatus);
     if (!PLAYLISTS.userPlaylistInfo.hasOwnProperty(playlistName)) {
-        var ownerName = TOOLS.AUTH.getUsername();
-        PLAYLISTS.userPlaylistInfo[playlistName] = {
-            "HashID":playlistName,
-            "Name":playlistName,
-            "OwnerName":ownerName,
-            "Privacy":privacyStatus,
-            "Size":0,
-            "StoreSIDs":false
-        };
-        if (privacyStatus !== "private") {
-            PLAYLISTS.publicPlaylistInfo[playlistName] = PLAYLISTS.userPlaylistInfo[playlistName];
+
+        function creationSuccess(request) {
+            return function() {
+                if (request.status == "200") {
+                    var data = JSON.parse(request.response);
+                    data["store_sids"] = false;
+                    PLAYLISTS.userPlaylistInfo[data["_id"]] = data;
+                    if (data["privacy"] !== "private") {
+                        PLAYLISTS.publicPlaylistInfo[data["_id"]] = PLAYLISTS.userPlaylistInfo[data["_id"]];
+                    }
+                }
+            }
         }
+
+        var request = new XMLHttpRequest();
+        var requestData = new FormData();
+        requestData.set('name',playlistName);
+        requestData.set('owner',TOOLS.AUTH.getUid());
+        requestData.set('privacy',privacyStatus);
+        request.open("POST","/db/playlists",true);
+        request.onload = creationSuccess(request);
+        request.send(requestData);
     }
 },
 
@@ -444,6 +486,9 @@ deletePlaylist:function(hashkey) {
             delete PLAYLISTS.publicPlaylistInfo[hashkey];
         }
     }
+    var request = new XMLHttpRequest();
+    request.open("DELETE","/db/playlists/"+hashkey,true);
+    request.send();
 },
 
 /**
@@ -462,6 +507,11 @@ changePlaylistPrivacy:function(hashkey,privacyStatus) {
             delete PLAYLISTS.publicPlaylistInfo[hashkey];
         }
     }
+    var request = new XMLHttpRequest();
+    var requestData = new FormData();
+    requestData.set("privacy",privacyStatus);
+    request.open("PATCH","/db/playlists/"+hashkey,true)
+    request.send(requestData);
 }
 
 },

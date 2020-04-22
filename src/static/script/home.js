@@ -144,12 +144,12 @@ var SETTINGS = {
 var PLAYLISTS = {
     userPlaylistInfo:{
         "(favourites)":{
-            HashID:"(favourites)",
-            Name:"Favourites",
-            Privacy:"private",
-            StoreSIDs:true,
-            Size:0,
-            SIDData:[]
+            _id:"(favourites)",
+            name:"Favourites",
+            privacy:"private",
+            store_sids:true,
+            size:0,
+            sid_data:[]
         }
     },
     publicPlaylistInfo:{}

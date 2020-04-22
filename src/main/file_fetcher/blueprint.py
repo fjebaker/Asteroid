@@ -5,14 +5,14 @@ STATIC_FOLDER = "src/static/"
 fetcher_bp = Blueprint('fetcher', __name__)
 
 def _from_dir(_dir, name, _bytes=''):
-	path = os.path.join(STATIC_FOLDER, _dir, name)
-	try:
-		with open(path, 'r'+_bytes) as f:
-			content = f.read()
-	except Exception as e:
-		print(e)
-	else:
-		return content
+    path = os.path.join(STATIC_FOLDER, _dir, name)
+    try:
+        with open(path, 'r'+_bytes) as f:
+            content = f.read()
+    except Exception as e:
+        print(e)
+    else:
+        return content
 
 @fetcher_bp.route("/")
 def index(): return _from_dir('html', 'home.html')
