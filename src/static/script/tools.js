@@ -281,12 +281,12 @@ PLAYLISTS:{
  */
 pushSongToPlaylist:function(songId,hashkey){
     if (PLAYLISTS.userPlaylistInfo.hasOwnProperty(hashkey)) {
-        PLAYLISTS.userPlaylistInfo[hashkey]["Size"] += 1;
-        if (PLAYLISTS.userPlaylistInfo[hashkey]["StoreSIDs"]) {
-            PLAYLISTS.userPlaylistInfo[hashkey]["SIDData"].push(songId);
+        PLAYLISTS.userPlaylistInfo[hashkey]["size"] += 1;
+        if (PLAYLISTS.userPlaylistInfo[hashkey]["store_sids"]) {
+            PLAYLISTS.userPlaylistInfo[hashkey]["sid_data"].push(songId);
         }
     } else if (PLAYLISTS.publicPlaylistInfo.hasOwnProperty(hashkey) && PLAYLISTS.publicPlaylistInfo[hashkey]["Privacy"] == "editable"){
-        PLAYLISTS.publicPlaylistInfo[hashkey]["Size"] += 1;
+        PLAYLISTS.publicPlaylistInfo[hashkey]["size"] += 1;
     }
     var request = new XMLHttpRequest();
     request.open("PUT","/db/playlists/"+hashkey+"/songs/"+songId,true);
@@ -302,15 +302,15 @@ pushSongToPlaylist:function(songId,hashkey){
  */
 pushSongsToPlaylist:function(songIds,hashkey){
     if (PLAYLISTS.userPlaylistInfo.hasOwnProperty(hashkey)) {
-        if (hashkey === "(favourites)") {hashkey = PLAYLISTS.userPlaylistInfo[hashkey]["HashID"];}
-        PLAYLISTS.userPlaylistInfo[hashkey]["Size"] += songIds.length;
-        if (PLAYLISTS.userPlaylistInfo[hashkey]["StoreSIDs"]) {
+        if (hashkey === "(favourites)") {hashkey = PLAYLISTS.userPlaylistInfo[hashkey]["_id"];}
+        PLAYLISTS.userPlaylistInfo[hashkey]["size"] += songIds.length;
+        if (PLAYLISTS.userPlaylistInfo[hashkey]["store_sids"]) {
             for (var i = 0; i < songIds.length; i++) {
-                PLAYLISTS.userPlaylistInfo[hashkey]["SIDData"].push(songIds[i]);
+                PLAYLISTS.userPlaylistInfo[hashkey]["sid_data"].push(songIds[i]);
             }
         }
-    } else if (PLAYLISTS.publicPlaylistInfo.hasOwnProperty(hashkey) && PLAYLISTS.publicPlaylistInfo[hashkey]["Privacy"] == "editable"){
-        PLAYLISTS.publicPlaylistInfo[hashkey]["Size"] += songIds.length;
+    } else if (PLAYLISTS.publicPlaylistInfo.hasOwnProperty(hashkey) && PLAYLISTS.publicPlaylistInfo[hashkey]["privacy"] == "editable"){
+        PLAYLISTS.publicPlaylistInfo[hashkey]["size"] += songIds.length;
     }
     var request = new XMLHttpRequest();
     request.open("PUT","/db/playlists/"+hashkey+"/songs/"+songIds.join("%20"),true);
@@ -326,13 +326,13 @@ pushSongsToPlaylist:function(songIds,hashkey){
  */
 removeSongFromPlaylist:function(songId,hashkey){
     if (PLAYLISTS.userPlaylistInfo.hasOwnProperty(hashkey)) {
-        PLAYLISTS.userPlaylistInfo[hashkey]["Size"] -= 1;
-        if (PLAYLISTS.userPlaylistInfo[hashkey]["StoreSIDs"]) {
-            var index = PLAYLISTS.userPlaylistInfo[hashkey]["SIDData"].indexOf(songId);
-            PLAYLISTS.userPlaylistInfo[hashkey]["SIDData"].splice(index,1);
+        PLAYLISTS.userPlaylistInfo[hashkey]["size"] -= 1;
+        if (PLAYLISTS.userPlaylistInfo[hashkey]["store_sids"]) {
+            var index = PLAYLISTS.userPlaylistInfo[hashkey]["sid_data"].indexOf(songId);
+            PLAYLISTS.userPlaylistInfo[hashkey]["sid_data"].splice(index,1);
         }
-    } else if (PLAYLISTS.publicPlaylistInfo.hasOwnProperty(hashkey) && PLAYLISTS.publicPlaylistInfo[hashkey]["Privacy"] == "editable"){
-        PLAYLISTS.publicPlaylistInfo[hashkey]["Size"] -= 1;
+    } else if (PLAYLISTS.publicPlaylistInfo.hasOwnProperty(hashkey) && PLAYLISTS.publicPlaylistInfo[hashkey]["privacy"] == "editable"){
+        PLAYLISTS.publicPlaylistInfo[hashkey]["size"] -= 1;
     }
     var request = new XMLHttpRequest();
     request.open("DELETE","/db/playlists/"+hashkey+"/songs/"+songId,true);
@@ -348,15 +348,15 @@ removeSongFromPlaylist:function(songId,hashkey){
  */
 removeSongsFromPlaylist:function(songIds,hashkey){
     if (PLAYLISTS.userPlaylistInfo.hasOwnProperty(hashkey)) {
-        PLAYLISTS.userPlaylistInfo[hashkey]["Size"] -= songIds.length;
-        if (PLAYLISTS.userPlaylistInfo[hashkey]["StoreSIDs"]) {
+        PLAYLISTS.userPlaylistInfo[hashkey]["size"] -= songIds.length;
+        if (PLAYLISTS.userPlaylistInfo[hashkey]["store_sids"]) {
             for (var i = 0; i < songIds.length; i++) {
-                var index = PLAYLISTS.userPlaylistInfo[hashkey]["SIDData"].indexOf(songIds[i]);
-                PLAYLISTS.userPlaylistInfo[hashkey]["SIDData"].splice(index,1);
+                var index = PLAYLISTS.userPlaylistInfo[hashkey]["sid_data"].indexOf(songIds[i]);
+                PLAYLISTS.userPlaylistInfo[hashkey]["sid_data"].splice(index,1);
             }
         }
-    } else if (PLAYLISTS.publicPlaylistInfo.hasOwnProperty(hashkey) && PLAYLISTS.publicPlaylistInfo[hashkey]["Privacy"] == "editable"){
-        PLAYLISTS.publicPlaylistInfo[hashkey]["Size"] -= songIds.length;
+    } else if (PLAYLISTS.publicPlaylistInfo.hasOwnProperty(hashkey) && PLAYLISTS.publicPlaylistInfo[hashkey]["privacy"] == "editable"){
+        PLAYLISTS.publicPlaylistInfo[hashkey]["size"] -= songIds.length;
     }
     var request = new XMLHttpRequest();
     request.open("DELETE","/db/playlists/"+hashkey+"/songs/"+songIds.join("%20"),true);
@@ -500,7 +500,7 @@ deletePlaylist:function(hashkey) {
  */
 changePlaylistPrivacy:function(hashkey,privacyStatus) {
     if (PLAYLISTS.userPlaylistInfo.hasOwnProperty(hashkey)) {
-        PLAYLISTS.userPlaylistInfo[hashkey]["Privacy"] = privacyStatus;
+        PLAYLISTS.userPlaylistInfo[hashkey]["privacy"] = privacyStatus;
         if ((privacyStatus === "viewable" || privacyStatus == "editable") && !PLAYLISTS.publicPlaylistInfo.hasOwnProperty(hashkey)) {
             PLAYLISTS.publicPlaylistInfo[hashkey] = PLAYLISTS.userPlaylistInfo[hashkey];
         } else if (privacyStatus === "private" && PLAYLISTS.publicPlaylistInfo.hasOwnProperty(hashkey)) {

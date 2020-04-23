@@ -185,7 +185,7 @@ class PlaylistsDB(Resource):
         _id = ObjectId(hashkey)
         mongo.db.playlists.remove({'_id':_id})
 
-    def _remove_songs_from_playlist(self,hashkey,s_id):
+    def _delete_songs_from_playlist(self,hashkey,s_id):
         """ DELETE at /playlists/<hashkey>/songs/<s_id>; removes specified song(s) from playlist """
         _id = ObjectId(hashkey)
         try:
@@ -235,7 +235,7 @@ class PlaylistsDB(Resource):
         elif s_id is None:
             return self._delete_playlist(hashkey)
         else:
-            return self._remove_songs_from_playlist(hashkey,s_id)
+            return self._delete_songs_from_playlist(hashkey,s_id)
 
 class QueueDB(Resource):
     """ Class for handling interactions with fetching from queue database """
