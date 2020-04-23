@@ -387,10 +387,7 @@ refreshPublicPlaylistData:function() {
             var data = JSON.parse(request.response)["public_playlists"];
             for (var i = 0; i < data.length; i++) {
                 data[i]["store_sids"] = false;
-                PLAYLISTS.userPlaylistInfo[data[i]["_id"]] = data[i];
-                if (data[i]["privacy"] !== "private") {
-                    PLAYLISTS.publicPlaylistInfo[data[i]["_id"]] = PLAYLISTS.userPlaylistInfo[data[i]["_id"]];
-                }
+                PLAYLISTS.publicPlaylistInfo[data[i]["_id"]] = data[i];
             }
         }
     }
