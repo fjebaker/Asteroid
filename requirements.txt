@@ -13,3 +13,4 @@ six==1.14.0
 Werkzeug==1.0.1
 pytest==5.4.1
 pytest-mongodb==2.2.0
+Flask-RESTful==0.3.8
