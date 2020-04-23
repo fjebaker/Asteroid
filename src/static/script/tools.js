@@ -202,6 +202,7 @@ populateSettings:function(callback){
         };
     }
 
+    TOOLS.PLAYLISTS.refreshPublicPlaylistData();
     TOOLS.AUTH.passAccountSettings(callbackGenerator,CONFIG);
 },
 
@@ -373,6 +374,31 @@ removeSongsFromPlaylist:function(songIds,hashkey){
  */
 getCurrentPlaylistName:function(){
     return _getQueryItem("playlist");
+},
+
+/**
+ * Used to get info about public playlists
+ *
+ * @alias TOOLS~PLAYLISTS~refreshPublicPlaylistData
+ */
+refreshPublicPlaylistData:function() {
+    function getSuccess(request) {
+        if (request.status == "200") {
+            var data = JSON.parse(request.response)["public_playlists"];
+            for (var i = 0; i < data.length; i++) {
+                data[i]["store_sids"] = false;
+                PLAYLISTS.userPlaylistInfo[data[i]["_id"]] = data[i];
+                if (data[i]["privacy"] !== "private") {
+                    PLAYLISTS.publicPlaylistInfo[data[i]["_id"]] = PLAYLISTS.userPlaylistInfo[data[i]["_id"]];
+                }
+            }
+        }
+    }
+
+    function getFailure() {
+    }
+
+    TOOLS.jsonGetRequest("/db/playlists",getSuccess,getFailure);
 },
 
 /**

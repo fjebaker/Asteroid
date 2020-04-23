@@ -160,6 +160,7 @@ populateBody:function(){
         createButton.onclick = _createPlaylist(nameInput,privacyInput);
         BODY_CONTENT.appendNode(createButton);
     } else if (subtab === "Public Playlists") {
+        TOOLS.PLAYLISTS.refreshPublicPlaylistData();
         playlist_table = document.createElement("table");
         var newRow = playlist_table.insertRow(0);
         var labels = ["Name","Owner","Size","View","Make Private Copy"];
