@@ -83,11 +83,11 @@ class PlaylistsDB(Resource):
         if len(song_ids_to_add) > 0:
             songs_to_add = mongo.db.songs.find({'s_id':{'$in':song_ids_to_add}})
             songs_to_add = [{k:v for k,v in i.items() if k in self.mSongInfoTemplate} for i in songs_to_add]
-                mongo.db.playlists.update(
+            mongo.db.playlists.update(
                 {'_id':_id},
                 {
                     '$push':{'data.content.songs':{'$each':songs_to_add}},
-                    '$pull':{'data.content.songs':{'s_id':{'$in':song_ids_to_remove}}}
+                    '$pull':{'data.content.songs':{'s_id':{'$in':song_ids_to_remove}}},
                     '$set':{
 						'data.content.songs_to_add':[],
 						'data.content.songs_to_remove':[],
@@ -97,11 +97,11 @@ class PlaylistsDB(Resource):
             )
         else:
             songs_to_add = []
-			if len(song_ids_to_remove) > 0:
-                	mongo.db.playlists.update(
+            if len(song_ids_to_remove) > 0:
+                mongo.db.playlists.update(
                 	{'_id':_id},
                 	{
-                    	'$pull':{'data.content.songs':{'s_id':{'$in':song_ids_to_remove}}}
+                    	'$pull':{'data.content.songs':{'s_id':{'$in':song_ids_to_remove}}},
                     	'$set':{
 							'data.content.songs_to_add':[],
 							'data.content.songs_to_remove':[],
