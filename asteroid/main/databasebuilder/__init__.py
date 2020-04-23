@@ -1,3 +1,3 @@
-from src.main.databasebuilder.pyConfig import *
-from src.main.databasebuilder.SetupBuild import *
+from asteroid.main.databasebuilder.pyConfig import *
+from asteroid.main.databasebuilder.SetupBuild import *
 

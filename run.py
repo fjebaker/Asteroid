@@ -2,12 +2,12 @@ import os
 os.environ["ASTEROID_CONFIG_PATH"] = './config.ini'
 import sys
 import argparse
-from src.main.databasebuilder import Config, JSConfig
-from src.main import init as WEBinit
+from asteroid.main.databasebuilder import Config, JSConfig
+from asteroid.main import init as WEBinit
 
 WEBapp = WEBinit("config.Prod")
 
-from src.main.databasebuilder.SetupBuild import configure_database, check_database_connection
+from asteroid.main.databasebuilder.SetupBuild import configure_database, check_database_connection
 HEADER = r"""     _       _                 _     _ 
     /_\  ___| |_ ___ _ __ ___ (_) __| |
    //_\\/ __| __/ _ \ '__/ _ \| |/ _` |
@@ -80,7 +80,7 @@ def run_player(host="", port=""):
         print("[*] Starting player INET server...")
         os.environ["LISTENER_HOST"] = host
         os.environ["LISTENER_PORT"] = port
-        from src.main.player import Listener
+        from asteroid.main.player import Listener
         Listener().start()
 
 
@@ -96,7 +96,7 @@ class databases:
     @staticmethod
     def build_music(loc):
         print("[+] adding '{}' collection in '{}'...".format("songs", WEBapp.config['MONGO_URI']))
-        from src.main.databasebuilder import build_music
+        from asteroid.main.databasebuilder import build_music
         build_music(loc, WEBapp)
         print("[*] Done building Music.")
 
@@ -111,7 +111,7 @@ class databases:
         TODO
         at the moment just deletes the current database
         """
-        #from src.main.databasebuilder import clear
+        #from asteroid.main.databasebuilder import clear
         print("\n[-] Deleting old database...")
         #clear('./test.db')
 

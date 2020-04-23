@@ -1,1 +1,0 @@
-from src.main.web_app import init

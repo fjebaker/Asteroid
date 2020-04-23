@@ -1,7 +1,7 @@
 from flask import request
 from flask_restful import Resource, fields, marshal_with, reqparse
 
-from src.main.asteroid_api.common.__database import mongo
+from asteroid.main.asteroid_api.common.__database import mongo
 
 mUser = {
     'name': fields.String,

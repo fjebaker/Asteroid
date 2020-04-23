@@ -1,1 +1,1 @@
-from src.main.asteroid_api.blueprint import *
+from asteroid.main.asteroid_api.blueprint import *

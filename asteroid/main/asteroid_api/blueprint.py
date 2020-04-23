@@ -1,7 +1,7 @@
 from flask import Blueprint
 from flask_restful import Api, Resource
 
-from src.main.asteroid_api.resources import *
+from asteroid.main.asteroid_api.resources import *
 
 api_bp = Blueprint('api', __name__)
 api = Api(api_bp)

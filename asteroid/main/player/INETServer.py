@@ -1,14 +1,14 @@
 import socket
 import os
-from src.main.player.ClientThread import ClientThread
-from src.main.player.AudioHandler import AudioHandler
+from asteroid.main.player.ClientThread import ClientThread
+from asteroid.main.player.AudioHandler import AudioHandler
 from queue import Queue
 
 
 class Listener():
     """
-    Low level socket server for spawning a :class:`src.main.python.player.ClientThread` per each incomming connection. 
-    Holds the :class:`queue.Queue` for communicating between the :class:`src.main.python.player.PlayStream`.
+    Low level socket server for spawning a :class:`asteroid.main.python.player.ClientThread` per each incomming connection. 
+    Holds the :class:`queue.Queue` for communicating between the :class:`asteroid.main.python.player.PlayStream`.
 
     Threaded, able to handle 5 simultaneous incomming connections - performs no checks.
     """

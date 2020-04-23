@@ -1,1 +1,1 @@
-from src.main.file_fetcher.blueprint import *
+from asteroid.main.file_fetcher.blueprint import *

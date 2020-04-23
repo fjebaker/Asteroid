@@ -11,15 +11,15 @@ def flaskclient(mongodb):
     @functools.lru_cache(None)
     def setup():
         # mock the database
-        module = type(sys)('src.main.asteroid_api.common.__database')
+        module = type(sys)('asteroid.main.asteroid_api.common.__database')
         module.mongo = mock.MagicMock()
         module.mongo.init_app = mock.MagicMock()
         module.mongo.db = mongodb
-        sys.modules['src.main.asteroid_api.common.__database'] = module
+        sys.modules['asteroid.main.asteroid_api.common.__database'] = module
 
-        from src.main import init
+        from asteroid.main import init
         app = init("config.TestAPI")
-        from src.main.databasebuilder.SetupBuild import _config_database
+        from asteroid.main.databasebuilder.SetupBuild import _config_database
         try: 
             _config_database(mongodb)
         except:

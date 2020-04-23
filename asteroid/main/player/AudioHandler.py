@@ -1,15 +1,15 @@
-from src.main.player.PlayStream import PlayStream
-from src.main.player.ConditionObject import ConditionObject
-from src.main.web.flaskserv.Database import Playlist, History, MusicDB
+from asteroid.main.player.PlayStream import PlayStream
+from asteroid.main.player.ConditionObject import ConditionObject
+from asteroid.main.web.flaskserv.Database import Playlist, History, MusicDB
 from queue import Queue
 import threading
 import os
-from src.main.databasebuilder.setupfuncs import db_path
+from asteroid.main.databasebuilder.setupfuncs import db_path
 
 class AudioHandler(threading.Thread):
     """
-    Controlls how the music is being played. Will spawn instances of :class:`src.main.python.player.PlayStream` for each song.
-    Handles the :class:`src.main.python.player.ConditionObject` in response to INET server commands.
+    Controlls how the music is being played. Will spawn instances of :class:`asteroid.main.python.player.PlayStream` for each song.
+    Handles the :class:`asteroid.main.python.player.ConditionObject` in response to INET server commands.
     Determines playback from the music database also handles by the HTTP server.
     Has ``self.daemon = True``.
 
@@ -52,7 +52,7 @@ class AudioHandler(threading.Thread):
 
     def get_path_from_database(self):
         """
-        Queries the ``songs`` table with :class:`src.main.python.flaskserv.Database.MusicDB` to determine
+        Queries the ``songs`` table with :class:`asteroid.main.python.flaskserv.Database.MusicDB` to determine
         information on the next song to play given the song id from :meth:`self.fetch_playlist_item`.
 
         :returns: the path to the most voted song
@@ -87,7 +87,7 @@ class AudioHandler(threading.Thread):
         """
         Begin the playback -- first checks if ``*args`` contains a path, else calls :meth:`self.get_path_from_database`
         to fetch a song path. Then checks if the file exists, returns ``None`` if false. Stops the current playback if a player
-        exists by calling :meth:`self.stop`. Creates a new :class:`src.main.python.player.PlayStream` instance, loads the song
+        exists by calling :meth:`self.stop`. Creates a new :class:`asteroid.main.python.player.PlayStream` instance, loads the song
         and starts the playback. Finally, sets :attr:`self.curret_player` to new instance.
         """
         if len(args) == 2:
@@ -118,14 +118,14 @@ class AudioHandler(threading.Thread):
 
     def pause(self, *args):
         """
-        Pause the playback -- calls :meth:`src.main.python.player.ConditionObject.toggle_pause` on own instance.
+        Pause the playback -- calls :meth:`asteroid.main.python.player.ConditionObject.toggle_pause` on own instance.
         """
         with self.condObj.lock:
             self.condObj.toggle_pause()
 
     def stop(self, *args):
         """
-        Sets the current instace of :attr:`src.main.python.player.ConditionObject.play` to ``False``, then spawns fresh instance
+        Sets the current instace of :attr:`asteroid.main.python.player.ConditionObject.play` to ``False``, then spawns fresh instance
         and sets :attr:`self.current_player` to ``None``.
         """
         with self.condObj.lock:
