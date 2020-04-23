@@ -30,7 +30,7 @@ mPlay = {
     'songs': fields.List(fields.Nested(mSongInfo))
 }
 
-mPlayList = fields.List(fields.Nested(mPlayInfo))
+mPlayList = {'public_playlists':fields.List(fields.Nested(mPlayInfo))}
 
 new_vote_parser = reqparse.RequestParser()
 new_vote_parser.add_argument('vote', type=int, required=False)
@@ -49,108 +49,193 @@ playlist_patch_parser.add_argument('privacy', type=str, required=False)
 
 class PlaylistsDB(Resource):
     """ Class for handling interactions relating to playlists """
+    mPlayInfoTemplate = ['_id','privacy','data']
+    mPlayDataTemplate = ['name','owner','size']
+    mSongInfoTemplate = ['name', 'artist', 's_id', 'duration']
 
     @marshal_with(mPlayList)
-    def get(self):
-        return mongo.db.publicplaylists.find()
-
-    @marshal_with(mPlayInfo)
-    def post(self):
-        args = new_playlist_parser.parse_args(strict=True)
-        #is_public = False
-        #if args.privacy is not "private":
-        #    return {}, 400
-        #if (args["privacy"] == "viewable" or args["privacy"] == "editable"):
-        #    is_public = True
-        #elif (args["privacy"] != "private"):
-        #    return {},400
-        if (args["clone_target"] is not None):
-            try:
-                clone_target = mongo.db.playlists.find({'_id':ObjectId(args["clone_target"])}).next()
-            except StopIteration:
-                return {}, 400
-            args["songs"] = clone_target["songs"]
-        else:
-            args["songs"]=[]
-        del args["clone_target"]
-        args["new_songs"]=[]
-        args["_id"] = mongo.db.playlists.insert_one(args).inserted_id
-        if args.privacy is not 'private':
-            mongo.db.publicplaylists.insert_one(args)
-        args["_id"] = str(args["_id"])
-        #del args["songs"]
-        return args
-
-class PlaylistDB(Resource):
-    """ Class for handling interactions relating to a particular playlist """
-    template = ['name', 'artist', 's_id', 'duration']
+    def _get_public(self):
+        """ GET at /playlists; returns info (excluding songs) on all public playlists """
+        query_result = mongo.db.playlists.find(
+            {'privacy':{'$in':['viewable','editable']}},
+            {'privacy':1,'data.name':1,'data.owner':1,'data.size':1}
+        )
+        query_result = [{k:v for k,v in i.items() if k in self.mPlayInfoTemplate} for i in query_result]
+        for i in query_result:
+            i['_id'] = str(i['_id'])
+            for k,v in i.pop('data').items():
+                i[k] = v
+        return {'public_playlists':query_result}
 
     @marshal_with(mPlay)
-    def get(self,hashkey,s_id=None):
-        """ GET endpoint; returns playlist specified by hashkey """
+    def _get_by_hash(self,hashkey):
+        """ GET at /playlists/<hashkey>; returns playlist info & songs """
         _id = ObjectId(hashkey)
         try:
             playlist = mongo.db.playlists.find({'_id':_id}).next()
         except StopIteration:
             return {}, 400
-        #Update with new songs
-        if len(playlist["new_songs"]) > 0:
-            #adding_songs = mongo.db.songs.find({'$or':[{'s_id':song_id} for song_id in playlist["new_songs"]]})
-            adding_songs = mongo.db.songs.find({'s_id':{'$in', playlist["new_songs"]}})
-            #adding_songs = [{
-            #    'name': adding_song['name'],
-            #    'artist': adding_song['artist'],
-            #    's_id': adding_song['s_id'],
-            #    'duration': adding_song['duration']
-            #    } for adding_song in adding_songs ]
-            adding_songs = [{k:v for k,v in i.items() if k in self.template} for i in adding_songs]
-            mongo.db.playlists.update({'_id':_id},{'$push':{'songs':{'$each': adding_songs}}})  # MARK
-            mongo.db.playlists.update({'_id':_id},{'$set':{'new_songs':[]}})
+        #Update with new songs & removed songs
+        content = playlist['data'].pop('content')
+        #Note: there should be no overlap between 'songs_to_add' and 'songs_to_remove', but better safe than sorry, ey
+        song_ids_to_add = [item for item in content['songs_to_add'] if item not in content['songs_to_remove']]
+        song_ids_to_remove = [item.s_id for item in content['songs'] if item.s_id in content['song_ids_to_remove']]
+        if len(song_ids_to_add) > 0:
+            songs_to_add = mongo.db.songs.find({'s_id':{'$in':song_ids_to_add}})
+            songs_to_add = [{k:v for k,v in i.items() if k in self.mSongInfoTemplate} for i in songs_to_add]
+                mongo.db.playlists.update(
+                {'_id':_id},
+                {
+                    '$push':{'data.content.songs':{'$each':songs_to_add}},
+                    '$pull':{'data.content.songs':{'s_id':{'$in':song_ids_to_remove}}}
+                    '$set':{
+						'data.content.songs_to_add':[],
+						'data.content.songs_to_remove':[],
+						'data.content.size':len(content['songs'])+len(songs_to_add)-len(song_ids_to_remove)
+					}
+                }
+            )
         else:
-            adding_songs = []
+            songs_to_add = []
+			if len(song_ids_to_remove) > 0:
+                	mongo.db.playlists.update(
+                	{'_id':_id},
+                	{
+                    	'$pull':{'data.content.songs':{'s_id':{'$in':song_ids_to_remove}}}
+                    	'$set':{
+							'data.content.songs_to_add':[],
+							'data.content.songs_to_remove':[],
+							'data.content.size':len(content['songs'])-len(song_ids_to_remove)
+						}
+                	}
+            	)
         item = {}
-        item['songs'] = playlist.pop('songs')+adding_songs
-        playlist['_id'] = hashkey
-        playlist['size'] = len(item['songs']) # +len(adding_songs)
-        item['info'] = playlist
+        item['songs'] = [item for item in content['songs'] if item.s_id not in content['songs_to_remove']]+songs_to_add
+        item['info'] = {k:v for k,v in playlist.items() if k in self.mPlayInfoTemplate}
+        for k,v in item['info'].pop('data').items():
+            item['info'][k] = v
+        item['info']['_id'] = str(item['info']['_id'])
         return item
 
-    def delete(self,hashkey,s_id=None):
-        """ DELETE endpoint; deletes playlist specified by hashkey, or,
-            if s_id specified, removes song with id s_id from playlist
-            specified by hashkey.                                       """
-        _id = ObjectId(hashkey)
-        if (s_id is None):
-            mongo.db.playlists.remove({'_id':_id})
+    @marshal_with(mSongInfo)
+    def _get_by_s_id(self,hashkey,s_id):
+        """ GET at /playlists/<hashkey>/songs/<s_id>.
+            Dunno why anyone would need this, but returns song info if in playlist """
+        playlist = self._get_by_hash(hashkey)
+        try:
+            songs = playlist['songs']
+        except:
+            return playlist
+        matches = [song for song in songs if str(song['s_id']) == s_id]
+        if len(matches) is 0:
+            return {}, 400
+        elif len(matches) is 1:
+            return matches[0]
         else:
-            mongo.db.playlists.update({'_id':_id},{'$pull':{songs:{'s_id':s_id}}})
+            return {}, 500
 
-    def put(self,hashkey,s_id):
-        """ PUT endpoint; adds song with id s_id to playlist specified by hashkey """
+    @marshal_with(mPlayInfo)
+    def _post_new_list(self,args):
+        """ POST at /playlists; if created, returns playlist info (excluding songs) """
+        if (args['clone_target'] is not None):
+            clone_target = self._get_by_hash(args['clone_target'])
+            try:
+                songs = clone_target['songs']
+            except:
+                return clone_target
+        else:
+            songs = []
+        args['size'] = len(songs)
+        database_item = {k:v for k,v in args.items() if k in self.mPlayInfoTemplate}
+        database_item['data'] = {k:v for k,v in args.items() if k in self.mPlayDataTemplate}
+        database_item['data']['content'] = {'songs':songs,'songs_to_add':[],'songs_to_remove':[]}
+        database_item['data']['size'] = args['size']
+        args['_id'] = str(mongo.db.playlists.insert_one(database_item).inserted_id)
+        return args
+
+    def _put_new_songs(self,hashkey,s_id):
+        """ PUT at /playlists/<hashkey>/songs/<s_id>; adds song(s) with given s_id to playlist """
         _id = ObjectId(hashkey)
         try:
-            mongo.db.playlists.update({'_id':_id},{'$push':{'new_songs':int(s_id)}})
-        except TypeError:
+            s_ids = [int(item) for item in s_id.split(' ')]
+            mongo.db.update(
+                {'_id':_id},
+                {
+                    '$push':{'data.content.songs_to_add':{'$each':s_ids}},
+					'$pull':{'data.content.songs_to_remove':{'$each':s_ids}},
+                    '$inc':{'data.size':len(s_ids)}
+                }
+            )
+        except:
             return {},400
 
-    def patch(self,hashkey,s_id=None):
-        """ PATCH endpoint; updates playlist info for playlist specified by hashkey """
-        args = playlist_patch_parser.parse_args(strict=True)
+    def _patch_info(self,hashkey,args):
+        """ PATCH at /playlists/<hashkey>; modifies privacy or name """
         _id = ObjectId(hashkey)
-        if (args['name'] is not None):
-            mongo.db.playlists.update({'_id':_id},{'$set':{'name':args['name']}})
-        if (args['privacy'] is not None):
-            try:
-                playlist = mongo.db.playlists.find({'_id':_id}).next()
-            except StopIteration:
-                return {},400
-            old_privacy = playlist['privacy']
-            mongo.db.playlists.update({'_id':_id},{'$set':{'privacy':args['privacy']}})
-            if (old_privacy == 'private' and args['privacy'] != 'private'):
-                del playlist["songs"]
-                mongo.db.publicplaylists.insert_one(playlist)
-            elif (old_privacy != 'private' and args['privacy'] == 'private'):
-                mongo.db.publicplaylists.remove({'_id':_id})
+        try:
+            if (args['name'] is not None):
+                mongo.db.playlists.update({'_id':_id},{'$set':{'data.name':args['name']}})
+            if (args['privacy'] is not None):
+                mongo.db.playlists.update({'_id':_id},{'$set':{'privacy':args['privacy']}})
+        except:
+            return {},400
+
+    def _delete_playlist(self,hashkey):
+        """ DELETE at /playlists/<hashkey>; deletes playlist """
+        _id = ObjectId(hashkey)
+        mongo.db.playlists.remove({'_id':_id})
+
+    def _remove_songs_from_playlist(self,hashkey,s_id):
+        """ DELETE at /playlists/<hashkey>/songs/<s_id>; removes specified song(s) from playlist """
+        _id = ObjectId(hashkey)
+        try:
+            s_ids = [int(item) for item in s_id.split(' ')]
+            mongo.db.update(
+                {'_id':_id},
+                {
+                    '$push':{'data.content.songs_to_remove':{'$each':s_ids}},
+					'$pull':{'data.content.songs_to_add':{'$each':s_ids}},
+                    '$inc':{'data.size':-len(s_ids)}
+                }
+            )
+        except:
+            return {},400
+
+    def get(self,hashkey=None,s_id=None):
+        if hashkey is None:
+            return self._get_public()
+        elif s_id is None:
+            return self._get_by_hash(hashkey)
+        else:
+            return self._get_by_s_id(hashkey,s_id)
+
+    def post(self,hashkey=None,s_id=None):
+        if hashkey is None:
+            args = new_playlist_parser.parse_args(strict=True)
+            return self._post_new_list(args)
+        else:
+            return {}, 405
+
+    def put(self,hashkey=None,s_id=None):
+        if hashkey is None or s_id is None:
+            return {}, 405
+        else:
+            return self._put_new_songs(hashkey,s_id)
+
+    def patch(self,hashkey=None,s_id=None):
+        if hashkey is None or s_id is not None:
+            return {}, 405
+        else:
+            args = playlist_patch_parser.parse_args(strict=True)
+            return self._patch_info(hashkey,args)
+
+    def delete(self,hashkey=None,s_id=None):
+        if hashkey is None:
+            return {}, 405
+        elif s_id is None:
+            return self._delete_playlist(hashkey)
+        else:
+            return self._remove_songs_from_playlist(hashkey,s_id)
 
 class QueueDB(Resource):
     """ Class for handling interactions with fetching from queue database """
