@@ -79,19 +79,23 @@ class PlaylistsDB(Resource):
         content = playlist['data'].pop('content')
         #Note: there should be no overlap between 'songs_to_add' and 'songs_to_remove', but better safe than sorry, ey
         song_ids_to_add = [item for item in content['songs_to_add'] if item not in content['songs_to_remove']]
-        song_ids_to_remove = [item.s_id for item in content['songs'] if item.s_id in content['song_ids_to_remove']]
+        song_ids_to_remove = [item['s_id'] for item in content['songs'] if item['s_id'] in content['songs_to_remove']]
         if len(song_ids_to_add) > 0:
             songs_to_add = mongo.db.songs.find({'s_id':{'$in':song_ids_to_add}})
             songs_to_add = [{k:v for k,v in i.items() if k in self.mSongInfoTemplate} for i in songs_to_add]
             mongo.db.playlists.update(
                 {'_id':_id},
                 {
-                    '$push':{'data.content.songs':{'$each':songs_to_add}},
-                    '$pull':{'data.content.songs':{'s_id':{'$in':song_ids_to_remove}}},
+                    # Note: the below two commented lines throw 'field name duplication not allowed with modifiers,'
+                    #    a mongodb error for when trying to both push and pull to the same array.
+                    #    A better solution probably exists - for now, just adding an extra $set item to cover the update.
+                    #'$push':{'data.content.songs':{'$each':songs_to_add}},
+                    #'$pull':{'data.content.songs':{'s_id':{'$in':song_ids_to_remove}}},
                     '$set':{
+                        'data.content.songs':[item for item in content['songs'] if item['s_id'] not in content['songs_to_remove']]+songs_to_add,
 						'data.content.songs_to_add':[],
 						'data.content.songs_to_remove':[],
-						'data.content.size':len(content['songs'])+len(songs_to_add)-len(song_ids_to_remove)
+						'data.size':len(content['songs'])+len(songs_to_add)-len(song_ids_to_remove)
 					}
                 }
             )
@@ -105,12 +109,12 @@ class PlaylistsDB(Resource):
                     	'$set':{
 							'data.content.songs_to_add':[],
 							'data.content.songs_to_remove':[],
-							'data.content.size':len(content['songs'])-len(song_ids_to_remove)
+							'data.size':len(content['songs'])-len(song_ids_to_remove)
 						}
                 	}
             	)
         item = {}
-        item['songs'] = [item for item in content['songs'] if item.s_id not in content['songs_to_remove']]+songs_to_add
+        item['songs'] = [item for item in content['songs'] if item['s_id'] not in content['songs_to_remove']]+songs_to_add
         item['info'] = {k:v for k,v in playlist.items() if k in self.mPlayInfoTemplate}
         for k,v in item['info'].pop('data').items():
             item['info'][k] = v
@@ -158,7 +162,7 @@ class PlaylistsDB(Resource):
         _id = ObjectId(hashkey)
         try:
             s_ids = [int(item) for item in s_id.split(' ')]
-            mongo.db.update(
+            mongo.db.playlists.update(
                 {'_id':_id},
                 {
                     '$push':{'data.content.songs_to_add':{'$each':s_ids}},
@@ -190,7 +194,7 @@ class PlaylistsDB(Resource):
         _id = ObjectId(hashkey)
         try:
             s_ids = [int(item) for item in s_id.split(' ')]
-            mongo.db.update(
+            mongo.db.playlists.update(
                 {'_id':_id},
                 {
                     '$push':{'data.content.songs_to_remove':{'$each':s_ids}},

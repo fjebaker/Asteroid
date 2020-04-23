@@ -383,7 +383,6 @@ function _recentlyRequested() {
 }
 
 function _playlist(hashkey) {
-    BODY_CONTENT.appendNode(song_table);
     var ownerName = TOOLS.AUTH.getUid();
     //Do requests to get this page of songs
 
@@ -392,6 +391,11 @@ function _playlist(hashkey) {
             var data = JSON.parse(request.response);
             var playlistInfo = data["info"];
             var songData = data["songs"];
+            BODY_CONTENT.appendText(playlistInfo.name,'b');
+            BODY_CONTENT.appendText(' by ');
+            BODY_CONTENT.appendText(playlistInfo.owner,'i');
+            BODY_CONTENT.appendBreak();
+            BODY_CONTENT.appendNode(song_table);
             playlist_adding_selector.value = playlistInfo["_id"];
             if (MISC_INFO.screen_size == "big") {
                 columnList = ["Name","Artist","Duration","Vote","Favourite"];
@@ -442,13 +446,16 @@ function _playlist(hashkey) {
                 _addSong(songData[i],-1);
             }
         } else if (request.status == "401") {
+            BODY_CONTENT.appendNode(song_table);
             _addBottomMessage("Request for playlist songs returned code 401: you do not have valid authorisation to view it.");
         } else {
+            BODY_CONTENT.appendNode(song_table);
             _addBottomMessage("Request for playlist songs returned unexpected response code ("+request.status+")");
         }
     }
 
     function getPlaylistSongsFailure() {
+        BODY_CONTENT.appendNode(song_table);
         _addBottomMessage("Request for playlist songs failed unexpectedly");
     }
 
