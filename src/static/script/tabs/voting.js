@@ -168,7 +168,9 @@ function _voteSong(id,upBool,parentRow) {
     var powerSign = upBool ? 1 : -1;
     var autoFaveStr = upBool ? "Automatically Favourite Upvoted Songs" : "Automatically Unfavourite Downvoted Songs"
     return function() {
-        const uid = TOOLS.AUTH.getUid();
+        //const uid = TOOLS.AUTH.getUid();
+        //Temporary fix whilst user stuff not implemented - REMOVE once uid implemented
+        const uid = 1;
         var requestData = new FormData();
         requestData.set("s_id",id);
         requestData.set("u_id",uid);

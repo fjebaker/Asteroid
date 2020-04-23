@@ -392,7 +392,17 @@ clonePlaylist:function(hashkey,privacy) {
         newName = PLAYLISTS.publicPlaylistInfo[hashkey]["name"];
         size = PLAYLISTS.publicPlaylistInfo[hashkey]["size"];
     }
-    while (PLAYLISTS.userPlaylistInfo.hasOwnProperty(newName)) {
+
+    function matchesName(name) {
+        for (var key in PLAYLISTS.userPlaylistInfo) {
+            if (PLAYLISTS.userPlaylistInfo.hasOwnProperty(key) && PLAYLISTS.userPlaylistInfo[key]["name"] === name) {
+                return true
+            }
+        }
+        return false
+    }
+
+    while (matchesName(newName)) {
         newName = "copy of "+newName;
     }
 
