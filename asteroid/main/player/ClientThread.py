@@ -3,7 +3,7 @@ import threading
 
 class ClientThread(threading.Thread):
     """
-    Client thread, inheriting from :class:`threading.Thread`, spawned by :class:`src.main.python.player.INETServer.Listener`.
+    Client thread, inheriting from :class:`threading.Thread`, spawned by :class:`asteroid.main.python.player.INETServer.Listener`.
     Has ``self.daemon = True``.
     Will listen for incomming messages forever or until an :class:`Exception` is raised.
 

@@ -35,7 +35,7 @@ class PlayStream(threading.Thread):
     Has ``self.daemon = True``.
 
     :param condition_object: instance shared with the audio handler.
-    :type condition_object: :class:`src.main.python.player.ConditionObject`
+    :type condition_object: :class:`asteroid.main.python.player.ConditionObject`
     :param queue: to dump short type representation of audio
     :type queue: :class:`queue.Queue` instance
     '''

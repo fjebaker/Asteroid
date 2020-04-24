@@ -1,7 +1,7 @@
 from flask import Blueprint, Response
 import os
 
-STATIC_FOLDER = "src/static/"
+STATIC_FOLDER = "asteroid/static/"
 fetcher_bp = Blueprint('fetcher', __name__)
 
 def _from_dir(_dir, name, _bytes=''):

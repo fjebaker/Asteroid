@@ -3,7 +3,7 @@ import threading
 
 class ConditionObject:
     '''
-    Conditions which govern playback in :class:`src.main.python.player.PlayStream`
+    Conditions which govern playback in :class:`asteroid.main.python.player.PlayStream`
     '''
     lock = threading.Lock() 	#: threading Lock Object
     play = True		#: if playing
