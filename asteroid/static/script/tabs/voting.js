@@ -16,6 +16,12 @@ var user_id_names = {};
 
 const searchableColumns = ["Artist","Name"];
 
+function _autoQueueRedirect(hashkey) {
+    return function() {
+        TOOLS.QUERIES.virtualRedirect("Playlists","Autoqueue",{"playlist":hashkey});
+    }
+}
+
 function _addSongToPlaylist(id) {
     return function() {
         if (playlist_adding_selector.value != "Choose playlist...") {
@@ -397,6 +403,11 @@ function _playlist(hashkey) {
             BODY_CONTENT.appendText(' by ');
             BODY_CONTENT.appendText(playlistInfo.owner,'i');
             BODY_CONTENT.appendBreak();
+            var autoQueueButton = document.createElement("button");
+            autoQueueButton.innerText = "Autoqueue";
+            autoQueueButton.onclick = _autoQueueRedirect(playlistInfo["_id"]);
+            BODY_CONTENT.appendNode(autoQueueButton);
+            BODY_CONTENT.appendBreak();
             BODY_CONTENT.appendNode(song_table);
             playlist_adding_selector.value = playlistInfo["_id"];
             if (MISC_INFO.screen_size == "big") {
@@ -534,10 +545,6 @@ function _queue() {
         doubleExpansionColumns = ["Vote","Favourite"];
     }
     _addTopRow();
-
-    function getQueueSongsFailure() {
-        _addBottomMessage("Request for queue songs failed unexpectedly");
-    }
 
     function getQueue(request) {
         if (request.status == "200") {
