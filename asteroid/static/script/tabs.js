@@ -74,28 +74,37 @@ clear:function() {
  * @param {string} key - the tab whose buttons should be expanded
  */
 expandSubtab:function(key) {
-    if (MISC_INFO.screen_size == "big") {
-        var relevant_element = "";
-        var children = tabsElem.children;
-        for (var n = 0; n < children.length; n++) {
-            var button = children[n];
-            if (button.innerHTML == key) {
-                relevant_element = button;
-                break;
+
+    function subtabExpansion() {
+        if (MISC_INFO.screen_size == "big") {
+            var relevant_element = "";
+            var children = tabsElem.children;
+            for (var n = 0; n < children.length; n++) {
+                var button = children[n];
+                if (button.innerHTML == key) {
+                    relevant_element = button;
+                    break;
+                }
             }
-        }
-        if (relevant_element !== "") {
+            if (relevant_element !== "") {
+                var newButtons = MISC_INFO.tabs_object[key];
+                for (var n = 0; n < newButtons.length; n++) {
+                    relevant_element = TOOLS.insertButton(relevant_element,newButtons[n],_subButtonCallback(key,newButtons[n]),true,"sub_tabbar_button_big");
+                    disposable_buttons.push(relevant_element);
+                }
+            }
+        } else {
             var newButtons = MISC_INFO.tabs_object[key];
             for (var n = 0; n < newButtons.length; n++) {
-                relevant_element = TOOLS.insertButton(relevant_element,newButtons[n],_subButtonCallback(key,newButtons[n]),true,"sub_tabbar_button_big");
-                disposable_buttons.push(relevant_element);
+                TOOLS.appendButton(sub_button_group,newButtons[n],_subButtonCallback(key,newButtons[n]),true,"sub_tabbar_button_"+MISC_INFO.screen_size);
             }
         }
+    }
+
+    if (key == "Request") {
+        LOADER.loadTabScript("Request",subtabExpansion);
     } else {
-        var newButtons = MISC_INFO.tabs_object[key];
-        for (var n = 0; n < newButtons.length; n++) {
-            TOOLS.appendButton(sub_button_group,newButtons[n],_subButtonCallback(key,newButtons[n]),true,"sub_tabbar_button_"+MISC_INFO.screen_size);
-        }
+        subtabExpansion();
     }
 },
 

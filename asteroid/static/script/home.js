@@ -128,7 +128,7 @@ var MISC_INFO = {
     tabs_object:{
         Voting:["Queue","Recently Requested","Downloaded","Favourites"],
         Settings:["Account","Tabs"],
-        Request:["YouTube Request"],
+        Request:[],
         Playlists:["Public Playlists","My Playlists","Add Playlist"],
         About:["Credits","Cookie Policy"]
     },
