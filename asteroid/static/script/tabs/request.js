@@ -25,9 +25,35 @@ populateBody:function(){
     } else {
         BODY_CONTENT.appendText("Press a subtab button to open a subtab!");
     }
+},
+
+getRequestPages:function(){
+    var current_loading_callback = LOADER.loading_callback;
+
+    function loadRemainingNames(list){
+        return function() {
+            if (list.length > 0) {
+                console.log(list[0]);
+                LOADER.loadScript("request/"+list.shift(),loadRemainingNames(list));
+            } else {
+                current_loading_callback();
+            }
+        }
+    }
+
+    function getRequestNameLists(request){
+        if (request.status == "200") {
+            var data = JSON.parse(request.response);
+            loadRemainingNames(data)();
+        } else {
+            current_loading_callback();
+        }
+    }
+
+    TOOLS.jsonGetRequest("request",getRequestNameLists,current_loading_callback);
 }
 };
 })();
 
 LOADER.tab_scripts["Request"] = REQUEST //Capitalised
-LOADER.loading_callback();
+REQUEST.getRequestPages();
