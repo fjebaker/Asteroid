@@ -1,7 +1,6 @@
 import pyaudio
 import wave
 import sys
-import struct
 import threading
 import time
 import functools
@@ -66,7 +65,8 @@ class PlayStream(threading.Thread):
             paused = self.CO.pause
 
         stream = self._p.open(**self._format)
-        with wave.open(self._song, 'rb') as wf, self._p.open(**self._format) as stream: 
+        with wave.open(self._song, 'rb') as wf: 
+            stream = self._p.open(**self._format) 
             data = wf.readframes(self.chunk)
 
             while len(data) > 0 and play:
@@ -80,3 +80,4 @@ class PlayStream(threading.Thread):
                         paused = self.CO.pause
 
             stream.stop_stream()
+            stream.close()
