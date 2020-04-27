@@ -81,3 +81,4 @@ class PlayStream(threading.Thread):
 
             stream.stop_stream()
             stream.close()
+            self._p.terminate()
