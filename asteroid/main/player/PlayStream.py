@@ -42,6 +42,7 @@ class PlayStream(threading.Thread):
     def loadsong(self, song):
         """ load in information about the song for setting up audio stream """
         prop = {}
+        self._song = song
         with wave.open(song, 'rb') as wf:
             prop['rate'] = wf.getframerate()
             prop['format'] = self._p.get_format_from_width(wf.getsampwidth())
