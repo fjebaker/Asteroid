@@ -3,6 +3,13 @@ from flask_restful import Resource, reqparse, fields, marshal_with
 
 from asteroid.main.asteroid_api.common.__database import mongo
 
+mSongInfo = {
+    'name': fields.String,
+    'artist': fields.String,
+    's_id': fields.Integer,
+    'duration':fields.Float
+}
+
 mSong = {
     'song': fields.Nested(mSongInfo),
     'u_id': fields.Integer,
