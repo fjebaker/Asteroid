@@ -1,11 +1,10 @@
-import alsaaudio
+import pyaudio
 import wave
 import sys
 import struct
 import threading
 import time
 import functools
-import numpy as np
 
 
 def restrict_call(function):
@@ -29,77 +28,56 @@ def restrict_call(function):
 
 
 class PlayStream(threading.Thread):
-    '''
-    Player class specialised for alsaaudio.
-    Designed to be lightweight threadable and to be non-recycleable after play.
-    Has ``self.daemon = True``.
+    """ audio playback thread """
 
-    :param condition_object: instance shared with the audio handler.
-    :type condition_object: :class:`asteroid.main.python.player.ConditionObject`
-    :param queue: to dump short type representation of audio
-    :type queue: :class:`queue.Queue` instance
-    '''
+    chunk = 1024
 
-    def __init__(self, condition_object, queue):
-        self.q = queue
+    def __init__(self, condition_object):
         self.CO = condition_object
         threading.Thread.__init__(self)
         self.deamon = True
-        self.CHUNK = 512  # magic value
+        self._p = pyaudio.PyAudio()
+        self._format = {}
 
-    # @restrict_call
     def loadsong(self, song):
-        '''
-        Opens a file handle on the .wav file
+        """ load in information about the song for setting up audio stream """
+        prop = {}
+        with wave.open(song, 'rb') as wf:
+            prop['rate'] = wf.getframerate()
+            prop['format'] = self._p.get_format_from_width(wf.getsampwidth())
+            prop['channels'] = wf.getnchannels()
+            prop['output'] = True
+        self._format = prop
 
-        :param song: path to song to be played
-        :type song: string
-        '''
-        self.wf = wave.open(song)  # todo; error handling
 
-    # @restrict_call
     def run(self):
-        '''
-        Inherited and overwritten :meth:`threading.Thread.run`; called when :attr:`self.start()` method is invoked.
-        Begins audio playback, and when interrupted or completed performs cleanup.
-        '''
+        """ thread start method """
         self._play()
-        self.wf.close()
 
-        print("DONE")
         with self.CO.lock:
             self.CO.done = True
 
-    # @restrict_call
+
     def _play(self):
-        '''
-        hidden method, called by :attr:`self.run`
-        '''
-        wf = self.wf
-        stream = alsaaudio.PCM(alsaaudio.PCM_PLAYBACK,
-                               alsaaudio.PCM_NORMAL, 'default')
-        stream.setformat(alsaaudio.PCM_FORMAT_S16_LE)
-        stream.setchannels(wf.getnchannels())
-        stream.setrate(wf.getframerate())
-        stream.setperiodsize(self.CHUNK)
-
-        data = wf.readframes(self.CHUNK)
-        paused = False
-
-        sample = 0
+        """ begin audio playback, controlled by the condition object """
         with self.CO.lock:
             play = self.CO.play
             paused = self.CO.pause
-        while data and play:
-            if not paused:
-                val = np.fromstring(data, dtype=np.short)
-                if sample % 4 == 0:
-                    self.q.put(val)
-                stream.write(data)
-                data = wf.readframes(self.CHUNK)
-                sample += 1
-            else:
-                time.sleep(0.2)
-            with self.CO.lock:
-                play = self.CO.play
-                paused = self.CO.pause
+
+        stream = self._p.open(**self._format)
+        with wave.open(self._song, 'rb') as wf:
+            stream = self._p.open(**self._format)   
+            data = wf.readframes(self.chunk)
+
+            while len(data) > 0 and play:
+                if not paused:
+                    stream.write(data)
+                    data = wf.readframes(self.chunk)
+                else:
+                    time.sleep(0.2)
+                with self.CO.lock:
+                        play = self.CO.play
+                        paused = self.CO.pause
+
+            stream.stop_stream()
+            stream.close()
