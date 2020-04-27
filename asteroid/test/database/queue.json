@@ -1,0 +1,23 @@
+[
+  {
+    "song": 
+      {
+        "artist": "Sad Graves",
+        "name": "Hating Freak Cannibal",
+        "duration": 103,
+        "s_id": 100
+      },
+    "vote": 60,
+    "u_id": 1},
+  {
+    "song": 
+        {
+          "artist": "Happy Child",
+          "name": "Hating Warm Child",
+          "duration": 0,
+          "s_id": 109
+        },
+    "vote": 20,
+    "u_id": 2
+  }
+]

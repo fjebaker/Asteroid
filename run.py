@@ -2,27 +2,27 @@ import os
 os.environ["ASTEROID_CONFIG_PATH"] = './config.ini'
 import sys
 import argparse
-from src import Config, db_path, JSConfig
-from src.main.web.flaskserv.Database import init_database_session
-HEADER = r"""               _       _                 _     _ 
- _ __  _   _  /_\  ___| |_ ___ _ __ ___ (_) __| |
-| '_ \| | | |//_\\/ __| __/ _ \ '__/ _ \| |/ _` |
-| |_) | |_| /  _  \__ \ ||  __/ | | (_) | | (_| |
-| .__/ \__, \_/ \_/___/\__\___|_|  \___/|_|\__,_|
-|_|    |___/                   v0.0.0
-             ?:~j  github.com/Moontemple/Asteroid
+from asteroid.main.databasebuilder import Config, JSConfig
+from asteroid.main import init as WEBinit
+
+WEBapp = WEBinit("config.Prod")
+
+from asteroid.main.databasebuilder.SetupBuild import configure_database, check_database_connection
+HEADER = r"""     _       _                 _     _ 
+    /_\  ___| |_ ___ _ __ ___ (_) __| |
+   //_\\/ __| __/ _ \ '__/ _ \| |/ _` |
+  /  _  \__ \ ||  __/ | | (_) | | (_| |
+  \_/ \_/___/\__\___|_|  \___/|_|\__,_|
+                  v0.0.0
+               github.com/Moontemple/Asteroid
  developed by Fergus Baker, JR Mitchell, Sam Hollow, Ben Shellswell
 """
 
-"""
-    TODO
-    ====
-    -- it's fecking SQLINJECTION vulnerable
-    -- use less environment variables
-    -- all databases should have id
-"""
-
-init_database_session()
+check_database_connection(WEBapp)
+try:
+    configure_database(WEBapp)
+except:
+    print("databases already configured (?)")
 
 def run_flask(host="", port=""):
     cfg = Config()
@@ -32,8 +32,7 @@ def run_flask(host="", port=""):
         port = cfg.get("FlaskServer", "port")
     JSConfig.build(cfg._sections['JSConfig'])
     print("[*] Starting flask HTTP server...")
-    import src.main.web.flaskserv.main as main
-    main.app.run(host, port)
+    WEBapp.run(host, port)
 
 
 def run_player(host="", port=""):
@@ -43,7 +42,8 @@ def run_player(host="", port=""):
     if port == "":
         port = cfg.get("PlayerConfig", "port")
 
-    del sys.modules['alsaaudio']
+    if 'alsaaudio' in sys.modules:
+        del sys.modules['alsaaudio']
     try:
         import alsaaudio
     except:
@@ -80,7 +80,7 @@ def run_player(host="", port=""):
         print("[*] Starting player INET server...")
         os.environ["LISTENER_HOST"] = host
         os.environ["LISTENER_PORT"] = port
-        from src.main.player import Listener
+        from asteroid.main.player import Listener
         Listener().start()
 
 
@@ -88,22 +88,22 @@ class databases:
 
     @staticmethod
     def load(db, path):
-        if db == 'all':
-            databases.build_all()
-        elif db == 'music':
+        #if db == 'all':
+        #    databases.build_all()
+        if db == 'music':
             databases.build_music(path)
 
     @staticmethod
     def build_music(loc):
-        print("[+] adding '{}' table in '{}'...".format("songs", db_path()))
-        from src.main.databasebuilder import build_music
-        build_music(loc)
+        print("[+] adding '{}' collection in '{}'...".format("songs", WEBapp.config['MONGO_URI']))
+        from asteroid.main.databasebuilder import build_music
+        build_music(loc, WEBapp)
         print("[*] Done building Music.")
 
     @staticmethod
     def build_all():
         print("\n[*] Building all tables in database...")
-        databases.build_music(None)
+        #databases.build_music(None)
 
     @staticmethod
     def clear(database):
@@ -111,9 +111,9 @@ class databases:
         TODO
         at the moment just deletes the current database
         """
-        from src.main.databasebuilder import clear
+        #from asteroid.main.databasebuilder import clear
         print("\n[-] Deleting old database...")
-        clear('./test.db')
+        #clear('./test.db')
 
 
 def run(args):
@@ -200,7 +200,7 @@ if __name__ == '__main__':
 
     parser_db.add_argument('--fresh', dest='fresh', action='store_const',
                            const=True, default=False,
-                           help='clear the database and make empty tables')
+                           help='clear the database')
 
     parser_db.add_argument('--load', dest='path', action='store', type=str,
                            help='load directory into database')

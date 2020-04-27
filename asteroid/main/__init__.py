@@ -1,0 +1,1 @@
+from asteroid.main.web_app import init

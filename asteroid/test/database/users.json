@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Edwin",
+    "u_id": 1,
+    "hash_pw": "",
+    "other": "is awake."
+  },
+  {
+    "name": "Bella",
+    "u_id": 2,
+    "hash_pw": "",
+    "other": "my beautiful world."
+  },
+  {
+    "name": "Louise Verneuil",
+    "u_id": 3,
+    "hash_pw": "",
+    "other": ""
+  },
+  {
+    "name": "Tom Waits",
+    "u_id": 4,
+    "hash_pw": "",
+    "other": ""
+  }
+]
