@@ -27,7 +27,7 @@ class QueueDB(Resource):
     @marshal_with(mSong)
     def get(self):
         """ GET endpoint; performs database query for queue """
-        return list(mongo.db.songs.find().sort('vote',-1).limit(40))
+        return list(mongo.db.queue.find().sort('vote',-1).limit(40))
 
 class Vote(Resource):
     """ Class for handling interactions for adding to the queue """
