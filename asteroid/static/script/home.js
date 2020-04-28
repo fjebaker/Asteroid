@@ -31,6 +31,11 @@ function _load_css(path) {
 }
 
 return {
+
+loadScript:function(path,callback) {
+    _load_script(path,callback);
+},
+
 /**
  * If it is not already loaded, loads in a js tab script specified by the name.
  * Once the script is definitely loaded, sets it as the current script for tabs and body,

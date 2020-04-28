@@ -240,3 +240,5 @@ venv/
 .vscode/
 .coverage
 src/static/jsconfig.js
+request_modules/
+.gitmodules

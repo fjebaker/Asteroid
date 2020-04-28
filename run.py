@@ -1,5 +1,6 @@
 import os
 os.environ["ASTEROID_CONFIG_PATH"] = './config.ini'
+os.environ["ASTEROID_REQUEST_CONFIG_PATH"] = './module_config.ini'
 import sys
 import argparse
 from asteroid.main.databasebuilder import Config, JSConfig
