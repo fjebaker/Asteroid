@@ -299,46 +299,64 @@ populateBody:function(){
         TABS_CONTENT.clear();
         var hashkey = TOOLS.PLAYLISTS.getCurrentPlaylistName();
 
-        function autoQueueList(request) {
-            if (request.status == "200") {
-                var data = JSON.parse(request.response);
-                var playlistInfo = data["info"];
-                var songData = data["songs"];
-                BODY_CONTENT.appendText("Autoqueueing ");
-                BODY_CONTENT.appendText(playlistInfo.name,'b');
-                BODY_CONTENT.appendText(" by ");
-                BODY_CONTENT.appendText(playlistInfo.owner,'i');
-                BODY_CONTENT.appendText(". Shuffle: ");
-                shuffle_toggle = document.createElement("input");
-                shuffle_toggle.type = "checkbox";
-                BODY_CONTENT.appendNode(shuffle_toggle);
-                BODY_CONTENT.appendBreak();
-                BODY_CONTENT.appendText("Stop autoqueueing: ")
-                var stopButton = document.createElement("button");
-                stopButton.innerText = "Stop";
-                stopButton.onclick = function() {
-                    TABS_CONTENT.populate();
-                    TOOLS.QUERIES.virtualRedirect("Playlists","My Playlists");
+        function pressSelectButton(shuffle_value,node1,node2) {
+            return function() {
+                node1.parentNode.removeChild(node1);
+                node2.parentNode.removeChild(node2);
+                if (PLAYLISTS.publicPlaylistInfo.hasOwnProperty(hashkey)) {
+                    TOOLS.jsonGetRequest("/db/playlists/"+hashkey,autoQueueList(shuffle_value),function(){TOOLS.QUERIES.virtualRedirect("Playlists","My Playlists");});
+                } else { //TODO make request secure
+                    TOOLS.jsonGetRequest("/db/playlists/"+hashkey,autoQueueList(shuffle_value),function(){TOOLS.QUERIES.virtualRedirect("Playlists","My Playlists");});
                 }
-                BODY_CONTENT.appendNode(stopButton);
-                BODY_CONTENT.appendBreak();
-                playlist_table = document.createElement("table");
-                BODY_CONTENT.appendNode(playlist_table);
-                _autoQueueIntelligentWait(songData);
-                stopButton.onclick = function() {
-                    TABS_CONTENT.populate();
-                    clearTimeout(timeout_event);
-                    TOOLS.QUERIES.virtualRedirect("Playlists","My Playlists");
-                }
-            } else {
-                TOOLS.QUERIES.virtualRedirect("Playlists","My Playlists");
             }
         }
 
-        if (PLAYLISTS.publicPlaylistInfo.hasOwnProperty(hashkey)) {
-            TOOLS.jsonGetRequest("/db/playlists/"+hashkey,autoQueueList,function(){TOOLS.QUERIES.virtualRedirect("Playlists","My Playlists");});
-        } else { //TODO make request secure
-            TOOLS.jsonGetRequest("/db/playlists/"+hashkey,autoQueueList,function(){TOOLS.QUERIES.virtualRedirect("Playlists","My Playlists");});
+        var orderButton = document.createElement("button");
+        var shuffleOnButton = document.createElement("button");
+        orderButton.innerText = "Play in order";
+        orderButton.onclick = pressSelectButton(false,orderButton,shuffleOnButton);
+        shuffleOnButton.innerText = "Shuffle";
+        shuffleOnButton.onclick = pressSelectButton(true,orderButton,shuffleOnButton);
+        BODY_CONTENT.appendNode(orderButton);
+        BODY_CONTENT.appendNode(shuffleOnButton);
+
+        function autoQueueList(shuffle_value) {
+            return function(request) {
+                if (request.status == "200") {
+                    var data = JSON.parse(request.response);
+                    var playlistInfo = data["info"];
+                    var songData = data["songs"];
+                    BODY_CONTENT.appendText("Autoqueueing ");
+                    BODY_CONTENT.appendText(playlistInfo.name,'b');
+                    BODY_CONTENT.appendText(" by ");
+                    BODY_CONTENT.appendText(playlistInfo.owner,'i');
+                    BODY_CONTENT.appendText(". Shuffle: ");
+                    shuffle_toggle = document.createElement("input");
+                    shuffle_toggle.type = "checkbox";
+                    shuffle_toggle.checked = shuffle_value;
+                    BODY_CONTENT.appendNode(shuffle_toggle);
+                    BODY_CONTENT.appendBreak();
+                    BODY_CONTENT.appendText("Stop autoqueueing: ")
+                    var stopButton = document.createElement("button");
+                    stopButton.innerText = "Stop";
+                    stopButton.onclick = function() {
+                        TABS_CONTENT.populate();
+                        TOOLS.QUERIES.virtualRedirect("Playlists","My Playlists");
+                    }
+                    BODY_CONTENT.appendNode(stopButton);
+                    BODY_CONTENT.appendBreak();
+                    playlist_table = document.createElement("table");
+                    BODY_CONTENT.appendNode(playlist_table);
+                    _autoQueueIntelligentWait(songData);
+                    stopButton.onclick = function() {
+                        TABS_CONTENT.populate();
+                        clearTimeout(timeout_event);
+                        TOOLS.QUERIES.virtualRedirect("Playlists","My Playlists");
+                    }
+                } else {
+                    TOOLS.QUERIES.virtualRedirect("Playlists","My Playlists");
+                }
+            }
         }
 
     } else {
